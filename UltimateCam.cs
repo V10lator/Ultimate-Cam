@@ -41,7 +41,7 @@ namespace UltimateCam
 				if (active) {
 					Utility.ObjectBelowMouseInfo result = default(Utility.ObjectBelowMouseInfo);
 					Ray ray = _cam.ScreenPointToRay (Input.mousePosition);
-					result.hitDistance = 3.40282347E+38f;
+					result.hitDistance = float.MaxValue;
 					result.hitObject = null;
 					GameObject gameObject = Collisions.Instance.checkSelectables(ray, out result.hitDistance);
 					if (gameObject != null)
@@ -54,9 +54,7 @@ namespace UltimateCam
 							result.hitLayerMask = 1 << component.gameObject.layer;
 						}
 						else
-						{
-							result.hitDistance = 3.40282347E+38f;
-						}
+							result.hitDistance = float.MaxValue;
 					}
 					GameController.Instance.enableVisibleMouseColliders();
 					RaycastHit[] array = Physics.RaycastAll(ray, result.hitDistance, LayerMasks.MOUSECOLLIDERS | LayerMasks.TERRAIN);
