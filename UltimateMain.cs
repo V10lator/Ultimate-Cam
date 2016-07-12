@@ -6,7 +6,7 @@ namespace UltimateCam
 {
 	public class UltimateMain : IMod, IModSettings
 	{
-		private static GameObject go;
+		public static GameObject go;
 		private UltimateSettings _config = null;
 		public UltimateSettings config
 		{

@@ -10,7 +10,7 @@ namespace UltimateCam
 	{
 		private GameObject _headCam = null;
 		public static UltimateCam Instance;
-		private Camera _cam;
+		public Camera _cam;
 		float fps = 0.0f;
 		float startX, startZ;
 		bool active {
