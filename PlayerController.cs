@@ -89,7 +89,7 @@ namespace UltimateCam
 					Vector3 pos = cam.transform.position;
 					if ((moveDirection.x > 0.0f && result.hitPosition.x > pos.x) || (moveDirection.x < 0.0f && result.hitPosition.x < pos.x))
 						moveDirection.x = 0.0f;
-					else if ((moveDirection.z > 0.0f && result.hitPosition.z > pos.z) || (moveDirection.z < 0.0f && result.hitPosition.z < pos.z))
+					if ((moveDirection.z > 0.0f && result.hitPosition.z > pos.z) || (moveDirection.z < 0.0f && result.hitPosition.z < pos.z))
 						moveDirection.z = 0.0f;
 				}
 			}
