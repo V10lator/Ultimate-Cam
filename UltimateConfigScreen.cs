@@ -76,6 +76,13 @@ namespace UltimateCam
 			config.FoV = UISlider (UltimateSettings.FOV_SETTING, UltimateSettings.DEFAULT_FOV, UltimateSettings.MIN_FOV, UltimateSettings.MAX_FOV, config.FoV, minWidth);
 
 			config.ViewDistance = UISlider (UltimateSettings.VD_SETTING, UltimateSettings.DEFAULT_VD, UltimateSettings.MIN_VD, UltimateSettings.MAX_VD, config.ViewDistance, minWidth);
+
+			// HDR?
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label (UltimateSettings.HDR_SETTING + "?", minWidth);
+			GUILayout.FlexibleSpace ();
+			config.HDR = GUILayout.Toggle (config.HDR, "", toggleWidth);
+			GUILayout.EndHorizontal ();
 		}
 
 		private float UISlider(string label, float def, float min, float max, float value, params GUILayoutOption[] options)

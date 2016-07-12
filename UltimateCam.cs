@@ -169,7 +169,7 @@ namespace UltimateCam
 			_cam.farClipPlane = UltimateMain.Instance.config.ViewDistance;
 			_cam.fieldOfView = UltimateMain.Instance.config.FoV;
 			_cam.depthTextureMode = DepthTextureMode.DepthNormals;
-			_cam.hdr = true;
+			_cam.hdr = UltimateMain.Instance.config.HDR;
 			_cam.orthographic = false;
 			_headCam.AddComponent<AudioListener>();
 			_headCam.AddComponent<FpsMouse>();

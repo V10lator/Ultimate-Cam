@@ -23,6 +23,8 @@ namespace UltimateCam
 		public const float MIN_VD = 0.5f;
 		public const float MAX_VD = 200.0f;
 		public const float DEFAULT_VD = 50.0f;
+		public const string HDR_SETTING = "HDR";
+		public const bool DEFAULT_HDR = false;
 		public const string SPEED_SETTING = "Walking speed";
 		public const float MIN_SPEED = 0.1f;
 		public const float MAX_SPEED = 20.0f;
@@ -70,6 +72,15 @@ namespace UltimateCam
 			}
 			set {
 				SetSetting (VD_SETTING, value, MIN_VD, MAX_VD);
+			}
+		}
+
+		public bool HDR {
+			get {
+				return bool.Parse (settingsValueDictionary [HDR_SETTING].ToString ());
+			}
+			set {
+				SetSetting (HDR_SETTING, value);
 			}
 		}
 
@@ -195,6 +206,7 @@ namespace UltimateCam
 			validateFloatSetting (FOV_SETTING, MIN_FOV, MAX_FOV, DEFAULT_FOV);
 			validateFloatSetting (VD_SETTING, MIN_VD, MAX_VD, DEFAULT_VD);
 
+			validateBoolSetting (HDR_SETTING, DEFAULT_HDR);
 			validateBoolSetting (EXPERIMENTAL_SETTING, DEFAULT_EXPERIMENTAL);
 		}
 
