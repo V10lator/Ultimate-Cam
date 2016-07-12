@@ -32,31 +32,7 @@ namespace UltimateCam
 		{
 			if (!active)
 				return;
-			// WARNING: THE CODE HERE NEEDS LEGAL REVIEW
-	/*		float ground = float.MinValue;
-			Block block = GameController.Instance.park.blockData.getBlock(transform.position);
-			if (block != null) {
-				float top = block.getTopSideY(transform.position);
-				if (top < transform.position.y)
-					ground = top;
-			}
-			if (ground == float.MinValue)
-				ground = GameController.Instance.park.getHeightAt(transform.position);
-			// END OF WARNING
-			ground += UltimateMain.Instance.height;
-			bool onGround;
 
-			float bp = ground - transform.position.y;
-			if (bp == 0.0f) { // All fine, no height adjustment needed.
-				onGround = true;
-			} else if (bp > 0.0f) {
-				transform.position = new Vector3 (transform.position.x, ground, transform.position.z);
-				onGround = true;
-			} else { // falling
-				moveDirection.y -= gravity * Time.deltaTime;
-				onGround = false;
-			}
-*/
 			if (controller.isGrounded) {
 				moveDirection = new Vector3 (Input.GetAxis ("Horizontal"), 0.0f, Input.GetAxis ("Vertical"));
 				moveDirection = transform.TransformDirection (moveDirection);
