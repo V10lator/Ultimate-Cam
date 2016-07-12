@@ -37,7 +37,7 @@ namespace UltimateCam
 					}
 				} else
 					LeaveHeadCam ();
-			} else if (Input.GetMouseButtonUp (FpsMouse.MOUSEBUTTON.LEFT)) {
+			} else if (Input.GetMouseButtonUp ((int)FpsMouse.MOUSEBUTTON.LEFT)) {
 				if (active) {
 					Utility.ObjectBelowMouseInfo result = default(Utility.ObjectBelowMouseInfo);
 					Ray ray = _cam.ScreenPointToRay (Input.mousePosition);
@@ -92,7 +92,7 @@ namespace UltimateCam
 							EnterCoasterCam (attr);
 					}
 				}
-			} else if (Input.GetMouseButtonUp (FpsMouse.MOUSEBUTTON.RIGHT) && active && riding)
+			} else if (Input.GetMouseButtonUp ((int)FpsMouse.MOUSEBUTTON.RIGHT) && active && riding)
 				LeaveCoasterCam ();
 
 			if (active) {
