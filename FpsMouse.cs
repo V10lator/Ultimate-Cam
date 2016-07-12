@@ -4,9 +4,12 @@ namespace UltimateCam
 {
 	public class FpsMouse : MonoBehaviour
 	{
-		public const int MOUSEBUTTON_LEFT = 0;
-		public const int MOUSEBUTTON_MIDDLE = 1;
-		public const int MOUSEBUTTON_RIGHT = 2;
+		public enum MOUSEBUTTON
+		{
+			LEFT = 0,
+			MIDDLE = 1,
+			RIGHT = 2
+		}
 
 		private float _sensitivity = 10.0F;
 		private float _yRad = 180.0f;
