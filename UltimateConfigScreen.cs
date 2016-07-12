@@ -20,6 +20,14 @@ namespace UltimateCam
 			KeyCode old_jump = config.GetKey (UltimateSettings.JUMP_KEY_SETTING);
 
 			GUILayoutOption minWidth = GUILayout.MinWidth (200.0f);
+			GUILayoutOption toggleWidth = GUILayout.MinWidth (50.0f);
+
+			// Experimental?
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label (UltimateSettings.EXPERIMENTAL_SETTING + "?", minWidth);
+			GUILayout.FlexibleSpace ();
+			config.Experimental = GUILayout.Toggle (config.Experimental, "", toggleWidth);
+			GUILayout.EndHorizontal ();
 
 			// Toggle key
 			GUILayout.BeginHorizontal ();
@@ -38,7 +46,6 @@ namespace UltimateCam
 					config.SetSetting (UltimateSettings.TOGGLE_KEY_SETTING, toggle.ToString ());
 				}
 			}
-			GUILayout.FlexibleSpace ();
 			GUILayout.EndHorizontal ();
 
 			// Jump key
@@ -58,7 +65,6 @@ namespace UltimateCam
 					config.SetSetting (UltimateSettings.JUMP_KEY_SETTING, jump.ToString ());
 				}
 			}
-			GUILayout.FlexibleSpace ();
 			GUILayout.EndHorizontal ();
 
 			config.Height = UISlider (UltimateSettings.HEIGHT_SETTING, UltimateSettings.DEFAULT_HEIGHT, UltimateSettings.MIN_HEIGHT, UltimateSettings.MAX_HEIGHT, config.Height, minWidth);

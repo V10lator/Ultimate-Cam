@@ -31,6 +31,8 @@ namespace UltimateCam
 		public const float MIN_GRAVITY = 0.25f; // 0.1 = too low, 0.5 = too high...
 		public const float MAX_GRAVITY = 100.0f;
 		public const float DEFAULT_GRAVITY = 20.0f;
+		public const string EXPERIMENTAL_SETTING = "Experimental";
+		public const bool DEFAULT_EXPERIMENTAL = false;
 
 		private string _file = null;
 		private string file
@@ -86,6 +88,15 @@ namespace UltimateCam
 			}
 			set {
 				SetSetting (GRAVITY_SETTING, value, MIN_GRAVITY, MAX_GRAVITY);
+			}
+		}
+
+		public bool Experimental {
+			get {
+				return bool.Parse (settingsValueDictionary [EXPERIMENTAL_SETTING].ToString ());
+			}
+			set {
+				SetSetting (EXPERIMENTAL_SETTING, value);
 			}
 		}
 
@@ -155,7 +166,7 @@ namespace UltimateCam
 		{
 			object obj;
 			if (!settingsValueDictionary.TryGetValue ("Version", out obj)) {
-				settingsValueDictionary.Add ("Version", 1);
+				settingsValueDictionary.Add ("Version", 3);
 				UltimateMain.Instance.Log ("Unversioned config file, fixing!", UltimateMain.LogLevel.WARNING);
 				needSave = true;
 			} else {
@@ -164,12 +175,12 @@ namespace UltimateCam
 					v = int.Parse (obj.ToString ());
 				} catch (Exception) {
 				}
-				if (v < 2) {
+				if (v < 3) {
 					UltimateMain.Instance.Log ("Config file version " + v + " found, updating!", UltimateMain.LogLevel.WARNING);
-					settingsValueDictionary["Version"] = 2;
+					settingsValueDictionary["Version"] = 3;
 					needSave = true;
-				} else if (v > 2) {
-					settingsValueDictionary["Version"] = 2;
+				} else if (v > 3) {
+					settingsValueDictionary["Version"] = 3;
 					UltimateMain.Instance.Log ("Config file version " + v + " not supported! Assuming version 2", UltimateMain.LogLevel.WARNING);
 					needSave = true;
 				}
@@ -183,6 +194,8 @@ namespace UltimateCam
 			validateFloatSetting (GRAVITY_SETTING, MIN_GRAVITY, MAX_GRAVITY, DEFAULT_GRAVITY);
 			validateFloatSetting (FOV_SETTING, MIN_FOV, MAX_FOV, DEFAULT_FOV);
 			validateFloatSetting (VD_SETTING, MIN_VD, MAX_VD, DEFAULT_VD);
+
+			validateBoolSetting (EXPERIMENTAL_SETTING, DEFAULT_EXPERIMENTAL);
 		}
 
 		private void validateKeySetting(string setting)
@@ -207,6 +220,24 @@ namespace UltimateCam
 				} catch (Exception) {
 				}
 				if (f < min || f > max) {
+					UltimateMain.Instance.Log ("Invalid " + setting + "! Assmung " + def, UltimateMain.LogLevel.WARNING);
+					settingsValueDictionary [setting] = def;
+					needSave = true;
+				}
+			}
+		}
+
+		private void validateBoolSetting(string setting, bool def)
+		{
+			if (!settingsValueDictionary.ContainsKey (setting)) {
+				settingsValueDictionary.Add (setting, def);
+				UltimateMain.Instance.Log ("Invalid setting for " + setting + ", fixing!", UltimateMain.LogLevel.WARNING);
+				needSave = true;
+			} else {
+				bool b;
+				try {
+					b = bool.Parse (settingsValueDictionary [setting].ToString ());
+				} catch (Exception) {
 					UltimateMain.Instance.Log ("Invalid " + setting + "! Assmung " + def, UltimateMain.LogLevel.WARNING);
 					settingsValueDictionary [setting] = def;
 					needSave = true;
