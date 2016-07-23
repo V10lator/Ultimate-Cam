@@ -15,7 +15,7 @@ namespace UltimateCam
 		bool active {
 			get { return _cam != null; }
 		}
-		bool riding = false;
+		public bool riding = false;
 		bool disableUI;
 
 		void Awake()
