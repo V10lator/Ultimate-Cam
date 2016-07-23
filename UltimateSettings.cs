@@ -246,9 +246,8 @@ namespace UltimateCam
 				UltimateMain.Instance.Log ("Invalid setting for " + setting + ", fixing!", UltimateMain.LogLevel.WARNING);
 				needSave = true;
 			} else {
-				bool b;
 				try {
-					b = bool.Parse (settingsValueDictionary [setting].ToString ());
+					bool.Parse (settingsValueDictionary [setting].ToString ());
 				} catch (Exception) {
 					UltimateMain.Instance.Log ("Invalid " + setting + "! Assmung " + def, UltimateMain.LogLevel.WARNING);
 					settingsValueDictionary [setting] = def;
