@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UltimateCam
 {
-	class UltimateCam : MonoBehaviour
+	public class UltimateCam : MonoBehaviour
 	{
 		private static UltimateCam _Instance = null;
 		public static UltimateCam Instance

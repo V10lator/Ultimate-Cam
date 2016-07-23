@@ -6,35 +6,35 @@ using UnityEngine;
 
 namespace UltimateCam
 {
-	public class UltimateSettings
+	internal class UltimateSettings
 	{
 		private Dictionary<string, object> settingsValueDictionary = new Dictionary<string, object>();
-		public const string TOGGLE_KEY_SETTING = "Toggle key";
-		public const string JUMP_KEY_SETTING = "Jump key";
-		public const string HEIGHT_SETTING = "Player height";
-		public const float MIN_HEIGHT = 0.3f;
-		public const float MAX_HEIGHT = 2.0f;
-		public const float DEFAULT_HEIGHT = 0.503f;
-		public const string FOV_SETTING = "Field of view";
-		public const float MIN_FOV = 20.0f;
-		public const float MAX_FOV = 100.0f;
-		public const float DEFAULT_FOV = 60.0f;
-		public const string VD_SETTING = "Viewing distance";
-		public const float MIN_VD = 0.5f;
-		public const float MAX_VD = 200.0f;
-		public const float DEFAULT_VD = 50.0f;
-		public const string HDR_SETTING = "HDR";
-		public const bool DEFAULT_HDR = false;
-		public const string SPEED_SETTING = "Walking speed";
-		public const float MIN_SPEED = 0.1f;
-		public const float MAX_SPEED = 20.0f;
-		public const float DEFAULT_SPEED = 5.0f;
-		public const string GRAVITY_SETTING = "Gravity";
-		public const float MIN_GRAVITY = 0.25f; // 0.1 = too low, 0.5 = too high...
-		public const float MAX_GRAVITY = 100.0f;
-		public const float DEFAULT_GRAVITY = 20.0f;
-		public const string EXPERIMENTAL_SETTING = "Experimental";
-		public const bool DEFAULT_EXPERIMENTAL = false;
+		internal const string TOGGLE_KEY_SETTING = "Toggle key";
+		internal const string JUMP_KEY_SETTING = "Jump key";
+		internal const string HEIGHT_SETTING = "Player height";
+		internal const float MIN_HEIGHT = 0.3f;
+		internal const float MAX_HEIGHT = 2.0f;
+		internal const float DEFAULT_HEIGHT = 0.503f;
+		internal const string FOV_SETTING = "Field of view";
+		internal const float MIN_FOV = 20.0f;
+		internal const float MAX_FOV = 100.0f;
+		internal const float DEFAULT_FOV = 60.0f;
+		internal const string VD_SETTING = "Viewing distance";
+		internal const float MIN_VD = 0.5f;
+		internal const float MAX_VD = 200.0f;
+		internal const float DEFAULT_VD = 50.0f;
+		internal const string HDR_SETTING = "HDR";
+		internal const bool DEFAULT_HDR = false;
+		internal const string SPEED_SETTING = "Walking speed";
+		internal const float MIN_SPEED = 0.1f;
+		internal const float MAX_SPEED = 20.0f;
+		internal const float DEFAULT_SPEED = 5.0f;
+		internal const string GRAVITY_SETTING = "Gravity";
+		internal const float MIN_GRAVITY = 0.25f; // 0.1 = too low, 0.5 = too high...
+		internal const float MAX_GRAVITY = 100.0f;
+		internal const float DEFAULT_GRAVITY = 20.0f;
+		internal const string EXPERIMENTAL_SETTING = "Experimental";
+		internal const bool DEFAULT_EXPERIMENTAL = false;
 
 		private string _file = null;
 		private string file
@@ -48,7 +48,7 @@ namespace UltimateCam
 
 		private bool needSave = false;
 
-		public float Height {
+		internal float Height {
 			get {
 				return float.Parse (settingsValueDictionary[HEIGHT_SETTING].ToString ());
 			}
@@ -57,7 +57,7 @@ namespace UltimateCam
 			}
 		}
 
-		public float FoV {
+		internal float FoV {
 			get {
 				return float.Parse (settingsValueDictionary[FOV_SETTING].ToString ());
 			}
@@ -66,7 +66,7 @@ namespace UltimateCam
 			}
 		}
 
-		public float ViewDistance {
+		internal float ViewDistance {
 			get {
 				return float.Parse (settingsValueDictionary[VD_SETTING].ToString ());
 			}
@@ -75,7 +75,7 @@ namespace UltimateCam
 			}
 		}
 
-		public bool HDR {
+		internal bool HDR {
 			get {
 				return bool.Parse (settingsValueDictionary [HDR_SETTING].ToString ());
 			}
@@ -84,7 +84,7 @@ namespace UltimateCam
 			}
 		}
 
-		public float WalkingSpeed {
+		internal float WalkingSpeed {
 			get {
 				return float.Parse (settingsValueDictionary[SPEED_SETTING].ToString ());
 			}
@@ -93,7 +93,7 @@ namespace UltimateCam
 			}
 		}
 
-		public float Gravity {
+		internal float Gravity {
 			get {
 				return float.Parse (settingsValueDictionary[GRAVITY_SETTING].ToString ());
 			}
@@ -102,7 +102,7 @@ namespace UltimateCam
 			}
 		}
 
-		public bool Experimental {
+		internal bool Experimental {
 			get {
 				return bool.Parse (settingsValueDictionary [EXPERIMENTAL_SETTING].ToString ());
 			}
@@ -111,7 +111,7 @@ namespace UltimateCam
 			}
 		}
 
-		public UltimateSettings()
+		internal UltimateSettings()
 		{
 			if (!File.Exists (file)) {
 				UltimateMain.Instance.Log (file + " not found, creating!", UltimateMain.LogLevel.WARNING);
@@ -127,7 +127,7 @@ namespace UltimateCam
 			}
 		}
 
-		public void SetSetting(string key, object value)
+		internal void SetSetting(string key, object value)
 		{
 			if(settingsValueDictionary.ContainsKey(key)) {
 				if(settingsValueDictionary[key] != value) {
@@ -141,7 +141,7 @@ namespace UltimateCam
 			needSave = true;
 		}
 
-		public object GetSetting(string key)
+		internal object GetSetting(string key)
 		{
 			return settingsValueDictionary.ContainsKey (key) ? settingsValueDictionary [key] : null;
 		}
@@ -156,7 +156,7 @@ namespace UltimateCam
 		}
 
 		// WARNING: This invalidates the instance!
-		public void cleanup()
+		internal void cleanup()
 		{
 			WriteSettingsFile ();
 			settingsValueDictionary.Clear ();
@@ -164,7 +164,7 @@ namespace UltimateCam
 			_file = null;
 		}
 
-		public void WriteSettingsFile()
+		internal void WriteSettingsFile()
 		{
 			if (!needSave)
 				return;
@@ -257,7 +257,7 @@ namespace UltimateCam
 			}
 		}
 
-		public KeyCode GetKey(string key)
+		internal KeyCode GetKey(string key)
 		{
 			object ok;
 			KeyCode ret = KeyCode.None;

@@ -3,18 +3,18 @@ using UnityEngine;
 
 namespace UltimateCam
 {
-	public class UltimateConfigScreen
+	internal class UltimateConfigScreen
 	{
 		private readonly UltimateSettings config;
 		private bool tt = false;
 		private bool tj = false;
 
-		public UltimateConfigScreen (UltimateSettings config)
+		internal UltimateConfigScreen (UltimateSettings config)
 		{
 			this.config = config;
 		}
 
-		public void draw()
+		internal void draw()
 		{
 			KeyCode old_toggle = config.GetKey (UltimateSettings.TOGGLE_KEY_SETTING);
 			KeyCode old_jump = config.GetKey (UltimateSettings.JUMP_KEY_SETTING);

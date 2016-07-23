@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace UltimateCam
 {
-	public class PlayerController : MonoBehaviour
+	internal class PlayerController : MonoBehaviour
 	{
 		private float speed; // = 7.0f;
 		private float jumpSpeed; // = 6.0f;
@@ -11,7 +11,7 @@ namespace UltimateCam
 
 		private Vector3 moveDirection = Vector3.zero;
 		private CharacterController controller;
-		public bool active = false;
+		internal bool active = false;
 
 		// Use this for initialization
 		void Start()

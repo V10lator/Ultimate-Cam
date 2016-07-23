@@ -2,9 +2,9 @@
 
 namespace UltimateCam
 {
-	public class FpsMouse : MonoBehaviour
+	internal class FpsMouse : MonoBehaviour
 	{
-		public enum MOUSEBUTTON
+		internal enum MOUSEBUTTON
 		{
 			LEFT = 0,
 			MIDDLE = 1,

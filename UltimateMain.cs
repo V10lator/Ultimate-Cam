@@ -6,9 +6,9 @@ namespace UltimateCam
 {
 	public class UltimateMain : IMod, IModSettings
 	{
-		public static GameObject go;
+		private GameObject go;
 		private UltimateSettings _config = null;
-		public UltimateSettings config
+		internal UltimateSettings config
 		{
 			get {
 				if (_config == null)
@@ -117,7 +117,7 @@ namespace UltimateCam
 			configScreen = null;
 		}
 
-		public void Log(string msg, LogLevel level)
+		internal void Log(string msg, LogLevel level)
 		{
 			msg = "[" + Name + " v" + Version + "] " + msg;
 
@@ -134,7 +134,7 @@ namespace UltimateCam
 			}
 		}
 
-		public enum LogLevel
+		internal enum LogLevel
 		{
 			INFO,
 			WARNING,
