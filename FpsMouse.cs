@@ -32,27 +32,29 @@ namespace UltimateCam
 			return f;
 		}
 
+		private float limit(float f, float rad)
+		{
+			float h = rad / 2.0f;
+			if (f > h)
+				f = h;
+			else if (f < -h)
+				f = -h;
+			return f;
+		}
+
 		void Update()
 		{
 			yaw += Input.GetAxis ("Mouse X") * _sensitivity;
 			pitch -= Input.GetAxis ("Mouse Y") * _sensitivity;
 
 			// Limit vertical head movement
-			float h = _yRad / 2.0f;
-			if (pitch > h)
-				pitch = h;
-			else if (pitch < -h)
-				pitch = -h;
+			pitch = limit(pitch, _yRad);
 
 			Vector3 euler;
 			if (UltimateCam.riding)
 			{
 				// Limit horizontal head movement
-				h = _xRad / 2.0f;
-				if (yaw > h)
-					yaw = h;
-				else if (yaw < -h)
-					yaw = -h;
+				yaw = limit(yaw, _xRad);
 				
 				euler = transform.parent.eulerAngles;
 				euler = new Vector3(keepInCircle(euler.x + pitch), keepInCircle(euler.y + yaw), euler.z);
