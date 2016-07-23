@@ -1,0 +1,9 @@
+# Linux stuff
+*~
+
+# Build stuff
+bin
+obj
+
+# Internal stuff
+todo.txt
