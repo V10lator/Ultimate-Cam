@@ -8,38 +8,51 @@ namespace UltimateCam
 {
 	class UltimateCam : MonoBehaviour
 	{
-		public static UltimateCam Instance;
-		public Camera _cam = null;
-		float fps = 0.0f;
-		float startX, startZ;
-		bool active {
-			get { return _cam != null; }
+		private static UltimateCam _Instance = null;
+		public static UltimateCam Instance
+		{
+			get
+			{
+				return _Instance;
+			}
 		}
-		public bool riding = false;
-		bool disableUI;
+		internal Camera _cam = null;
+		private float fps = 0.0f;
+		private float startX, startZ;
+		public static bool active { get { return Instance._cam != null; } }
+		private bool _riding = false;
+		public static bool riding { get { return Instance._riding; } }
+		private bool disableUI;
 
 		void Awake()
 		{
-			Instance = this;
+			_Instance = this;
 			DontDestroyOnLoad(gameObject);
 		}
 
 		void Update()
 		{
-			if (Input.GetKeyUp (UltimateMain.Instance.config.GetKey (UltimateSettings.TOGGLE_KEY_SETTING))) {
-				if (!active) {
-					Utility.ObjectBelowMouseInfo mi = Utility.getObjectBelowMouse ();
-					if (mi.hitSomething) {
+			if (Input.GetKeyUp(UltimateMain.Instance.config.GetKey(UltimateSettings.TOGGLE_KEY_SETTING)))
+			{
+				if (!active)
+				{
+					Utility.ObjectBelowMouseInfo mi = Utility.getObjectBelowMouse();
+					if (mi.hitSomething)
+					{
 						Vector3 vec = mi.hitPosition;
-						vec.Set (vec.x, vec.y + UltimateMain.Instance.config.Height, vec.z);
-						EnterHeadCam (vec);
+						vec.Set(vec.x, vec.y + UltimateMain.Instance.config.Height, vec.z);
+						EnterHeadCam(vec);
 					}
-				} else
-					LeaveHeadCam ();
-			} else if (Input.GetMouseButtonUp ((int)FpsMouse.MOUSEBUTTON.LEFT)) {
-				if (active) {
+				}
+				else
+					LeaveHeadCam();
+			}
+			else if (Input.GetMouseButtonUp((int)FpsMouse.MOUSEBUTTON.LEFT))
+			{
+				if (active)
+				{
 					Utility.ObjectBelowMouseInfo result = default(Utility.ObjectBelowMouseInfo);
-					Ray ray = _cam.ScreenPointToRay (Input.mousePosition);
+					Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
 					result.hitDistance = float.MaxValue;
 					result.hitObject = null;
 					GameObject gameObject = Collisions.Instance.checkSelectables(ray, out result.hitDistance);
@@ -85,24 +98,28 @@ namespace UltimateCam
 					}
 					GameController.Instance.disableMouseColliders();
 
-					if (result.hitObject != null) {
-						Attraction attr = result.hitObject.GetComponentInParent<Attraction> ();
+					if (result.hitObject != null)
+					{
+						Attraction attr = result.hitObject.GetComponentInParent<Attraction>();
 						if (attr != null)
-							EnterCoasterCam (attr);
+							EnterCoasterCam(attr);
 					}
 				}
-			} else if (Input.GetMouseButtonUp ((int)FpsMouse.MOUSEBUTTON.RIGHT) && active && riding)
-				LeaveCoasterCam ();
+			}
+			else if (Input.GetMouseButtonUp((int)FpsMouse.MOUSEBUTTON.RIGHT) && active && riding)
+				LeaveCoasterCam();
 
-			if (active) {
-				if (disableUI) {
-					GameController.Instance.setUICanvasVisibility (UICanvas.UICanvasTag.GameUI, false);
+			if (active)
+			{
+				if (disableUI)
+				{
+					GameController.Instance.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, false);
 					disableUI = false;
 				}
-				if (InputManager.getKeyDown ("HotkeyToggleUI"))
+				if (InputManager.getKeyDown("HotkeyToggleUI"))
 					disableUI = true;
-				
-				AdaptFarClipPaneToFPS ();
+
+				AdaptFarClipPaneToFPS();
 			}
 		}
 
@@ -121,21 +138,22 @@ namespace UltimateCam
 			if (!active)
 				return;
 
-			List<Transform> seats = new List<Transform> ();
+			List<Transform> seats = new List<Transform>();
 			Utility.recursiveFindTransformsStartingWith("seat", attraction.transform, seats);
 			if (seats.Count == 0)
 				return;
 			Transform seat = null;
 			for (int i = 0; i < 100 && seat == null; i++)
-				seat = seats [UnityEngine.Random.Range(0, seats.Count - 1)];
+				seat = seats[UnityEngine.Random.Range(0, seats.Count - 1)];
 			if (seat == null)
 				return;
 
-			_cam.gameObject.GetComponent<PlayerController> ().active = false;
+			_cam.gameObject.GetComponent<PlayerController>().active = false;
 
-			if (!riding) {
-				EscapeHierarchy.Instance.push (new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
-				riding = true;
+			if (!riding)
+			{
+				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
+				_riding = true;
 			}
 			_cam.transform.parent = seat.transform;
 			_cam.transform.localPosition = new Vector3(0, 0.35f, 0.1f);
@@ -146,13 +164,13 @@ namespace UltimateCam
 			if (!active || !riding)
 				return;
 
-			Vector3 position = _cam.transform.parent.GetComponentInParent<Attraction> ().getRandomExit ().transform.position;
-			position = new Vector3 (position.x, position.y + UltimateMain.Instance.config.Height, position.z);
+			Vector3 position = _cam.transform.parent.GetComponentInParent<Attraction>().getRandomExit().transform.position;
+			position = new Vector3(position.x, position.y + UltimateMain.Instance.config.Height, position.z);
 			_cam.transform.parent = null;
 			_cam.transform.position = position;
-			EscapeHierarchy.Instance.remove (new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
-			_cam.gameObject.GetComponent<PlayerController> ().active = true;
-			riding = false;
+			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
+			_cam.gameObject.GetComponent<PlayerController>().active = true;
+			_riding = false;
 		}
 
 		public void EnterHeadCam(Vector3 position)
@@ -195,9 +213,9 @@ namespace UltimateCam
 
 			disableUI = true;
 
-			GameController.Instance.pushGameInputLock ();
+			GameController.Instance.pushGameInputLock();
 
-			EscapeHierarchy.Instance.push (new EscapeHierarchy.OnEscapeHandler(this.LeaveHeadCam));
+			EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveHeadCam));
 		}
 
 		public void LeaveHeadCam()
@@ -206,7 +224,7 @@ namespace UltimateCam
 				return;
 
 			if (riding)
-				LeaveCoasterCam ();
+				LeaveCoasterCam();
 
 			Vector3 mod = _cam.gameObject.transform.position;
 			Destroy(_cam.gameObject);
@@ -215,7 +233,7 @@ namespace UltimateCam
 			Vector3 position = Camera.main.transform.position;
 			float modX = mod.x - startX;
 			float modZ = mod.z - startZ;
-			position = new Vector3 (position.x + modX, position.y, position.z + modZ);
+			position = new Vector3(position.x + modX, position.y, position.z + modZ);
 			Camera.main.transform.position = position;
 			Camera.main.GetComponent<CameraController>().enabled = true;
 
@@ -224,17 +242,17 @@ namespace UltimateCam
 			Cursor.lockState = CursorLockMode.None;
 			Cursor.visible = true;
 
-			GameController.Instance.setUICanvasVisibility (UICanvas.UICanvasTag.GameUI, true);
+			GameController.Instance.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, true);
 
-			GameController.Instance.popGameInputLock ();
+			GameController.Instance.popGameInputLock();
 
-			EscapeHierarchy.Instance.remove (new EscapeHierarchy.OnEscapeHandler(this.LeaveHeadCam));
+			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveHeadCam));
 		}
 
 		void OnDestroy()
 		{
 			LeaveHeadCam();
-			Instance = null;
+			_Instance = null;
 		}
 	}
 }

@@ -46,7 +46,7 @@ namespace UltimateCam
 			//EXPERIMENTAL: More collissions...
 			if (UltimateMain.Instance.config.Experimental) {
 				Utility.ObjectBelowMouseInfo result = default(Utility.ObjectBelowMouseInfo);
-				Camera cam = UltimateMain.go.GetComponent<UltimateCam> ()._cam;
+				Camera cam = UltimateCam.Instance._cam;
 				Ray ray = cam.ScreenPointToRay (moveDirection);
 				result.hitDistance = float.MaxValue;
 				result.hitObject = null;

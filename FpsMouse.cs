@@ -40,7 +40,7 @@ namespace UltimateCam
 				pitch = tmp;
 
 			Vector3 euler;
-			if (UltimateCam.Instance.riding)
+			if (UltimateCam.riding)
 			{
 				euler = transform.parent.eulerAngles;
 				euler = new Vector3(keepInCircle(euler.x + pitch), keepInCircle(euler.y + yaw), euler.z);
