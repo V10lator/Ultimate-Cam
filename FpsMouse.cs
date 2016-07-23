@@ -18,6 +18,11 @@ namespace UltimateCam
 		private float yaw = 0.0f;
 		private float pitch = 0.0f;
 
+		internal void reset()
+		{
+			yaw = pitch = 0.0f;
+		}
+
 		private float keepInCircle(float f)
 		{
 			while (f > 360)

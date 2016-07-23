@@ -157,6 +157,7 @@ namespace UltimateCam
 			}
 			_cam.transform.parent = seat.transform;
 			_cam.transform.localPosition = new Vector3(0, 0.35f, 0.1f);
+			_cam.gameObject.GetComponent<FpsMouse>().reset();
 		}
 
 		public void LeaveCoasterCam()
@@ -169,6 +170,7 @@ namespace UltimateCam
 			_cam.transform.parent = null;
 			_cam.transform.position = position;
 			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
+			_cam.gameObject.GetComponent<FpsMouse>().reset();
 			_cam.gameObject.GetComponent<PlayerController>().active = true;
 			_riding = false;
 		}
