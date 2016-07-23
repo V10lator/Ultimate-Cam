@@ -8,13 +8,12 @@ namespace UltimateCam
 {
 	class UltimateCam : MonoBehaviour
 	{
-		private GameObject _headCam = null;
 		public static UltimateCam Instance;
-		public Camera _cam;
+		public Camera _cam = null;
 		float fps = 0.0f;
 		float startX, startZ;
 		bool active {
-			get { return _headCam != null; }
+			get { return _cam != null; }
 		}
 		bool riding = false;
 		bool disableUI;
@@ -132,7 +131,7 @@ namespace UltimateCam
 			if (seat == null)
 				return;
 
-			_headCam.GetComponent<PlayerController> ().active = false;
+			_cam.gameObject.GetComponent<PlayerController> ().active = false;
 
 			if (!riding) {
 				EscapeHierarchy.Instance.push (new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
@@ -152,7 +151,7 @@ namespace UltimateCam
 			_cam.transform.parent = null;
 			_cam.transform.position = position;
 			EscapeHierarchy.Instance.remove (new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
-			_headCam.GetComponent<PlayerController> ().active = true;
+			_cam.gameObject.GetComponent<PlayerController> ().active = true;
 			riding = false;
 		}
 
@@ -161,7 +160,7 @@ namespace UltimateCam
 			if (active)
 				return;
 
-			_headCam = new GameObject();
+			GameObject _headCam = new GameObject();
 			_headCam.layer = LayerMask.NameToLayer("CoasterCars");
 
 			_cam = _headCam.AddComponent<Camera>();
@@ -209,9 +208,9 @@ namespace UltimateCam
 			if (riding)
 				LeaveCoasterCam ();
 
-			Vector3 mod = _headCam.transform.position;
-			Destroy(_headCam);
-			_headCam = null;
+			Vector3 mod = _cam.gameObject.transform.position;
+			Destroy(_cam.gameObject);
+			_cam = null;
 
 			Vector3 position = Camera.main.transform.position;
 			float modX = mod.x - startX;
@@ -230,15 +229,12 @@ namespace UltimateCam
 			GameController.Instance.popGameInputLock ();
 
 			EscapeHierarchy.Instance.remove (new EscapeHierarchy.OnEscapeHandler(this.LeaveHeadCam));
-
-			_headCam = null;
 		}
 
 		void OnDestroy()
 		{
 			LeaveHeadCam();
 			Instance = null;
-			_cam = null;
 		}
 	}
 }
