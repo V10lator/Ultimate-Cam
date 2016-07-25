@@ -11,9 +11,9 @@ namespace UltimateCam
 			RIGHT = 2
 		}
 
-		private float _sensitivity = 10.0F;
-		private float _yRad = 180.0f;
-		private float _xRad = 222.22f;
+		private const float _sensitivity = 10.0F;
+		private const float _yRad = 180.0f;
+		private const float _xRad = 222.22f;
 
 		private float yaw = 0.0f;
 		private float pitch = 0.0f;
