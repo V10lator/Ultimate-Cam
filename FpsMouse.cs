@@ -18,6 +18,12 @@ namespace UltimateCam
 		private float yaw = 0.0f;
 		private float pitch = 0.0f;
 
+		internal void set(float yaw, float pitch)
+		{
+			this.yaw = keepInCircle(yaw);
+			this.pitch = keepInCircle(pitch);
+		}
+
 		internal void reset()
 		{
 			yaw = pitch = 0.0f;

@@ -163,14 +163,28 @@ namespace UltimateCam
 		{
 			if (!active || !riding)
 				return;
+			Exit ex = _cam.transform.parent.GetComponentInParent<Attraction>().getRandomExit();
 
-			Vector3 position = _cam.transform.parent.GetComponentInParent<Attraction>().getRandomExit().transform.position;
+			Vector3 position = ex.centerPosition;
 			position = new Vector3(position.x, position.y + UltimateMain.Instance.config.Height, position.z);
 			_cam.transform.parent = null;
 			_cam.transform.position = position;
-			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
-			_cam.gameObject.GetComponent<FpsMouse>().reset();
+
+			// Path direction to yaw
+			position = ex.getPathDirection();
+			float yaw;
+			if (position.x == 1.0f)
+				yaw = 90.0f;
+			else if (position.x == 1.0f)
+				yaw = -90.0f;
+			else if (position.z == -1.0f)
+				yaw = 180.0f;
+			else
+				yaw = 0.0f;
+				
+			_cam.gameObject.GetComponent<FpsMouse>().set(yaw, 0.0f);
 			_cam.gameObject.GetComponent<PlayerController>().active = true;
+			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
 			_riding = false;
 		}
 
