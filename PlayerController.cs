@@ -31,19 +31,39 @@ namespace UltimateCam
 			if (!active)
 				return;
 
-			if (controller.isGrounded)
+			bool falling;
+			if (controller.isGrounded || UltimateMain.Instance.config.Jetpack)
 			{
 				moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
 				moveDirection = transform.TransformDirection(moveDirection);
-				upSpeed = Input.GetKeyDown(UltimateMain.Instance.config.GetKey(UltimateSettings.JUMP_KEY_SETTING)) ? 0.1f : 0.0f;
-				moveDirection.y = upSpeed;
 				moveDirection *= speed * Time.deltaTime;
+
+				bool jump = Input.GetKey(UltimateMain.Instance.config.GetKey(UltimateSettings.JUMP_KEY_SETTING));
+				if (controller.isGrounded)
+				{
+					upSpeed = jump ? 0.1f : 0.0f;
+					moveDirection.y = upSpeed * Time.deltaTime;
+					falling = false;
+				}
+				else // UltimateMain.Instance.config.Jetpack
+				{
+					if (jump)
+					{
+						upSpeed = speed * Time.deltaTime;
+						moveDirection.y = upSpeed;
+						falling = false;
+					}
+					else
+						falling = true;
+				}
 			}
 			else
-			{
+				falling = true;
+
+			if (falling)
 				upSpeed -= gravity * Time.deltaTime;
-				moveDirection.y = upSpeed;
-			}
+
+			moveDirection.y = upSpeed;
 
 			//EXPERIMENTAL: More collissions...
 			if (UltimateMain.Instance.config.MoreCols) {

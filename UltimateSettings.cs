@@ -35,10 +35,13 @@ namespace UltimateCam
 		internal const float MIN_GRAVITY = 0.005f;
 		internal const float MAX_GRAVITY = 3.0f; // 30 * 0.1
 		internal const float DEFAULT_GRAVITY = 0.25f;
+
 		internal const string EXPERIMENTAL_SETTING = "Experimental";
 		internal const bool DEFAULT_EXPERIMENTAL = false;
 		internal const string MORE_COLS_SETTING = "More collisions";
 		internal const bool DEFAULT_MORE_COLS = false;
+		internal const string JETPACK_SETTING = "Jetpack mode";
+		internal const bool DEFAULT_JETPACK = false;
 
 		private string _file = null;
 		private string file
@@ -111,8 +114,8 @@ namespace UltimateCam
 				return bool.Parse (settingsValueDictionary [EXPERIMENTAL_SETTING].ToString ());
 			}
 			set {
-				if (MoreCols)
-					SetSetting(MORE_COLS_SETTING, false);
+				if(value == false)
+					MoreCols = Jetpack = false;
 				SetSetting (EXPERIMENTAL_SETTING, value);
 			}
 		}
@@ -126,6 +129,18 @@ namespace UltimateCam
 			set
 			{
 				SetSetting(MORE_COLS_SETTING, value);
+			}
+		}
+
+		internal bool Jetpack
+		{
+			get
+			{
+				return bool.Parse(settingsValueDictionary[JETPACK_SETTING].ToString());
+			}
+			set
+			{
+				SetSetting(JETPACK_SETTING, value);
 			}
 		}
 
@@ -215,6 +230,20 @@ namespace UltimateCam
 					if (settingsValueDictionary.ContainsKey(GRAVITY_SETTING))
 						settingsValueDictionary[GRAVITY_SETTING] = DEFAULT_GRAVITY;
 
+					UltimateMain.Instance.Log("Updating experimental settings!", UltimateMain.LogLevel.WARNING);
+					if (settingsValueDictionary.TryGetValue(EXPERIMENTAL_SETTING, out obj))
+					{
+						bool b = false;
+						try
+						{
+							b = bool.Parse(obj.ToString());
+						}
+						catch (Exception)
+						{
+						}
+						settingsValueDictionary.Add(MORE_COLS_SETTING, b);
+					}
+
 					needSave = true;
 				} else if (v > CONFIG_VERSION) {
 					settingsValueDictionary["Version"] = CONFIG_VERSION;
@@ -235,6 +264,7 @@ namespace UltimateCam
 			validateBoolSetting (HDR_SETTING, DEFAULT_HDR);
 			validateBoolSetting (EXPERIMENTAL_SETTING, DEFAULT_EXPERIMENTAL);
 			validateBoolSetting(MORE_COLS_SETTING, DEFAULT_MORE_COLS);
+			validateBoolSetting(JETPACK_SETTING, DEFAULT_JETPACK);
 		}
 
 		private void validateKeySetting(string setting)

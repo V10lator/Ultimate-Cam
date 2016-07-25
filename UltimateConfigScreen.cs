@@ -92,6 +92,13 @@ namespace UltimateCam
 				GUILayout.FlexibleSpace();
 				config.MoreCols = GUILayout.Toggle(config.MoreCols, "", toggleWidth);
 				GUILayout.EndHorizontal();
+
+				// Jetpack?
+				GUILayout.BeginHorizontal();
+				GUILayout.Label(UltimateSettings.JETPACK_SETTING + "?", minWidth);
+				GUILayout.FlexibleSpace();
+				config.Jetpack = GUILayout.Toggle(config.Jetpack, "", toggleWidth);
+				GUILayout.EndHorizontal();
 			}
 		}
 
