@@ -8,6 +8,8 @@ namespace UltimateCam
 {
 	internal class UltimateSettings
 	{
+		private const int CONFIG_VERSION = 4;
+
 		private Dictionary<string, object> settingsValueDictionary = new Dictionary<string, object>();
 		internal const string TOGGLE_KEY_SETTING = "Toggle key";
 		internal const string JUMP_KEY_SETTING = "Jump key";
@@ -177,7 +179,7 @@ namespace UltimateCam
 		{
 			object obj;
 			if (!settingsValueDictionary.TryGetValue ("Version", out obj)) {
-				settingsValueDictionary.Add ("Version", 3);
+				settingsValueDictionary.Add ("Version", 4);
 				UltimateMain.Instance.Log ("Unversioned config file, fixing!", UltimateMain.LogLevel.WARNING);
 				needSave = true;
 			} else {
@@ -186,13 +188,21 @@ namespace UltimateCam
 					v = int.Parse (obj.ToString ());
 				} catch (Exception) {
 				}
-				if (v < 3) {
+				if (v < CONFIG_VERSION) {
 					UltimateMain.Instance.Log ("Config file version " + v + " found, updating!", UltimateMain.LogLevel.WARNING);
-					settingsValueDictionary["Version"] = 3;
+					settingsValueDictionary["Version"] = CONFIG_VERSION;
+
+					// Speed and Gravity changed from 3 to 4, reset...
+					UltimateMain.Instance.Log("Resetting speed and gravity settings!", UltimateMain.LogLevel.WARNING);
+					if (settingsValueDictionary.ContainsKey(SPEED_SETTING))
+						settingsValueDictionary[SPEED_SETTING] = DEFAULT_SPEED;
+					if (settingsValueDictionary.ContainsKey(GRAVITY_SETTING))
+						settingsValueDictionary[GRAVITY_SETTING] = DEFAULT_GRAVITY;
+
 					needSave = true;
-				} else if (v > 3) {
-					settingsValueDictionary["Version"] = 3;
-					UltimateMain.Instance.Log ("Config file version " + v + " not supported! Assuming version 2", UltimateMain.LogLevel.WARNING);
+				} else if (v > CONFIG_VERSION) {
+					settingsValueDictionary["Version"] = CONFIG_VERSION;
+					UltimateMain.Instance.Log ("Config file version " + v + " not supported! Assuming version " + v, UltimateMain.LogLevel.WARNING);
 					needSave = true;
 				}
 			}
