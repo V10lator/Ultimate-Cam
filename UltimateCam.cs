@@ -17,7 +17,6 @@ namespace UltimateCam
 			}
 		}
 		internal Camera _cam = null;
-		private float fps = 0.0f;
 		private float startX, startZ;
 		public static bool active { get { return Instance._cam != null; } }
 		private bool _riding = false;
@@ -125,7 +124,7 @@ namespace UltimateCam
 
 		private void SmoothFPS()
 		{
-			fps = 1.0f / Time.deltaTime;
+			float fps = 1.0f / Time.deltaTime;
 
 			if (fps < 50 && _cam.farClipPlane > UltimateMain.Instance.config.ViewDistance / 1.25f)
 				_cam.farClipPlane -= 0.3f;
