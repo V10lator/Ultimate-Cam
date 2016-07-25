@@ -7,8 +7,8 @@ namespace UltimateCam
 		internal enum MOUSEBUTTON
 		{
 			LEFT = 0,
-			MIDDLE = 1,
-			RIGHT = 2
+			MIDDLE = 2,
+			RIGHT = 1
 		}
 
 		private const float _sensitivity = 10.0F;
