@@ -126,9 +126,9 @@ namespace UltimateCam
 		{
 			float fps = 1.0f / Time.deltaTime;
 
-			if (fps < 50 && _cam.farClipPlane > UltimateMain.Instance.config.ViewDistance / 1.25f)
+			if (fps < 27 && _cam.farClipPlane > UltimateMain.Instance.config.ViewDistance / 1.25f)
 				_cam.farClipPlane -= 0.3f;
-			else if (fps > 55 && _cam.farClipPlane < UltimateMain.Instance.config.ViewDistance)
+			else if (fps > 28 && _cam.farClipPlane < UltimateMain.Instance.config.ViewDistance)
 				_cam.farClipPlane += 0.3f;
 		}
 
