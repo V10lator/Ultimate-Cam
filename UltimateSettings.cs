@@ -26,13 +26,13 @@ namespace UltimateCam
 		internal const string HDR_SETTING = "HDR";
 		internal const bool DEFAULT_HDR = false;
 		internal const string SPEED_SETTING = "Walking speed";
-		internal const float MIN_SPEED = 0.1f;
-		internal const float MAX_SPEED = 20.0f;
-		internal const float DEFAULT_SPEED = 5.0f;
+		internal const float MIN_SPEED = 0.05f;
+		internal const float MAX_SPEED = 30.0f;
+		internal const float DEFAULT_SPEED = 0.53f;
 		internal const string GRAVITY_SETTING = "Gravity";
-		internal const float MIN_GRAVITY = 0.25f; // 0.1 = too low, 0.5 = too high...
-		internal const float MAX_GRAVITY = 100.0f;
-		internal const float DEFAULT_GRAVITY = 20.0f;
+		internal const float MIN_GRAVITY = 0.005f;
+		internal const float MAX_GRAVITY = 3.0f; // 30 * 0.1
+		internal const float DEFAULT_GRAVITY = 0.25f;
 		internal const string EXPERIMENTAL_SETTING = "Experimental";
 		internal const bool DEFAULT_EXPERIMENTAL = false;
 

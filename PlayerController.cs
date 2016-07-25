@@ -6,8 +6,9 @@ namespace UltimateCam
 	internal class PlayerController : MonoBehaviour
 	{
 		private float speed; // = 7.0f;
-		private float jumpSpeed; // = 6.0f;
 		private float gravity; // = 20.0f;
+
+		private float upSpeed = 0.0f;
 
 		private Vector3 moveDirection = Vector3.zero;
 		private CharacterController controller;
@@ -17,9 +18,6 @@ namespace UltimateCam
 		void Start()
 		{
 			speed = UltimateMain.Instance.config.WalkingSpeed;
-			jumpSpeed = speed / 100.0f * 86.0f; // 86% of speed
-			if (jumpSpeed < UltimateSettings.MIN_SPEED)
-				jumpSpeed = UltimateSettings.MIN_SPEED;
 			gravity = UltimateMain.Instance.config.Gravity;
 
 			controller = GetComponent<CharacterController>();
@@ -33,15 +31,19 @@ namespace UltimateCam
 			if (!active)
 				return;
 
-			if (controller.isGrounded) {
-				moveDirection = new Vector3 (Input.GetAxis ("Horizontal"), 0.0f, Input.GetAxis ("Vertical"));
-				moveDirection = transform.TransformDirection (moveDirection);
+			if (controller.isGrounded)
+			{
+				moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
+				moveDirection = transform.TransformDirection(moveDirection);
+				upSpeed = Input.GetKeyDown(UltimateMain.Instance.config.GetKey(UltimateSettings.JUMP_KEY_SETTING)) ? 0.1f : 0.0f;
+				moveDirection.y = upSpeed;
 				moveDirection *= speed * Time.deltaTime;
-
-				moveDirection.y = Input.GetKeyDown (UltimateMain.Instance.config.GetKey (UltimateSettings.JUMP_KEY_SETTING)) ? jumpSpeed : 0.0f;
 			}
 			else
-				moveDirection.y -= gravity * Time.deltaTime;
+			{
+				upSpeed -= gravity * Time.deltaTime;
+				moveDirection.y = upSpeed;
+			}
 
 			//EXPERIMENTAL: More collissions...
 			if (UltimateMain.Instance.config.Experimental) {
@@ -94,13 +96,13 @@ namespace UltimateCam
 				}
 			}
 
-			controller.Move(moveDirection * Time.deltaTime);
+			controller.Move(moveDirection);
 		}
 
 		// Set everything to 0 / null so it can be garbage collected
 		void OnDestroy()
 		{
-			speed = jumpSpeed = gravity = 0.0f;
+			speed = gravity = 0.0f;
 			moveDirection = Vector3.zero;
 			controller = null;
 			active = false;
