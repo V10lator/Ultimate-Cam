@@ -16,7 +16,7 @@ namespace UltimateCam
 		internal const string HEIGHT_SETTING = "Player height";
 		internal const float MIN_HEIGHT = 0.3f;
 		internal const float MAX_HEIGHT = 2.0f;
-		internal const float DEFAULT_HEIGHT = 0.503f;
+		internal const float DEFAULT_HEIGHT = 0.4f;
 		internal const string FOV_SETTING = "Field of view";
 		internal const float MIN_FOV = 20.0f;
 		internal const float MAX_FOV = 130.0f;
