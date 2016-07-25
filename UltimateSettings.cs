@@ -19,11 +19,11 @@ namespace UltimateCam
 		internal const float DEFAULT_HEIGHT = 0.503f;
 		internal const string FOV_SETTING = "Field of view";
 		internal const float MIN_FOV = 20.0f;
-		internal const float MAX_FOV = 100.0f;
+		internal const float MAX_FOV = 130.0f;
 		internal const float DEFAULT_FOV = 60.0f;
 		internal const string VD_SETTING = "Viewing distance";
 		internal const float MIN_VD = 0.5f;
-		internal const float MAX_VD = 200.0f;
+		internal const float MAX_VD = 120.0f;
 		internal const float DEFAULT_VD = 50.0f;
 		internal const string HDR_SETTING = "HDR";
 		internal const bool DEFAULT_HDR = false;

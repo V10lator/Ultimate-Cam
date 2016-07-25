@@ -119,18 +119,18 @@ namespace UltimateCam
 				if (InputManager.getKeyDown("HotkeyToggleUI"))
 					disableUI = true;
 
-				AdaptFarClipPaneToFPS();
+				SmoothFPS();
 			}
 		}
 
-		private void AdaptFarClipPaneToFPS()
+		private void SmoothFPS()
 		{
 			fps = 1.0f / Time.deltaTime;
 
-			if (fps < 50)
-				_cam.farClipPlane = Math.Max(40, _cam.farClipPlane - 0.3f);
-			else if (fps > 55)
-				_cam.farClipPlane = Math.Min(120, _cam.farClipPlane + 0.3f);
+			if (fps < 50 && _cam.farClipPlane > UltimateMain.Instance.config.ViewDistance / 1.25f)
+				_cam.farClipPlane -= 0.3f;
+			else if (fps > 55 && _cam.farClipPlane < UltimateMain.Instance.config.ViewDistance)
+				_cam.farClipPlane += 0.3f;
 		}
 
 		public void EnterCoasterCam(Attraction attraction)
