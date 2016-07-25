@@ -83,6 +83,16 @@ namespace UltimateCam
 			GUILayout.FlexibleSpace();
 			config.Experimental = GUILayout.Toggle(config.Experimental, "", toggleWidth);
 			GUILayout.EndHorizontal();
+
+			if (config.Experimental)
+			{
+				// More collisions?
+				GUILayout.BeginHorizontal();
+				GUILayout.Label(UltimateSettings.MORE_COLS_SETTING + "?", minWidth);
+				GUILayout.FlexibleSpace();
+				config.MoreCols = GUILayout.Toggle(config.MoreCols, "", toggleWidth);
+				GUILayout.EndHorizontal();
+			}
 		}
 
 		private float UISlider(string label, float def, float min, float max, float value, params GUILayoutOption[] options)

@@ -46,7 +46,7 @@ namespace UltimateCam
 			}
 
 			//EXPERIMENTAL: More collissions...
-			if (UltimateMain.Instance.config.Experimental) {
+			if (UltimateMain.Instance.config.MoreCols) {
 				Utility.ObjectBelowMouseInfo result = default(Utility.ObjectBelowMouseInfo);
 				Camera cam = UltimateCam.Instance._cam;
 				Ray ray = cam.ScreenPointToRay (moveDirection);

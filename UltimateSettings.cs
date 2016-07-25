@@ -37,6 +37,8 @@ namespace UltimateCam
 		internal const float DEFAULT_GRAVITY = 0.25f;
 		internal const string EXPERIMENTAL_SETTING = "Experimental";
 		internal const bool DEFAULT_EXPERIMENTAL = false;
+		internal const string MORE_COLS_SETTING = "More collisions";
+		internal const bool DEFAULT_MORE_COLS = false;
 
 		private string _file = null;
 		private string file
@@ -109,7 +111,21 @@ namespace UltimateCam
 				return bool.Parse (settingsValueDictionary [EXPERIMENTAL_SETTING].ToString ());
 			}
 			set {
+				if (MoreCols)
+					SetSetting(MORE_COLS_SETTING, false);
 				SetSetting (EXPERIMENTAL_SETTING, value);
+			}
+		}
+
+		internal bool MoreCols
+		{
+			get
+			{
+				return bool.Parse(settingsValueDictionary[MORE_COLS_SETTING].ToString());
+			}
+			set
+			{
+				SetSetting(MORE_COLS_SETTING, value);
 			}
 		}
 
@@ -218,6 +234,7 @@ namespace UltimateCam
 
 			validateBoolSetting (HDR_SETTING, DEFAULT_HDR);
 			validateBoolSetting (EXPERIMENTAL_SETTING, DEFAULT_EXPERIMENTAL);
+			validateBoolSetting(MORE_COLS_SETTING, DEFAULT_MORE_COLS);
 		}
 
 		private void validateKeySetting(string setting)
