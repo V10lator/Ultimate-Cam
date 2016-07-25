@@ -179,7 +179,7 @@ namespace UltimateCam
 		{
 			object obj;
 			if (!settingsValueDictionary.TryGetValue ("Version", out obj)) {
-				settingsValueDictionary.Add ("Version", 4);
+				settingsValueDictionary.Add ("Version", CONFIG_VERSION);
 				UltimateMain.Instance.Log ("Unversioned config file, fixing!", UltimateMain.LogLevel.WARNING);
 				needSave = true;
 			} else {
