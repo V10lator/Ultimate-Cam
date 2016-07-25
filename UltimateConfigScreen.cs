@@ -22,13 +22,6 @@ namespace UltimateCam
 			GUILayoutOption minWidth = GUILayout.MinWidth (200.0f);
 			GUILayoutOption toggleWidth = GUILayout.MinWidth (50.0f);
 
-			// Experimental?
-			GUILayout.BeginHorizontal ();
-			GUILayout.Label (UltimateSettings.EXPERIMENTAL_SETTING + "?", minWidth);
-			GUILayout.FlexibleSpace ();
-			config.Experimental = GUILayout.Toggle (config.Experimental, "", toggleWidth);
-			GUILayout.EndHorizontal ();
-
 			// Toggle key
 			GUILayout.BeginHorizontal ();
 			GUILayout.Label (UltimateSettings.TOGGLE_KEY_SETTING, minWidth);
@@ -83,6 +76,13 @@ namespace UltimateCam
 			GUILayout.FlexibleSpace ();
 			config.HDR = GUILayout.Toggle (config.HDR, "", toggleWidth);
 			GUILayout.EndHorizontal ();
+
+			// Experimental?
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(UltimateSettings.EXPERIMENTAL_SETTING + "?", minWidth);
+			GUILayout.FlexibleSpace();
+			config.Experimental = GUILayout.Toggle(config.Experimental, "", toggleWidth);
+			GUILayout.EndHorizontal();
 		}
 
 		private float UISlider(string label, float def, float min, float max, float value, params GUILayoutOption[] options)
