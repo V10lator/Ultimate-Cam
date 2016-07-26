@@ -106,7 +106,7 @@ namespace UltimateCam
 				GameController.Instance.disableMouseColliders ();
 
 				if (result.hitObject != null && result.hitDistance < 0.2f) {
-					Vector3 pos = transform.position;
+					Vector3 pos = this.transform.position;
 					if ((moveDirection.x > 0.0f && result.hitPosition.x > pos.x) || (moveDirection.x < 0.0f && result.hitPosition.x < pos.x))
 						moveDirection.x = 0.0f;
 					if ((moveDirection.z > 0.0f && result.hitPosition.z > pos.z) || (moveDirection.z < 0.0f && result.hitPosition.z < pos.z))
