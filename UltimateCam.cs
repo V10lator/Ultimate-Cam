@@ -179,8 +179,10 @@ namespace UltimateCam
 				yaw = 180.0f;
 			else
 				yaw = 0.0f;
-				
-			_cam.gameObject.GetComponent<FpsMouse>().set(yaw, 0.0f);
+
+			FpsMouse mouse = _cam.gameObject.GetComponent<FpsMouse>();
+			mouse.yaw = yaw;
+			mouse.pitch = 0.0f;
 			_cam.gameObject.GetComponent<PlayerController>().active = true;
 			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
 			_riding = false;

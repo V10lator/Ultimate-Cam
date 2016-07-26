@@ -15,18 +15,35 @@ namespace UltimateCam
 		private const float _yRad = 180.0f;
 		private const float _xRad = 222.22f;
 
-		private float yaw = 0.0f;
-		private float pitch = 0.0f;
+		private float _yaw = 0.0f;
+		private float _pitch = 0.0f;
 
-		internal void set(float yaw, float pitch)
+		internal float pitch
 		{
-			this.yaw = keepInCircle(yaw);
-			this.pitch = keepInCircle(pitch);
+			get
+			{
+				return _pitch;
+			}
+			set
+			{
+				_pitch = keepInCircle(value);
+			}
+		}
+		internal float yaw
+		{
+			get
+			{
+				return _yaw;
+			}
+			set
+			{
+				_yaw = keepInCircle(value);
+			}
 		}
 
 		internal void reset()
 		{
-			yaw = pitch = 0.0f;
+			_yaw = _pitch = 0.0f;
 		}
 
 		private float keepInCircle(float f)
@@ -50,24 +67,24 @@ namespace UltimateCam
 
 		void Update()
 		{
-			yaw += Input.GetAxis ("Mouse X") * _sensitivity;
-			pitch -= Input.GetAxis ("Mouse Y") * _sensitivity;
+			_yaw += Input.GetAxis ("Mouse X") * _sensitivity;
+			_pitch -= Input.GetAxis ("Mouse Y") * _sensitivity;
 
 			// Limit vertical head movement
-			pitch = limit(pitch, _yRad);
+			_pitch = limit(pitch, _yRad);
 
 			Vector3 euler;
 			if (UltimateCam.riding)
 			{
 				// Limit horizontal head movement
-				yaw = limit(yaw, _xRad);
+				_yaw = limit(yaw, _xRad);
 				
 				euler = transform.parent.eulerAngles;
 				euler = new Vector3(keepInCircle(euler.x + pitch), keepInCircle(euler.y + yaw), euler.z);
 			}
 			else
 			{
-				yaw = keepInCircle(yaw);
+				_yaw = keepInCircle(yaw);
 				euler = new Vector3(pitch, yaw, 0.0f);
 			}
 			
