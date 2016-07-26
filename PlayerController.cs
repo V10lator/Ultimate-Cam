@@ -68,8 +68,7 @@ namespace UltimateCam
 			//EXPERIMENTAL: More collissions...
 			if (UltimateMain.Instance.config.MoreCols) {
 				Utility.ObjectBelowMouseInfo result = default(Utility.ObjectBelowMouseInfo);
-				Camera cam = UltimateCam.Instance._cam;
-				Ray ray = cam.ScreenPointToRay (moveDirection);
+				Ray ray = UltimateCam.Instance._cam.ScreenPointToRay (moveDirection);
 				result.hitDistance = float.MaxValue;
 				result.hitObject = null;
 				GameObject gameObject = Collisions.Instance.checkSelectables (ray, out result.hitDistance);
@@ -108,7 +107,7 @@ namespace UltimateCam
 				GameController.Instance.disableMouseColliders ();
 
 				if (result.hitObject != null && result.hitDistance < 0.2f) {
-					Vector3 pos = cam.transform.position;
+					Vector3 pos = transform.position;
 					if ((moveDirection.x > 0.0f && result.hitPosition.x > pos.x) || (moveDirection.x < 0.0f && result.hitPosition.x < pos.x))
 						moveDirection.x = 0.0f;
 					if ((moveDirection.z > 0.0f && result.hitPosition.z > pos.z) || (moveDirection.z < 0.0f && result.hitPosition.z < pos.z))
