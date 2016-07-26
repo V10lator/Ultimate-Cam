@@ -70,9 +70,9 @@ namespace UltimateCam
 				Ray ray = Camera.main.ScreenPointToRay (moveDirection);
 				result.hitDistance = float.MaxValue;
 				result.hitObject = null;
-				GameObject gameObject = Collisions.Instance.checkSelectables (ray, out result.hitDistance);
-				if (gameObject != null) {
-					SerializedMonoBehaviour component = gameObject.GetComponent<SerializedMonoBehaviour> ();
+				GameObject sl = Collisions.Instance.checkSelectables (ray, out result.hitDistance);
+				if (sl != null) {
+					SerializedMonoBehaviour component = sl.GetComponent<SerializedMonoBehaviour> ();
 					if (component != null && component.canBeSelected ()) {
 						result.hitObject = component;
 						result.hitPosition = ray.GetPoint (result.hitDistance);
@@ -110,7 +110,7 @@ namespace UltimateCam
 					Vector3 hit = result.hitPosition;
 
 					// Some magic...
-					FpsMouse mouse = this.gameObject.GetComponent<FpsMouse>();
+					FpsMouse mouse = gameObject.GetComponent<FpsMouse>();
 					if (mouse.yaw > 90.0f && mouse.yaw < 270.0f)
 					{
 						float tmp = hit.z;
