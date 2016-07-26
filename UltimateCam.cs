@@ -164,7 +164,7 @@ namespace UltimateCam
 			Exit ex = _cam.transform.parent.GetComponentInParent<Attraction>().getRandomExit();
 
 			Vector3 position = ex.centerPosition;
-			position = new Vector3(position.x, position.y + UltimateMain.Instance.config.Height, position.z);
+			position.z += UltimateMain.Instance.config.Height;
 			_cam.transform.parent = null;
 			_cam.transform.position = position;
 
@@ -246,7 +246,8 @@ namespace UltimateCam
 			Vector3 position = Camera.main.transform.position;
 			float modX = mod.x - startX;
 			float modZ = mod.z - startZ;
-			position = new Vector3(position.x + modX, position.y, position.z + modZ);
+			position.x += modX;
+			position.z += modZ;
 			Camera.main.transform.position = position;
 			Camera.main.GetComponent<CameraController>().enabled = true;
 
