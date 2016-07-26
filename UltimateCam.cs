@@ -119,7 +119,7 @@ namespace UltimateCam
 			Exit ex = Camera.main.transform.parent.GetComponentInParent<Attraction>().getRandomExit();
 
 			Vector3 position = ex.centerPosition;
-			position.z += UltimateMain.Instance.config.Height;
+			position.y += UltimateMain.Instance.config.Height;
 			Camera.main.transform.parent = null;
 			Camera.main.transform.position = position;
 
