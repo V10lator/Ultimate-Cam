@@ -124,6 +124,12 @@ namespace UltimateCam
 						pos.x = tmp;
 					}
 
+					// More magic... TODO: 1.0 doesn't seem to do anything...
+					if (moveDirection.y < 0.0f)
+						hit.x += 1.0f;
+					if (moveDirection.x < 0.0f)
+						hit.z += 1.0f;
+
 					/* TODO: Left here for debugging later
 					UltimateMain.Instance.Log("Pitch: " + mouse.pitch + " / Yaw: " + mouse.yaw, UltimateMain.LogLevel.INFO);
 					UltimateMain.Instance.Log("rx: " + moveDirection.x + " / hpx: " + hit.x + " / posx: " + pos.x, UltimateMain.LogLevel.INFO);
@@ -131,11 +137,11 @@ namespace UltimateCam
 					*/
 
 					// Right / Left
-					if ((moveDirection.x > 0.0f && hit.x >= pos.x) || (moveDirection.x < 0.0f && hit.x >= pos.x))
-						moveDirection.x = 0.0f;
+					if (hit.x >= pos.x)
+						moveDirection.x = -moveDirection.x * 1.5f;
 					// Forward / Backward
-					if ((moveDirection.z > 0.0f && hit.z >= pos.z) || (moveDirection.z < 0.0f && hit.z >= pos.z))
-						moveDirection.z = 0.0f;
+					if (hit.z >= pos.z)
+						moveDirection.z = -moveDirection.z * 1.5f;
 				}
 			}
 
