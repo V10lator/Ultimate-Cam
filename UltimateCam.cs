@@ -44,7 +44,7 @@ namespace UltimateCam
 				else
 					LeaveHeadCam();
 			}
-			else if (Input.GetMouseButtonUp((int)FpsMouse.MOUSEBUTTON.LEFT))
+			else if (Input.GetMouseButtonUp((int)UltimateMouse.MOUSEBUTTON.LEFT))
 			{
 				if (active)
 				{
@@ -58,7 +58,7 @@ namespace UltimateCam
 					}
 				}
 			}
-			else if (Input.GetMouseButtonUp((int)FpsMouse.MOUSEBUTTON.RIGHT) && active && riding)
+			else if (Input.GetMouseButtonUp((int)UltimateMouse.MOUSEBUTTON.RIGHT) && active && riding)
 				LeaveCoasterCam();
 
 			if (active)
@@ -109,7 +109,7 @@ namespace UltimateCam
 			}
 			Camera.main.transform.parent = seat.transform;
 			Camera.main.transform.localPosition = new Vector3(0, 0.35f, 0.1f);
-			Camera.main.gameObject.GetComponent<FpsMouse>().reset();
+			Camera.main.gameObject.GetComponent<UltimateMouse>().reset();
 		}
 
 		public void LeaveCoasterCam()
@@ -135,7 +135,7 @@ namespace UltimateCam
 			else
 				yaw = 0.0f;
 
-			FpsMouse mouse = Camera.main.gameObject.GetComponent<FpsMouse>();
+			UltimateMouse mouse = Camera.main.gameObject.GetComponent<UltimateMouse>();
 			mouse.yaw = yaw;
 			mouse.pitch = 0.0f;
 			Camera.main.gameObject.GetComponent<PlayerController>().active = true;
@@ -159,7 +159,7 @@ namespace UltimateCam
 			cam.hdr = UltimateMain.Instance.config.HDR;
 			cam.orthographic = false;
 			headCam.AddComponent<AudioListener>();
-			headCam.AddComponent<FpsMouse>();
+			headCam.AddComponent<UltimateMouse>();
 			headCam.AddComponent<PlayerController>();
 
 			CharacterController cc = headCam.AddComponent<CharacterController>();

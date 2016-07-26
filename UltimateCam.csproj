@@ -41,7 +41,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FpsMouse.cs" />
+    <Compile Include="UltimateMouse.cs" />
     <Compile Include="PlayerController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UltimateCam.cs" />

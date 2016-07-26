@@ -110,7 +110,7 @@ namespace UltimateCam
 					Vector3 hit = result.hitPosition;
 
 					// Some magic...
-					FpsMouse mouse = gameObject.GetComponent<FpsMouse>();
+					UltimateMouse mouse = gameObject.GetComponent<UltimateMouse>();
 					if (mouse.yaw > 90.0f && mouse.yaw < 270.0f)
 					{
 						float tmp = hit.z;

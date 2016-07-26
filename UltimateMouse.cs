@@ -2,7 +2,7 @@
 
 namespace UltimateCam
 {
-	internal class FpsMouse : MonoBehaviour
+	internal class UltimateMouse : MonoBehaviour
 	{
 		internal enum MOUSEBUTTON
 		{
