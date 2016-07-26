@@ -80,7 +80,7 @@ namespace UltimateCam
 					} else
 						result.hitDistance = float.MaxValue;
 				}
-				GameController.Instance.enableVisibleMouseColliders ();
+				GameController.Instance.enableAllMouseColliders ();
 				RaycastHit[] array = Physics.RaycastAll (ray, result.hitDistance, LayerMasks.MOUSECOLLIDERS | LayerMasks.TERRAIN);
 				for (int i = 0; i < array.Length; i++) {
 					RaycastHit raycastHit = array [i];
