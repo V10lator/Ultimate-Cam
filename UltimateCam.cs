@@ -194,7 +194,7 @@ namespace UltimateCam
 				return;
 
 			GameObject _headCam = new GameObject();
-			_headCam.layer = LayerMask.NameToLayer("CoasterCars");
+			_headCam.layer = LayerMask.NameToLayer("Default");
 
 			_cam = _headCam.AddComponent<Camera>();
 			_cam.nearClipPlane = 0.025f; // 0.05
