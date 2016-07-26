@@ -201,7 +201,6 @@ namespace UltimateCam
 
 			Camera cam = Camera.main;
 			Vector3 mod = cam.gameObject.transform.position;
-			mainCam.tag = cam.tag;
 			cam.enabled = false;
 			Destroy(cam.gameObject);
 			mainCam.enabled = true;
