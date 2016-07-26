@@ -14,9 +14,9 @@ namespace UltimateCam
 				return _Instance;
 			}
 		}
-		internal Camera _cam = null;
+		private Camera mainCam = null;
 		private float startX, startZ;
-		public static bool active { get { return Instance._cam != null; } }
+		public static bool active { get { return Instance.mainCam != null; } }
 		private bool _riding = false;
 		public static bool riding { get { return Instance._riding; } }
 		private bool disableUI;
@@ -48,52 +48,7 @@ namespace UltimateCam
 			{
 				if (active)
 				{
-					Utility.ObjectBelowMouseInfo result = default(Utility.ObjectBelowMouseInfo);
-					Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
-					result.hitDistance = float.MaxValue;
-					result.hitObject = null;
-					GameObject gameObject = Collisions.Instance.checkSelectables(ray, out result.hitDistance);
-					if (gameObject != null)
-					{
-						SerializedMonoBehaviour component = gameObject.GetComponent<SerializedMonoBehaviour>();
-						if (component != null && component.canBeSelected())
-						{
-							result.hitObject = component;
-							result.hitPosition = ray.GetPoint(result.hitDistance);
-							result.hitLayerMask = 1 << component.gameObject.layer;
-						}
-						else
-							result.hitDistance = float.MaxValue;
-					}
-					GameController.Instance.enableVisibleMouseColliders();
-					RaycastHit[] array = Physics.RaycastAll(ray, result.hitDistance, LayerMasks.MOUSECOLLIDERS | LayerMasks.TERRAIN);
-					for (int i = 0; i < array.Length; i++)
-					{
-						RaycastHit raycastHit = array[i];
-						if (raycastHit.distance < result.hitDistance)
-						{
-							SerializedMonoBehaviour componentInParent = raycastHit.collider.gameObject.GetComponentInParent<SerializedMonoBehaviour>();
-							bool flag = false;
-							if (componentInParent != null && componentInParent.canBeSelected())
-							{
-								result.hitObject = componentInParent;
-								result.hitLayerMask = 1 << raycastHit.collider.gameObject.layer;
-								flag = true;
-							}
-							if (componentInParent == null || flag)
-							{
-								result.hitPosition = raycastHit.point;
-								result.hitDistance = raycastHit.distance;
-								result.hitNormal = raycastHit.normal;
-							}
-							if (componentInParent == null)
-							{
-								result.hitObject = null;
-								result.hitLayerMask = 0;
-							}
-						}
-					}
-					GameController.Instance.disableMouseColliders();
+					Utility.ObjectBelowMouseInfo result = Utility.getObjectBelowMouse();
 
 					if (result.hitObject != null)
 					{
@@ -124,10 +79,10 @@ namespace UltimateCam
 		{
 			float fps = 1.0f / Time.deltaTime;
 
-			if (fps < 27 && _cam.farClipPlane > UltimateMain.Instance.config.ViewDistance / 1.25f)
-				_cam.farClipPlane -= 0.3f;
-			else if (fps > 28 && _cam.farClipPlane < UltimateMain.Instance.config.ViewDistance)
-				_cam.farClipPlane += 0.3f;
+			if (fps < 27 && Camera.main.farClipPlane > UltimateMain.Instance.config.ViewDistance / 1.25f)
+				Camera.main.farClipPlane -= 0.3f;
+			else if (fps > 28 && Camera.main.farClipPlane < UltimateMain.Instance.config.ViewDistance)
+				Camera.main.farClipPlane += 0.3f;
 		}
 
 		public void EnterCoasterCam(Attraction attraction)
@@ -145,28 +100,28 @@ namespace UltimateCam
 			if (seat == null)
 				return;
 
-			_cam.gameObject.GetComponent<PlayerController>().active = false;
+			Camera.main.gameObject.GetComponent<PlayerController>().active = false;
 
 			if (!riding)
 			{
 				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
 				_riding = true;
 			}
-			_cam.transform.parent = seat.transform;
-			_cam.transform.localPosition = new Vector3(0, 0.35f, 0.1f);
-			_cam.gameObject.GetComponent<FpsMouse>().reset();
+			Camera.main.transform.parent = seat.transform;
+			Camera.main.transform.localPosition = new Vector3(0, 0.35f, 0.1f);
+			Camera.main.gameObject.GetComponent<FpsMouse>().reset();
 		}
 
 		public void LeaveCoasterCam()
 		{
 			if (!active || !riding)
 				return;
-			Exit ex = _cam.transform.parent.GetComponentInParent<Attraction>().getRandomExit();
+			Exit ex = Camera.main.transform.parent.GetComponentInParent<Attraction>().getRandomExit();
 
 			Vector3 position = ex.centerPosition;
 			position.z += UltimateMain.Instance.config.Height;
-			_cam.transform.parent = null;
-			_cam.transform.position = position;
+			Camera.main.transform.parent = null;
+			Camera.main.transform.position = position;
 
 			// Path direction to yaw
 			position = ex.getPathDirection();
@@ -180,10 +135,10 @@ namespace UltimateCam
 			else
 				yaw = 0.0f;
 
-			FpsMouse mouse = _cam.gameObject.GetComponent<FpsMouse>();
+			FpsMouse mouse = Camera.main.gameObject.GetComponent<FpsMouse>();
 			mouse.yaw = yaw;
 			mouse.pitch = 0.0f;
-			_cam.gameObject.GetComponent<PlayerController>().active = true;
+			Camera.main.gameObject.GetComponent<PlayerController>().active = true;
 			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
 			_riding = false;
 		}
@@ -192,22 +147,22 @@ namespace UltimateCam
 		{
 			if (active)
 				return;
+			
+			GameObject headCam = new GameObject();
+			headCam.layer = LayerMasks.ID_DEFAULT;
 
-			GameObject _headCam = new GameObject();
-			_headCam.layer = LayerMask.NameToLayer("Default");
+			Camera cam = headCam.AddComponent<Camera>();
+			cam.nearClipPlane = 0.025f; // 0.05
+			cam.farClipPlane = UltimateMain.Instance.config.ViewDistance;
+			cam.fieldOfView = UltimateMain.Instance.config.FoV;
+			cam.depthTextureMode = DepthTextureMode.DepthNormals;
+			cam.hdr = UltimateMain.Instance.config.HDR;
+			cam.orthographic = false;
+			headCam.AddComponent<AudioListener>();
+			headCam.AddComponent<FpsMouse>();
+			headCam.AddComponent<PlayerController>();
 
-			_cam = _headCam.AddComponent<Camera>();
-			_cam.nearClipPlane = 0.025f; // 0.05
-			_cam.farClipPlane = UltimateMain.Instance.config.ViewDistance;
-			_cam.fieldOfView = UltimateMain.Instance.config.FoV;
-			_cam.depthTextureMode = DepthTextureMode.DepthNormals;
-			_cam.hdr = UltimateMain.Instance.config.HDR;
-			_cam.orthographic = false;
-			_headCam.AddComponent<AudioListener>();
-			_headCam.AddComponent<FpsMouse>();
-			_headCam.AddComponent<PlayerController>();
-			CharacterController cc = _headCam.AddComponent<CharacterController>();
-
+			CharacterController cc = headCam.AddComponent<CharacterController>();
 			cc.radius = 0.1f;
 			cc.height = UltimateMain.Instance.config.Height; //UltimateMain.Instance.height;
 			float h = UltimateMain.Instance.config.Height / 2.0f;
@@ -217,11 +172,14 @@ namespace UltimateCam
 
 			startX = position.x;
 			startZ = position.z;
-			_headCam.transform.position = position;
+			headCam.transform.position = position;
 
 			UIWorldOverlayController.Instance.gameObject.SetActive(false);
 
-			Camera.main.GetComponent<CameraController>().enabled = false;
+			mainCam = Camera.main;
+			mainCam.enabled = mainCam.GetComponent<CameraController>().enabled = false;
+			cam.tag = "MainCamera";
+			cam.enabled = true;
 
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
@@ -241,9 +199,13 @@ namespace UltimateCam
 			if (riding)
 				LeaveCoasterCam();
 
-			Vector3 mod = _cam.gameObject.transform.position;
-			Destroy(_cam.gameObject);
-			_cam = null;
+			Camera cam = Camera.main;
+			Vector3 mod = cam.gameObject.transform.position;
+			mainCam.tag = cam.tag;
+			cam.enabled = false;
+			Destroy(cam.gameObject);
+			mainCam.enabled = true;
+			mainCam = null;
 
 			Vector3 position = Camera.main.transform.position;
 			float modX = mod.x - startX;
