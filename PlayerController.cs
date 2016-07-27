@@ -30,6 +30,11 @@ namespace UltimateCam
 			if (!active)
 				return;
 
+			if (Input.GetKey(UltimateMain.Instance.config.GetKey(UltimateSettings.ROTATE_LEFT_KEY_SETTING)))
+				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw -= speed * 50.0f * Time.deltaTime;
+			else if(Input.GetKey(UltimateMain.Instance.config.GetKey(UltimateSettings.ROTATE_RIGHT_KEY_SETTING)))
+				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw += speed * 50.0f * Time.deltaTime;
+
 			bool falling;
 			if (controller.isGrounded || UltimateMain.Instance.config.Jetpack)
 			{

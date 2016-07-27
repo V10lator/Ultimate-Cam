@@ -8,6 +8,8 @@ namespace UltimateCam
 		private readonly UltimateSettings config;
 		private bool tt = false;
 		private bool tj = false;
+		private bool tl = false;
+		private bool tr = false;
 
 		internal UltimateConfigScreen (UltimateSettings config)
 		{
@@ -16,9 +18,6 @@ namespace UltimateCam
 
 		internal void draw()
 		{
-			KeyCode old_toggle = config.GetKey (UltimateSettings.TOGGLE_KEY_SETTING);
-			KeyCode old_jump = config.GetKey (UltimateSettings.JUMP_KEY_SETTING);
-
 			GUILayoutOption minWidth = GUILayout.MinWidth (200.0f);
 			GUILayoutOption toggleWidth = GUILayout.MinWidth (50.0f);
 
@@ -27,7 +26,7 @@ namespace UltimateCam
 			GUILayout.Label (UltimateSettings.TOGGLE_KEY_SETTING, minWidth);
 			GUILayout.FlexibleSpace ();
 			if (!tt) {
-				if (GUILayout.Button (old_toggle.ToString (), minWidth) && !tj)
+				if (GUILayout.Button (config.GetKey(UltimateSettings.TOGGLE_KEY_SETTING).ToString (), minWidth))
 					tt = true;
 			} else {
 				GUILayout.Button ("Press key", minWidth);
@@ -46,7 +45,7 @@ namespace UltimateCam
 			GUILayout.Label (UltimateSettings.JUMP_KEY_SETTING, minWidth);
 			GUILayout.FlexibleSpace ();
 			if (!tj) {
-				if (GUILayout.Button (old_jump.ToString (), minWidth) && !tt)
+				if (GUILayout.Button (config.GetKey(UltimateSettings.JUMP_KEY_SETTING).ToString (), minWidth))
 					tj = true;
 			} else {
 				GUILayout.Button ("Press key", minWidth);
@@ -59,6 +58,50 @@ namespace UltimateCam
 				}
 			}
 			GUILayout.EndHorizontal ();
+
+			// Left rotation key
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(UltimateSettings.ROTATE_LEFT_KEY_SETTING, minWidth);
+			GUILayout.FlexibleSpace();
+			if (!tl)
+			{
+				if (GUILayout.Button(config.GetKey(UltimateSettings.ROTATE_LEFT_KEY_SETTING).ToString(), minWidth))
+					tl = true;
+			}
+			else {
+				GUILayout.Button("Press key", minWidth);
+				if (Input.anyKeyDown)
+				{
+					KeyCode left = GetPressedKey();
+					if (left == KeyCode.None)
+						return;
+					tl = false;
+					config.SetSetting(UltimateSettings.ROTATE_LEFT_KEY_SETTING, left.ToString());
+				}
+			}
+			GUILayout.EndHorizontal();
+
+			// Right rotation key
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(UltimateSettings.ROTATE_RIGHT_KEY_SETTING, minWidth);
+			GUILayout.FlexibleSpace();
+			if (!tr)
+			{
+				if (GUILayout.Button(config.GetKey(UltimateSettings.ROTATE_RIGHT_KEY_SETTING).ToString(), minWidth))
+					tr = true;
+			}
+			else {
+				GUILayout.Button("Press key", minWidth);
+				if (Input.anyKeyDown)
+				{
+					KeyCode right = GetPressedKey();
+					if (right == KeyCode.None)
+						return;
+					tr = false;
+					config.SetSetting(UltimateSettings.ROTATE_RIGHT_KEY_SETTING, right.ToString());
+				}
+			}
+			GUILayout.EndHorizontal();
 
 			config.Height = UISlider (UltimateSettings.HEIGHT_SETTING, UltimateSettings.DEFAULT_HEIGHT, UltimateSettings.MIN_HEIGHT, UltimateSettings.MAX_HEIGHT, config.Height, minWidth);
 

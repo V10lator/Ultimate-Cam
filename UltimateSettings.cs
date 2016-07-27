@@ -13,6 +13,8 @@ namespace UltimateCam
 		private Dictionary<string, object> settingsValueDictionary = new Dictionary<string, object>();
 		internal const string TOGGLE_KEY_SETTING = "Toggle key";
 		internal const string JUMP_KEY_SETTING = "Jump key";
+		internal const string ROTATE_LEFT_KEY_SETTING = "Rotate left";
+		internal const string ROTATE_RIGHT_KEY_SETTING = "Rotate right";
 		internal const string HEIGHT_SETTING = "Player height";
 		internal const float MIN_HEIGHT = 0.3f;
 		internal const float MAX_HEIGHT = 2.0f;
@@ -254,6 +256,8 @@ namespace UltimateCam
 
 			validateKeySetting (TOGGLE_KEY_SETTING);
 			validateKeySetting (JUMP_KEY_SETTING);
+			validateKeySetting (ROTATE_LEFT_KEY_SETTING);
+			validateKeySetting (ROTATE_RIGHT_KEY_SETTING);
 
 			validateFloatSetting (HEIGHT_SETTING, MIN_HEIGHT, MAX_HEIGHT, DEFAULT_HEIGHT);
 			validateFloatSetting (SPEED_SETTING, MIN_SPEED, MAX_SPEED, DEFAULT_SPEED);
@@ -319,15 +323,21 @@ namespace UltimateCam
 			KeyCode ret = KeyCode.None;
 			if (!settingsValueDictionary.TryGetValue (key, out ok)) {
 				switch (key) {
-				case TOGGLE_KEY_SETTING:
-					ret = KeyCode.Tab;
-					break;
-				case JUMP_KEY_SETTING:
-					ret = KeyCode.Space;
-					break;
-				default:
-					UltimateMain.Instance.Log ("Invalid key requested: " + key + "!", UltimateMain.LogLevel.ERROR);
-					break;
+					case TOGGLE_KEY_SETTING:
+						ret = KeyCode.Tab;
+						break;
+					case JUMP_KEY_SETTING:
+						ret = KeyCode.Space;
+						break;
+					case ROTATE_LEFT_KEY_SETTING:
+						ret = KeyCode.Q;
+						break;
+					case ROTATE_RIGHT_KEY_SETTING:
+						ret = KeyCode.E;
+						break;
+					default:
+						UltimateMain.Instance.Log ("Invalid key requested: " + key + "!", UltimateMain.LogLevel.ERROR);
+						break;
 				}
 				return ret;
 			}
