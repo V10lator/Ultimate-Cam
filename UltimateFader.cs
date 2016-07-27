@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Parkitect.UI;
+using System.Collections;
 using UnityEngine;
 
 namespace UltimateCam
@@ -13,8 +14,9 @@ namespace UltimateCam
 		private float alpha = 0.0f;
 		private bool _destroy;
 		private ArrayList toDestroy = new ArrayList();
+		private bool _disableUI;
 
-		internal void fade(Camera from, Camera to, bool destroy)
+		internal void fade(Camera from, Camera to, bool destroy, bool disableUI)
 		{
 			if (to != null)
 			{
@@ -40,6 +42,7 @@ namespace UltimateCam
 				}
 				else if (step == 2)
 					step = 0;
+				_disableUI = disableUI;
 			}
 
 
@@ -79,12 +82,12 @@ namespace UltimateCam
 			UltimateMain.Instance.Log("Alpha: " + alpha + " / Forward: " + forward, UltimateMain.LogLevel.INFO);
 			if (!forward && alpha <= 0.1f)
 			{
-				fade(null, null, false);
+				fade(null, null, false, false);
 				GUI.color = Color.clear;
 			}
 			if (forward && alpha >= 0.9f)
 			{
-				fade(null, null, false);
+				fade(null, null, false, false);
 				GUI.color = Color.black;
 			}
 			else
@@ -112,6 +115,8 @@ namespace UltimateCam
 				}
 
 				tmpCams[1].enabled = true;
+
+				GameController.Instance.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, !_disableUI);
 
 				switchTmpCams = false;
 			}

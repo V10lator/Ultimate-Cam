@@ -182,12 +182,10 @@ namespace UltimateCam
 			//mainCam.enabled = mainCam.GetComponent<CameraController>().enabled = false;
 			cam.tag = "MainCamera";
 			cam.enabled = false;
-			fader.fade(mainCam, cam, false);
+			fader.fade(mainCam, cam, false, true);
 
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
-
-			disableUI = true;
 
 			GameController.Instance.pushGameInputLock();
 
@@ -212,15 +210,13 @@ namespace UltimateCam
 			Camera.main.gameObject.GetComponent<PlayerController>().enabled = false;
 			mainCam.transform.position = position;
 
-			fader.fade(Camera.main, mainCam, true);
+			fader.fade(Camera.main, mainCam, true, false);
 			mainCam = null;
 
 			UIWorldOverlayController.Instance.gameObject.SetActive(true);
 
 			Cursor.lockState = CursorLockMode.None;
 			Cursor.visible = true;
-
-			GameController.Instance.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, true);
 
 			GameController.Instance.popGameInputLock();
 
