@@ -20,6 +20,7 @@ namespace UltimateCam
 		private bool _riding = false;
 		public static bool riding { get { return Instance._riding; } }
 		private bool disableUI;
+		private UltimateFader fader;
 
 		void Awake()
 		{
@@ -161,6 +162,7 @@ namespace UltimateCam
 			headCam.AddComponent<AudioListener>();
 			headCam.AddComponent<UltimateMouse>();
 			headCam.AddComponent<PlayerController>();
+			fader = headCam.AddComponent<UltimateFader>();
 
 			CharacterController cc = headCam.AddComponent<CharacterController>();
 			cc.radius = 0.1f;
@@ -177,14 +179,13 @@ namespace UltimateCam
 			UIWorldOverlayController.Instance.gameObject.SetActive(false);
 
 			mainCam = Camera.main;
-			mainCam.enabled = mainCam.GetComponent<CameraController>().enabled = false;
+			//mainCam.enabled = mainCam.GetComponent<CameraController>().enabled = false;
 			cam.tag = "MainCamera";
-			cam.enabled = true;
+			cam.enabled = false;
+			fader.fade(mainCam, cam, false, true);
 
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
-
-			disableUI = true;
 
 			GameController.Instance.pushGameInputLock();
 
@@ -199,27 +200,23 @@ namespace UltimateCam
 			if (riding)
 				LeaveCoasterCam();
 
-			Camera cam = Camera.main;
-			Vector3 mod = cam.gameObject.transform.position;
-			cam.enabled = false;
-			Destroy(cam.gameObject);
-			mainCam.enabled = true;
-			mainCam = null;
-
-			Vector3 position = Camera.main.transform.position;
+			Vector3 mod = Camera.main.gameObject.transform.position;
+			Vector3 position = mainCam.transform.position;
 			float modX = mod.x - startX;
 			float modZ = mod.z - startZ;
 			position.x += modX;
 			position.z += modZ;
-			Camera.main.transform.position = position;
-			Camera.main.GetComponent<CameraController>().enabled = true;
+			Camera.main.gameObject.GetComponent<UltimateMouse>().enabled = false;
+			Camera.main.gameObject.GetComponent<PlayerController>().enabled = false;
+			mainCam.transform.position = position;
+
+			fader.fade(Camera.main, mainCam, true, false);
+			mainCam = null;
 
 			UIWorldOverlayController.Instance.gameObject.SetActive(true);
 
 			Cursor.lockState = CursorLockMode.None;
 			Cursor.visible = true;
-
-			GameController.Instance.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, true);
 
 			GameController.Instance.popGameInputLock();
 
