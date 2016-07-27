@@ -90,7 +90,7 @@ namespace UltimateCam
 			else
 				GUI.color = new Color() { a = alpha };
 
-			GUI.DrawTexture(new Rect(0.0f, 0.0f, Screen.width, Screen.height), Texture2D.blackTexture, ScaleMode.ScaleToFit);
+			GUI.DrawTexture(new Rect(0.0f, 0.0f, Screen.width, Screen.height), Texture2D.whiteTexture, ScaleMode.StretchToFill);
 			GUI.depth = -1000;
 		}
 
