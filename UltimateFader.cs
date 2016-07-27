@@ -79,7 +79,6 @@ namespace UltimateCam
 
 			alpha += (forward ? 0.6f : -0.6f) * Time.deltaTime;
 			alpha = Mathf.Clamp01(alpha);
-			UltimateMain.Instance.Log("Alpha: " + alpha + " / Forward: " + forward, UltimateMain.LogLevel.INFO);
 			if (!forward && alpha <= 0.1f)
 			{
 				fade(null, null, false, false);
