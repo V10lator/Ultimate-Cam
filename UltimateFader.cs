@@ -49,7 +49,7 @@ namespace UltimateCam
 					forward = fading = true;
 					break;
 				case 1:
-					forward = fading = false;
+					forward = false;
 					switchTmpCams = true;
 					break;
 				default:
@@ -74,7 +74,7 @@ namespace UltimateCam
 			if (!fading)
 				return;
 
-			alpha += (forward ? 0.3f : -0.3f) * Time.deltaTime;
+			alpha += (forward ? 0.6f : -0.6f) * Time.deltaTime;
 			alpha = Mathf.Clamp01(alpha);
 			UltimateMain.Instance.Log("Alpha: " + alpha + " / Forward: " + forward, UltimateMain.LogLevel.INFO);
 			if (!forward && alpha <= 0.1f)
@@ -114,7 +114,6 @@ namespace UltimateCam
 				tmpCams[1].enabled = true;
 
 				switchTmpCams = false;
-				fading = true;
 			}
 			else if (toDestroy.Count > 0)
 			{
