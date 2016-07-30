@@ -87,7 +87,7 @@ namespace UltimateCam
 
 		public void EnterCoasterCam(Attraction attraction)
 		{
-			if (!active)
+			if (!active || UltimateFader.active)
 				return;
 
 			List<Transform> seats = new List<Transform>();
@@ -114,7 +114,7 @@ namespace UltimateCam
 
 		public void LeaveCoasterCam()
 		{
-			if (!active || !riding)
+			if (!active || !riding || UltimateFader.active)
 				return;
 			Exit ex = Camera.main.transform.parent.GetComponentInParent<Attraction>().getRandomExit();
 
@@ -145,7 +145,7 @@ namespace UltimateCam
 
 		public void EnterHeadCam(Vector3 position)
 		{
-			if (active)
+			if (active || UltimateFader.active)
 				return;
 			
 			GameObject headCam = new GameObject();
@@ -193,7 +193,7 @@ namespace UltimateCam
 
 		public void LeaveHeadCam()
 		{
-			if (!active)
+			if (!active || UltimateFader.active)
 				return;
 
 			if (riding)

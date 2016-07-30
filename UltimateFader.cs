@@ -1,55 +1,31 @@
 ﻿using Parkitect.UI;
-using System.Collections;
 using UnityEngine;
 
 namespace UltimateCam
 {
 	public class UltimateFader : MonoBehaviour
 	{
-		private bool fading = false;
 		private bool forward;
 		private int step = 0;
 		private Camera[] tmpCams = { null, null };
 		private bool switchTmpCams = false;
 		private float alpha = 0.0f;
 		private bool _destroy;
-		private ArrayList toDestroy = new ArrayList();
+		private GameObject toDestroy = null;
 		private bool _disableUI;
+
+		internal static bool active = false;
 
 		internal void fade(Camera from, Camera to, bool destroy, bool disableUI)
 		{
-			if (to != null)
-			{
-				tmpCams[1] = to;
-				if (tmpCams[0] == null)
-				{
-					tmpCams[0] = from;
-					_destroy = destroy;
-				}
-				else if (destroy)
-					toDestroy.Add(from.gameObject);
-
-				if (tmpCams[0] == tmpCams[1])
-				{
-					if (step != 2)
-					{
-						forward = false;
-						step = 2;
-						return;
-					}
-					else
-						step = 0;
-				}
-				else if (step == 2)
-					step = 0;
-				_disableUI = disableUI;
-			}
-
-
 			switch (step)
 			{
 				case 0:
-					forward = fading = true;
+					tmpCams[0] = from;
+					tmpCams[1] = to;
+					_destroy = destroy;
+					_disableUI = disableUI;
+					forward = UltimateFader.active = true;
 					break;
 				case 1:
 					forward = false;
@@ -57,10 +33,10 @@ namespace UltimateCam
 					break;
 				default:
 					step = 0;
-					fading = false;
+					UltimateFader.active = false;
 					alpha = 0.0f;
 					if (_destroy)
-						toDestroy.Add(tmpCams[0].gameObject);
+						toDestroy = tmpCams[0].gameObject;
 					tmpCams[0] = tmpCams[1] = null;
 					return;
 			}
@@ -74,7 +50,7 @@ namespace UltimateCam
 
 		public void OnGUI()
 		{
-			if (!fading)
+			if (!UltimateFader.active)
 				return;
 
 			alpha += (forward ? 0.6f : -0.6f) * Time.deltaTime;
@@ -119,12 +95,10 @@ namespace UltimateCam
 
 				switchTmpCams = false;
 			}
-			else if (toDestroy.Count > 0)
+			else if (toDestroy != null)
 			{
-				IEnumerator enu = toDestroy.GetEnumerator();
-				while (enu.MoveNext())
-					Destroy((GameObject)enu.Current);
-				toDestroy.Clear();
+				Destroy(toDestroy);
+				toDestroy = null;
 			}
 		}
 	}
