@@ -96,7 +96,7 @@ namespace UltimateCam
 			}
 		}
 		public string Identifier { get { return "V10lator:" + Name + "@" + Version; } }
-		public string Path { get { return System.IO.Path.GetDirectoryName(getAssembly().Location.ToString()); } }
+		public string ModPath { get { return System.IO.Path.GetDirectoryName(getAssembly().Location.ToString()); } }
 		public static UltimateMain Instance = null;
 		private bool enabled { get { return Instance != null; } }
 
