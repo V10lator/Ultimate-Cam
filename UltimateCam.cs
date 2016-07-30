@@ -29,6 +29,10 @@ namespace UltimateCam
 
 		void Update()
 		{
+			GameController gc = GameController.Instance;
+			if (gc.isLoadingGame || gc.isQuittingGame || OptionsMenu.instance != null || UIWindowsController.Instance.getWindows().Count > 0)
+				return;
+			
 			if (Input.GetKeyUp(UltimateMain.Instance.config.GetKey(UltimateSettings.TOGGLE_KEY_SETTING)))
 			{
 				if (!active)
@@ -65,7 +69,7 @@ namespace UltimateCam
 			{
 				if (disableUI)
 				{
-					GameController.Instance.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, false);
+					gc.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, false);
 					disableUI = false;
 				}
 				if (InputManager.getKeyDown("HotkeyToggleUI"))
