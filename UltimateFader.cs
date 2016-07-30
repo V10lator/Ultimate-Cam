@@ -91,7 +91,15 @@ namespace UltimateCam
 
 				tmpCams[1].enabled = true;
 
-				GameController.Instance.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, !_disableUI);
+				bool vis = !_disableUI;
+				GameController.Instance.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, vis);
+				Cursor.lockState = vis ? CursorLockMode.None : CursorLockMode.Locked;
+				Cursor.visible = vis;
+				UIWorldOverlayController.Instance.gameObject.SetActive(vis);
+				if(vis)
+					GameController.Instance.popGameInputLock();
+				else
+					GameController.Instance.pushGameInputLock();
 
 				switchTmpCams = false;
 			}

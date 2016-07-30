@@ -175,18 +175,11 @@ namespace UltimateCam
 			startZ = position.z;
 			headCam.transform.position = position;
 
-			UIWorldOverlayController.Instance.gameObject.SetActive(false);
-
 			mainCam = Camera.main;
 			//mainCam.enabled = mainCam.GetComponent<CameraController>().enabled = false;
 			cam.tag = "MainCamera";
 			cam.enabled = false;
 			fader.fade(mainCam, cam, false, true);
-
-			Cursor.lockState = CursorLockMode.Locked;
-			Cursor.visible = false;
-
-			GameController.Instance.pushGameInputLock();
 
 			EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveHeadCam));
 		}
@@ -211,13 +204,6 @@ namespace UltimateCam
 
 			Camera.main.gameObject.GetComponent<UltimateFader>().fade(Camera.main, mainCam, true, false);
 			mainCam = null;
-
-			UIWorldOverlayController.Instance.gameObject.SetActive(true);
-
-			Cursor.lockState = CursorLockMode.None;
-			Cursor.visible = true;
-
-			GameController.Instance.popGameInputLock();
 
 			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveHeadCam));
 		}
