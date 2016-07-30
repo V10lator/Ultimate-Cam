@@ -50,7 +50,7 @@ namespace UltimateCam
 		{
 			get {
 				if(_file == null)
-					_file = UltimateMain.Instance.ModPath + @"/" + @UltimateMain.Instance.Name + @".json";
+					_file = UltimateMain.Instance.Path + @"/" + @UltimateMain.Instance.Name + @".json";
 				return _file;
 			}
 		}
