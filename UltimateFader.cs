@@ -76,19 +76,10 @@ namespace UltimateCam
 		{
 			if (switchTmpCams)
 			{
-				CameraController cc = tmpCams[0].GetComponent<CameraController>();
 				tmpCams[0].enabled = false;
+				CameraController cc = tmpCams[1].GetComponent<CameraController>();
 				if (cc != null)
-					cc.enabled = false;
-				else
-				{
-					cc = tmpCams[1].GetComponent<CameraController>();
-					if (cc == null)
-						UltimateMain.Instance.Log("No CameraController found!", UltimateMain.LogLevel.ERROR);
-					else
 						cc.enabled = true;
-				}
-
 				tmpCams[1].enabled = true;
 
 				bool vis = !_disableUI;

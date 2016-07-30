@@ -176,9 +176,8 @@ namespace UltimateCam
 			headCam.transform.position = position;
 
 			mainCam = Camera.main;
-			//mainCam.enabled = mainCam.GetComponent<CameraController>().enabled = false;
 			cam.tag = "MainCamera";
-			cam.enabled = false;
+			cam.enabled = mainCam.GetComponent<CameraController>().enabled = false;
 			fader.fade(mainCam, cam, false, true);
 
 			EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveHeadCam));
