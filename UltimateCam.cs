@@ -20,7 +20,6 @@ namespace UltimateCam
 		private bool _riding = false;
 		public static bool riding { get { return Instance._riding; } }
 		private bool disableUI;
-		private UltimateFader fader;
 
 		void Awake()
 		{
@@ -162,7 +161,7 @@ namespace UltimateCam
 			headCam.AddComponent<AudioListener>();
 			headCam.AddComponent<UltimateMouse>();
 			headCam.AddComponent<PlayerController>();
-			fader = headCam.AddComponent<UltimateFader>();
+			UltimateFader fader = headCam.AddComponent<UltimateFader>();
 
 			CharacterController cc = headCam.AddComponent<CharacterController>();
 			cc.radius = 0.1f;
@@ -210,7 +209,7 @@ namespace UltimateCam
 			Camera.main.gameObject.GetComponent<PlayerController>().enabled = false;
 			mainCam.transform.position = position;
 
-			fader.fade(Camera.main, mainCam, true, false);
+			Camera.main.gameObject.GetComponent<UltimateFader>().fade(Camera.main, mainCam, true, false);
 			mainCam = null;
 
 			UIWorldOverlayController.Instance.gameObject.SetActive(true);
