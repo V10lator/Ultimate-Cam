@@ -53,7 +53,7 @@ namespace UltimateCam
 			if (!UltimateFader.active)
 				return;
 
-			alpha += (forward ? 0.6f : -0.6f) * Time.deltaTime;
+			alpha += (forward ? 1.2f : -1.2f) * Time.deltaTime;
 			alpha = Mathf.Clamp01(alpha);
 			if (!forward && alpha <= 0.1f)
 			{
