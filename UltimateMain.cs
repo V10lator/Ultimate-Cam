@@ -95,8 +95,30 @@ namespace UltimateCam
 				return "N/A";
 			}
 		}
-		public string Identifier { get { return "V10lator:" + Name + "@" + Version; } }
-		public string Path { get { return System.IO.Path.GetDirectoryName(getAssembly().Location.ToString()); } }
+		private string _identifier = null;
+		public string Identifier {
+			get {
+				if(_identifier == null)
+					_identifier = "V10lator:" + Name + "@" + Version;
+				return _identifier;
+			}
+			// For ParkitectNexus
+			set {
+				_identifier = value;
+			}
+		}
+		private string _path;
+		public string Path {
+			get {
+				if(_path == null)
+					_path = System.IO.Path.GetDirectoryName(getAssembly().Location.ToString());
+				return _path;
+			}
+			// For ParkitectNexus
+			set {
+				_path = value;
+			}
+		}
 		public static UltimateMain Instance = null;
 		private bool enabled { get { return Instance != null; } }
 
