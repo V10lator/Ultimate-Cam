@@ -132,7 +132,7 @@ namespace UltimateCam
 			float yaw;
 			if (position.x == 1.0f)
 				yaw = 90.0f;
-			else if (position.x == 1.0f)
+			else if (position.x == -1.0f)
 				yaw = -90.0f;
 			else if (position.z == -1.0f)
 				yaw = 180.0f;
