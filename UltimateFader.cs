@@ -60,7 +60,7 @@ namespace UltimateCam
 				fade(null, null, false, false);
 				GUI.color = Color.clear;
 			}
-			if (forward && alpha >= 0.9f)
+			else if (forward && alpha >= 0.9f)
 			{
 				fade(null, null, false, false);
 				GUI.color = Color.black;
