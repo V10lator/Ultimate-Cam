@@ -60,13 +60,15 @@ namespace UltimateCam
 				fade(null, null, false, false);
 				GUI.color = Color.clear;
 			}
-			else if (forward && alpha >= 0.9f)
-			{
-				fade(null, null, false, false);
-				GUI.color = Color.black;
-			}
 			else
-				GUI.color = new Color() { a = alpha };
+			{
+				Color c = Color.black;
+				if (forward && alpha >= 0.9f)
+					fade(null, null, false, false);
+				else
+					c.a = alpha;
+				GUI.color = c;
+			}
 
 			GUI.DrawTexture(new Rect(0.0f, 0.0f, Screen.width, Screen.height), Texture2D.whiteTexture, ScaleMode.StretchToFill);
 			GUI.depth = -1000;
