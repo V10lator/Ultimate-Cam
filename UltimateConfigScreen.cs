@@ -120,6 +120,13 @@ namespace UltimateCam
 			config.HDR = GUILayout.Toggle (config.HDR, "", toggleWidth);
 			GUILayout.EndHorizontal ();
 
+			// Crosshair?
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(UltimateSettings.CROSSHAIR_SETTING + "?", minWidth);
+			GUILayout.FlexibleSpace();
+			config.Crosshair = GUILayout.Toggle(config.Crosshair, "", toggleWidth);
+			GUILayout.EndHorizontal();
+
 			// Experimental?
 			GUILayout.BeginHorizontal();
 			GUILayout.Label(UltimateSettings.EXPERIMENTAL_SETTING + "?", minWidth);

@@ -8,7 +8,7 @@ namespace UltimateCam
 {
 	internal class UltimateSettings
 	{
-		private const int CONFIG_VERSION = 4;
+		private const int CONFIG_VERSION = 5;
 
 		private Dictionary<string, object> settingsValueDictionary = new Dictionary<string, object>();
 		internal const string TOGGLE_KEY_SETTING = "Toggle key";
@@ -29,6 +29,8 @@ namespace UltimateCam
 		internal const float DEFAULT_VD = 50.0f;
 		internal const string HDR_SETTING = "HDR";
 		internal const bool DEFAULT_HDR = false;
+		internal const string CROSSHAIR_SETTING = "Crosshair";
+		internal const bool DEFAULT_CROSSHAIR = true;
 		internal const string SPEED_SETTING = "Walking speed";
 		internal const float MIN_SPEED = 0.05f;
 		internal const float MAX_SPEED = 30.0f;
@@ -90,6 +92,18 @@ namespace UltimateCam
 			}
 			set {
 				SetSetting (HDR_SETTING, value);
+			}
+		}
+
+		internal bool Crosshair
+		{
+			get
+			{
+				return bool.Parse(settingsValueDictionary[CROSSHAIR_SETTING].ToString());
+			}
+			set
+			{
+				SetSetting(CROSSHAIR_SETTING, value);
 			}
 		}
 
@@ -226,24 +240,27 @@ namespace UltimateCam
 					settingsValueDictionary["Version"] = CONFIG_VERSION;
 
 					// Speed and Gravity changed from 3 to 4, reset...
-					UltimateMain.Instance.Log("Resetting speed and gravity settings!", UltimateMain.LogLevel.WARNING);
-					if (settingsValueDictionary.ContainsKey(SPEED_SETTING))
-						settingsValueDictionary[SPEED_SETTING] = DEFAULT_SPEED;
-					if (settingsValueDictionary.ContainsKey(GRAVITY_SETTING))
-						settingsValueDictionary[GRAVITY_SETTING] = DEFAULT_GRAVITY;
-
-					UltimateMain.Instance.Log("Updating experimental settings!", UltimateMain.LogLevel.WARNING);
-					if (settingsValueDictionary.TryGetValue(EXPERIMENTAL_SETTING, out obj))
+					if (v < 4)
 					{
-						bool b = false;
-						try
+						UltimateMain.Instance.Log("Resetting speed and gravity settings!", UltimateMain.LogLevel.WARNING);
+						if (settingsValueDictionary.ContainsKey(SPEED_SETTING))
+							settingsValueDictionary[SPEED_SETTING] = DEFAULT_SPEED;
+						if (settingsValueDictionary.ContainsKey(GRAVITY_SETTING))
+							settingsValueDictionary[GRAVITY_SETTING] = DEFAULT_GRAVITY;
+
+						UltimateMain.Instance.Log("Updating experimental settings!", UltimateMain.LogLevel.WARNING);
+						if (settingsValueDictionary.TryGetValue(EXPERIMENTAL_SETTING, out obj))
 						{
-							b = bool.Parse(obj.ToString());
+							bool b = false;
+							try
+							{
+								b = bool.Parse(obj.ToString());
+							}
+							catch (Exception)
+							{
+							}
+							settingsValueDictionary.Add(MORE_COLS_SETTING, b);
 						}
-						catch (Exception)
-						{
-						}
-						settingsValueDictionary.Add(MORE_COLS_SETTING, b);
 					}
 
 					needSave = true;
@@ -266,6 +283,7 @@ namespace UltimateCam
 			validateFloatSetting (VD_SETTING, MIN_VD, MAX_VD, DEFAULT_VD);
 
 			validateBoolSetting (HDR_SETTING, DEFAULT_HDR);
+			validateBoolSetting (CROSSHAIR_SETTING, DEFAULT_CROSSHAIR);
 			validateBoolSetting (EXPERIMENTAL_SETTING, DEFAULT_EXPERIMENTAL);
 			validateBoolSetting(MORE_COLS_SETTING, DEFAULT_MORE_COLS);
 			validateBoolSetting(JETPACK_SETTING, DEFAULT_JETPACK);
