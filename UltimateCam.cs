@@ -166,6 +166,7 @@ namespace UltimateCam
 			headCam.AddComponent<UltimateMouse>();
 			headCam.AddComponent<PlayerController>();
 			UltimateFader fader = headCam.AddComponent<UltimateFader>();
+			headCam.AddComponent<UltimateCross>().enabled = false;
 
 			CharacterController cc = headCam.AddComponent<CharacterController>();
 			cc.radius = 0.1f;

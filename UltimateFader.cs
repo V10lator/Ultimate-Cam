@@ -55,6 +55,7 @@ namespace UltimateCam
 
 			alpha += (forward ? 1.2f : -1.2f) * Time.deltaTime;
 			alpha = Mathf.Clamp01(alpha);
+			GUI.depth = -1000;
 			if (!forward && alpha <= 0.1f)
 			{
 				fade(null, null, false, false);
@@ -71,7 +72,6 @@ namespace UltimateCam
 			}
 
 			GUI.DrawTexture(new Rect(0.0f, 0.0f, Screen.width, Screen.height), Texture2D.whiteTexture, ScaleMode.StretchToFill);
-			GUI.depth = -1000;
 		}
 
 		public void Update()
@@ -79,10 +79,16 @@ namespace UltimateCam
 			if (switchTmpCams)
 			{
 				tmpCams[0].enabled = false;
+				UltimateCross uc = tmpCams[0].gameObject.GetComponent<UltimateCross>();
+				if (uc != null)
+					uc.enabled = false;
 				CameraController cc = tmpCams[1].GetComponent<CameraController>();
 				if (cc != null)
 						cc.enabled = true;
 				tmpCams[1].enabled = true;
+				uc = tmpCams[1].gameObject.GetComponent<UltimateCross>();
+				if (uc != null)
+					uc.enabled = true;
 
 				bool vis = !_disableUI;
 				GameController.Instance.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, vis);
