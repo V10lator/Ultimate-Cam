@@ -45,7 +45,7 @@ namespace UltimateCam
 		private int _majorVersion;
 		private int _minorVersion;
 
-		private Assembly getAssembly()
+		internal Assembly getAssembly()
 		{
 			return @Assembly.GetAssembly (typeof(UltimateCam));
 		}

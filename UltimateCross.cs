@@ -1,32 +1,35 @@
-﻿using System;
+﻿using System.IO;
 using UnityEngine;
 
 namespace UltimateCam
 {
 	public class UltimateCross : MonoBehaviour
 	{
-		private readonly Color c;
-		private readonly float width = 15.0f;
-		private readonly float space = 5.0f;
+		private readonly Texture2D texture;
 
 		public UltimateCross()
 		{
-			c = Color.black;
-			c.a = 0.25f;
+			Stream cs = UltimateMain.Instance.getAssembly().GetManifestResourceStream("UltimateCam.UltimateCross.png");
+			if (cs == null)
+			{
+				UltimateMain.Instance.Log("Can't load crosshair from assembly!", UltimateMain.LogLevel.ERROR);
+				texture = Texture2D.blackTexture;
+				return;
+			}
+			texture = new Texture2D(1, 1);
+			int l = (int)cs.Length;
+			byte[] buffer = new byte[l];
+			int r = 0;
+			while(r < l)
+				r += cs.Read(buffer, r, l - r);
+			texture.LoadImage(buffer);
+			cs.Close();
 		}
 
 		public void OnGUI()
 		{
-			float middleX = Screen.width / 2.0f;
-			float middleY = Screen.height / 2.0f;
-			float mod = width + space;
-
 			GUI.depth = -999;
-			GUI.color = c;
-			GUI.DrawTexture(new Rect(middleX - mod, middleY - 0.5f, width, 1.0f), Texture2D.whiteTexture);
-			GUI.DrawTexture(new Rect(middleX + space, middleY - 0.5f, width, 1.0f), Texture2D.whiteTexture);
-			GUI.DrawTexture(new Rect(middleX - 0.5f, middleY - mod, 1.0f, width), Texture2D.whiteTexture);
-			GUI.DrawTexture(new Rect(middleX - 0.5f, middleY + space, 1.0f, width), Texture2D.whiteTexture);
+			GUI.DrawTexture(new Rect((Screen.width / 2.0f) - (texture.width / 2.0f), (Screen.height / 2.0f) - (texture.height / 2.0f), texture.width, texture.height), texture);
 		}
 	}
 }
