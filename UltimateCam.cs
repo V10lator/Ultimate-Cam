@@ -33,7 +33,7 @@ namespace UltimateCam
 			GameController gc = GameController.Instance;
 			if (gc.isLoadingGame || gc.isQuittingGame || OptionsMenu.instance != null || UIWindowsController.Instance.getWindows().Count > 0)
 				return;
-			
+
 			if (Input.GetKeyUp(UltimateMain.Instance.config.GetKey(UltimateSettings.TOGGLE_KEY_SETTING)))
 			{
 				if (!active)
@@ -49,9 +49,9 @@ namespace UltimateCam
 				else
 					LeaveHeadCam();
 			}
-			else if (Input.GetMouseButtonUp((int)UltimateMouse.MOUSEBUTTON.LEFT))
+			else if(active)
 			{
-				if (active)
+				if (Input.GetMouseButtonUp((int)UltimateMouse.MOUSEBUTTON.LEFT))
 				{
 					Utility.ObjectBelowMouseInfo result = Utility.getObjectBelowMouse();
 
@@ -62,9 +62,14 @@ namespace UltimateCam
 							EnterCoasterCam(attr);
 					}
 				}
+				else if (Input.GetMouseButtonUp((int)UltimateMouse.MOUSEBUTTON.RIGHT))
+				{
+					if (riding)
+						LeaveCoasterCam();
+					else
+						LeaveHeadCam();
+				}
 			}
-			else if (Input.GetMouseButtonUp((int)UltimateMouse.MOUSEBUTTON.RIGHT) && active && riding)
-				LeaveCoasterCam();
 
 			if (active)
 			{
