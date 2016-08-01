@@ -20,6 +20,7 @@ namespace UltimateCam
 		private bool _riding = false;
 		public static bool riding { get { return Instance._riding; } }
 		private bool disableUI;
+		private int seat = -1;
 
 		void Awake()
 		{
@@ -98,10 +99,10 @@ namespace UltimateCam
 			Utility.recursiveFindTransformsStartingWith("seat", attraction.transform, seats);
 			if (seats.Count == 0)
 				return;
-			Transform seat = null;
-			for (int i = 0; i < 100 && seat == null; i++)
-				seat = seats[UnityEngine.Random.Range(0, seats.Count - 1)];
-			if (seat == null)
+			if (++seat >= seats.Count)
+				seat = 0;
+			Transform s = seats[seat];
+			if (s == null)
 				return;
 
 			Camera.main.gameObject.GetComponent<PlayerController>().active = false;
@@ -111,7 +112,7 @@ namespace UltimateCam
 				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
 				_riding = true;
 			}
-			Camera.main.transform.parent = seat.transform;
+			Camera.main.transform.parent = s.transform;
 			Camera.main.transform.localPosition = new Vector3(0, 0.35f, 0.1f);
 			Camera.main.gameObject.GetComponent<UltimateMouse>().reset();
 		}
@@ -144,6 +145,7 @@ namespace UltimateCam
 			mouse.pitch = 0.0f;
 			Camera.main.gameObject.GetComponent<PlayerController>().active = true;
 			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
+			seat = -1;
 			_riding = false;
 		}
 
