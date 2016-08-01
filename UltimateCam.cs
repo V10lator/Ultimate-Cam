@@ -122,6 +122,13 @@ namespace UltimateCam
 			Camera.main.gameObject.GetComponent<UltimateMouse>().reset();
 		}
 
+		private void cleanupCoasterCam()
+		{
+			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
+			seat = -1;
+			_riding = false;
+		}
+
 		public void LeaveCoasterCam()
 		{
 			if (!active || !riding || UltimateFader.active)
@@ -149,9 +156,7 @@ namespace UltimateCam
 			mouse.yaw = yaw;
 			mouse.pitch = 0.0f;
 			Camera.main.gameObject.GetComponent<PlayerController>().active = true;
-			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
-			seat = -1;
-			_riding = false;
+			cleanupCoasterCam();
 		}
 
 		public void EnterHeadCam(Vector3 position)
@@ -202,7 +207,7 @@ namespace UltimateCam
 				return;
 
 			if (riding)
-				LeaveCoasterCam();
+				cleanupCoasterCam();
 
 			Vector3 mod = Camera.main.gameObject.transform.position;
 			Vector3 position = mainCam.transform.position;
