@@ -148,7 +148,8 @@ namespace UltimateCam
 				GameController.Instance.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, vis);
 				Cursor.lockState = vis ? CursorLockMode.None : CursorLockMode.Locked;
 				Cursor.visible = vis;
-				if (vis)
+				UIWorldOverlayController.Instance.gameObject.SetActive(vis);
+				if(vis)
 					GameController.Instance.popGameInputLock();
 				else
 					GameController.Instance.pushGameInputLock();
