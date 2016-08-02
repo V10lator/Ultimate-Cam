@@ -84,8 +84,9 @@ namespace UltimateCam
 					uc.enabled = false;
 				CameraController cc = tmpCams[1].GetComponent<CameraController>();
 				if (cc != null)
-						cc.enabled = true;
+					cc.enabled = true;
 				tmpCams[1].enabled = true;
+				CullingGroupManager.Instance.setTargetCamera(tmpCams[1]);
 				uc = tmpCams[1].gameObject.GetComponent<UltimateCross>();
 				if (uc != null)
 					uc.enabled = true;
