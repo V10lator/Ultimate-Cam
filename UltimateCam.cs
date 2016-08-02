@@ -177,7 +177,7 @@ namespace UltimateCam
 			else
 			{
 				position = Camera.main.transform.parent.position;
-				yaw = 0.0f;
+				yaw = Camera.main.transform.parent.eulerAngles.y;
 			}
 
 			Camera.main.GetComponent<UltimateFader>().fade(position, yaw);
