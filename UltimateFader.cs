@@ -169,7 +169,7 @@ namespace UltimateCam
 					UltimateMouse mouse = Camera.main.gameObject.GetComponent<UltimateMouse>();
 					mouse.yaw = _yaw;
 					mouse.pitch = 0.0f;
-					Camera.main.gameObject.GetComponent<PlayerController>().active = true;
+					Camera.main.gameObject.GetComponent<PlayerController>().enabled = true;
 				}
 				teleportTmpCam = false;
 

@@ -11,7 +11,6 @@ namespace UltimateCam
 
 		private Vector3 moveDirection = Vector3.zero;
 		private CharacterController controller;
-		internal bool active = false;
 
 		// Use this for initialization
 		void Start()
@@ -21,15 +20,11 @@ namespace UltimateCam
 
 			controller = GetComponent<CharacterController>();
 			controller.detectCollisions = true;
-			active = true;
 		}
 
 		// Update is called once per frame
 		void Update()
 		{
-			if (!active)
-				return;
-
 			if (Input.GetKey(UltimateMain.Instance.config.GetKey(UltimateSettings.ROTATE_LEFT_KEY_SETTING)))
 				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw -= speed * 50.0f * Time.deltaTime;
 			else if(Input.GetKey(UltimateMain.Instance.config.GetKey(UltimateSettings.ROTATE_RIGHT_KEY_SETTING)))
@@ -157,7 +152,6 @@ namespace UltimateCam
 			speed = gravity = 0.0f;
 			moveDirection = Vector3.zero;
 			controller = null;
-			active = false;
 		}
 	}
 }

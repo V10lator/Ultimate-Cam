@@ -103,7 +103,7 @@ namespace UltimateCam
 
 		private void EnterCoasterCam(Transform s)
 		{
-			Camera.main.gameObject.GetComponent<PlayerController>().active = false;
+			Camera.main.gameObject.GetComponent<PlayerController>().enabled = false;
 
 			if (!riding)
 			{
