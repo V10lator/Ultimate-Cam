@@ -105,7 +105,7 @@ namespace UltimateCam
 			if (!UltimateFader.active)
 				return;
 
-			alpha += (forward ? 1.2f : -1.2f) * Time.deltaTime;
+			alpha += (forward ? 2.4f : -2.4f) * Time.deltaTime;
 			alpha = Mathf.Clamp01(alpha);
 			GUI.depth = -1000;
 			if (!forward && alpha <= 0.1f)
