@@ -74,7 +74,7 @@ namespace UltimateCam
 			_pitch = limit(pitch, _yRad);
 
 			Vector3 euler;
-			if (UltimateCam.riding)
+			if (UltimateCam.sitting)
 			{
 				// Limit horizontal head movement
 				_yaw = limit(yaw, _xRad);

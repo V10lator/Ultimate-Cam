@@ -163,7 +163,7 @@ namespace UltimateCam
 					Camera.main.transform.parent = teleportToTransform;
 					Camera.main.transform.localPosition = new Vector3(0, 0.35f, 0.1f);
 					Camera.main.gameObject.GetComponent<UltimateMouse>().reset();
-					UltimateCam.riding = true;
+					UltimateCam.sitting = true;
 				}
 				else
 				{
@@ -173,7 +173,7 @@ namespace UltimateCam
 					mouse.yaw = _yaw;
 					mouse.pitch = 0.0f;
 					Camera.main.gameObject.GetComponent<PlayerController>().enabled = true;
-					UltimateCam.riding = false;
+					UltimateCam.sitting = false;
 				}
 				teleportTmpCam = false;
 

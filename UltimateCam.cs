@@ -18,8 +18,8 @@ namespace UltimateCam
 		private Camera mainCam = null;
 		private float startX, startZ;
 		public static bool active { get { return Instance.mainCam != null; } }
-		private bool _riding = false;
-		public static bool riding { get { return Instance._riding; } internal set { Instance._riding = value; } }
+		private bool _sitting = false;
+		public static bool sitting { get { return Instance._sitting; } internal set { Instance._sitting = value; } }
 		private bool disableUI;
 		private int seat = -1;
 
@@ -70,7 +70,7 @@ namespace UltimateCam
 				}
 				else if (Input.GetMouseButtonUp((int)UltimateMouse.MOUSEBUTTON.RIGHT))
 				{
-					if (riding)
+					if (sitting)
 						LeaveSeatCam();
 					else
 						LeaveHeadCam();
@@ -105,7 +105,7 @@ namespace UltimateCam
 		{
 			Camera.main.gameObject.GetComponent<PlayerController>().enabled = false;
 
-			if (!riding)
+			if (!sitting)
 				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveSeatCam));
 			
 			Camera.main.GetComponent<UltimateFader>().fade(s);
@@ -150,7 +150,7 @@ namespace UltimateCam
 
 		public void LeaveSeatCam()
 		{
-			if (!active || !riding || UltimateFader.active)
+			if (!active || !sitting || UltimateFader.active)
 				return;
 
 			Vector3 position;
@@ -232,10 +232,10 @@ namespace UltimateCam
 			if (!active || UltimateFader.active)
 				return;
 
-			if (riding)
+			if (sitting)
 			{
 				cleanupSeatCam();
-				_riding = false;
+				_sitting = false;
 			}
 
 			Vector3 mod = Camera.main.gameObject.transform.position;
