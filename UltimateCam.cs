@@ -75,7 +75,7 @@ namespace UltimateCam
 			{
 				if (disableUI)
 				{
-					gc.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, false);
+					//gc.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, false);
 					disableUI = false;
 				}
 				if (InputManager.getKeyDown("HotkeyToggleUI"))
