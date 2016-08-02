@@ -155,22 +155,33 @@ namespace UltimateCam
 		{
 			if (!active || !riding || UltimateFader.active)
 				return;
-			Exit ex = Camera.main.transform.parent.GetComponentInParent<Attraction>().getRandomExit();
 
-			Vector3 position = ex.centerPosition;
-			position.y += UltimateMain.Instance.config.Height;
-
-			// Path direction to yaw
-			Vector3 dir = ex.getPathDirection();
+			Vector3 position;
 			float yaw;
-			if (dir.x == 1.0f)
-				yaw = 90.0f;
-			else if (dir.x == -1.0f)
-				yaw = -90.0f;
-			else if (dir.z == -1.0f)
-				yaw = 180.0f;
+			Attraction attr = Camera.main.transform.parent.GetComponentInParent<Attraction>();
+			if (attr != null)
+			{
+				Exit ex = attr.getRandomExit();
+
+				position = ex.centerPosition;
+				position.y += UltimateMain.Instance.config.Height;
+
+				// Path direction to yaw
+				Vector3 dir = ex.getPathDirection();
+				if (dir.x == 1.0f)
+					yaw = 90.0f;
+				else if (dir.x == -1.0f)
+					yaw = -90.0f;
+				else if (dir.z == -1.0f)
+					yaw = 180.0f;
+				else
+					yaw = 0.0f;
+			}
 			else
+			{
+				position = Camera.main.transform.parent.position;
 				yaw = 0.0f;
+			}
 
 			Camera.main.GetComponent<UltimateFader>().fade(position, yaw);
 

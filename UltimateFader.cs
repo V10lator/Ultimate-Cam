@@ -85,6 +85,7 @@ namespace UltimateCam
 			{
 				case 0:
 					teleportToPosition = to;
+					_yaw = yaw;
 					forward = UltimateFader.active = true;
 					break;
 				case 1:
