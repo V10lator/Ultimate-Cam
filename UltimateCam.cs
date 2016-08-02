@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using Parkitect.UI;
 using UnityEngine;
 
@@ -54,12 +55,17 @@ namespace UltimateCam
 				if (Input.GetMouseButtonUp((int)UltimateMouse.MOUSEBUTTON.LEFT))
 				{
 					Utility.ObjectBelowMouseInfo result = Utility.getObjectBelowMouse();
-
-					if (result.hitObject != null)
+					SerializedMonoBehaviour smb = result.hitObject;
+					if (smb != null)
 					{
-						Attraction attr = result.hitObject.GetComponentInParent<Attraction>();
-						if (attr != null)
-							EnterCoasterCam(attr);
+						if (smb is Seating)
+							EnterCoasterCam((Seats)typeof(Seating).GetField("seats", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(smb));
+						else
+						{
+							Attraction attr = smb.GetComponentInParent<Attraction>();
+							if (attr != null)
+								EnterCoasterCam(attr);
+						}
 					}
 				}
 				else if (Input.GetMouseButtonUp((int)UltimateMouse.MOUSEBUTTON.RIGHT))
@@ -95,21 +101,8 @@ namespace UltimateCam
 				Camera.main.farClipPlane += 0.3f;
 		}
 
-		public void EnterCoasterCam(Attraction attraction)
+		private void EnterCoasterCam(Transform s)
 		{
-			if (!active || UltimateFader.active)
-				return;
-
-			List<Transform> seats = new List<Transform>();
-			Utility.recursiveFindTransformsStartingWith("seat", attraction.transform, seats);
-			if (seats.Count == 0)
-				return;
-			if (++seat >= seats.Count)
-				seat = 0;
-			Transform s = seats[seat];
-			if (s == null)
-				return;
-
 			Camera.main.gameObject.GetComponent<PlayerController>().active = false;
 
 			if (!riding)
@@ -117,7 +110,38 @@ namespace UltimateCam
 				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
 				_riding = true;
 			}
-			Camera.main.GetComponent<UltimateFader>().fade(s.transform);
+			Camera.main.GetComponent<UltimateFader>().fade(s);
+		}
+
+		public void EnterCoasterCam(Seats seats)
+		{
+			if (!active || UltimateFader.active)
+				return;
+
+			if (seats.Count == 0)
+				return;
+			if (++seat >= seats.Count)
+				seat = 0;
+			Transform s = seats[seat].transform;
+			if (s != null)
+				EnterCoasterCam(s);
+		}
+
+		public void EnterCoasterCam(Attraction attraction)
+		{
+			if (!active || UltimateFader.active)
+				return;
+
+			List<Transform> seats = new List<Transform>();
+			Utility.recursiveFindTransformsStartingWith("seat", attraction.transform, seats);
+
+			if (seats.Count == 0)
+				return;
+			if (++seat >= seats.Count)
+				seat = 0;
+			Transform s = seats[seat];
+			if (s != null)
+				EnterCoasterCam(s);
 		}
 
 		private void cleanupCoasterCam()
