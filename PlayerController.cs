@@ -85,22 +85,21 @@ namespace UltimateCam
 					} else
 						result.hitDistance = float.MaxValue;
 				}
-				GameController.Instance.enableAllMouseColliders ();
-				RaycastHit[] array = Physics.RaycastAll (ray, result.hitDistance, LayerMasks.MOUSECOLLIDERS | LayerMasks.TERRAIN);
+				MouseCollider.HitInfo[] array = MouseCollisions.Instance.raycastAll(ray, result.hitDistance);
 				for (int i = 0; i < array.Length; i++) {
-					RaycastHit raycastHit = array [i];
-					if (raycastHit.distance < result.hitDistance) {
-						SerializedMonoBehaviour componentInParent = raycastHit.collider.gameObject.GetComponentInParent<SerializedMonoBehaviour> ();
+					MouseCollider.HitInfo raycastHit = array [i];
+					if (raycastHit.hitDistance < result.hitDistance) {
+						SerializedMonoBehaviour componentInParent = raycastHit.hitObject.GetComponentInParent<SerializedMonoBehaviour>();
 						bool flag = false;
 						if (componentInParent != null && componentInParent.canBeSelected ()) {
 							result.hitObject = componentInParent;
-							result.hitLayerMask = 1 << raycastHit.collider.gameObject.layer;
+							result.hitLayerMask = 1 << raycastHit.hitObject.layer;
 							flag = true;
 						}
 						if (componentInParent == null || flag) {
-							result.hitPosition = raycastHit.point;
-							result.hitDistance = raycastHit.distance;
-							result.hitNormal = raycastHit.normal;
+							result.hitPosition = raycastHit.hitPosition;
+							result.hitDistance = raycastHit.hitDistance;
+							result.hitNormal = raycastHit.hitNormal;
 						}
 						if (componentInParent == null) {
 							result.hitObject = null;
@@ -108,7 +107,6 @@ namespace UltimateCam
 						}
 					}
 				}
-				GameController.Instance.disableMouseColliders ();
 
 				if (result.hitObject != null && result.hitDistance < 0.2f) {
 					Vector3 pos = this.transform.position;
