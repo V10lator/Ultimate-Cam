@@ -59,19 +59,19 @@ namespace UltimateCam
 					if (smb != null)
 					{
 						if (smb is Seating)
-							EnterCoasterCam((Seats)typeof(Seating).GetField("seats", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(smb));
+							EnterSeatCam((Seats)typeof(Seating).GetField("seats", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(smb));
 						else
 						{
 							Attraction attr = smb.GetComponentInParent<Attraction>();
 							if (attr != null)
-								EnterCoasterCam(attr);
+								EnterSeatCam(attr);
 						}
 					}
 				}
 				else if (Input.GetMouseButtonUp((int)UltimateMouse.MOUSEBUTTON.RIGHT))
 				{
 					if (riding)
-						LeaveCoasterCam();
+						LeaveSeatCam();
 					else
 						LeaveHeadCam();
 				}
@@ -101,17 +101,17 @@ namespace UltimateCam
 				Camera.main.farClipPlane += 0.3f;
 		}
 
-		private void EnterCoasterCam(Transform s)
+		private void EnterSeatCam(Transform s)
 		{
 			Camera.main.gameObject.GetComponent<PlayerController>().enabled = false;
 
 			if (!riding)
-				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
+				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveSeatCam));
 			
 			Camera.main.GetComponent<UltimateFader>().fade(s);
 		}
 
-		public void EnterCoasterCam(Seats seats)
+		public void EnterSeatCam(Seats seats)
 		{
 			if (!active || UltimateFader.active)
 				return;
@@ -122,10 +122,10 @@ namespace UltimateCam
 				seat = 0;
 			Transform s = seats[seat].transform;
 			if (s != null)
-				EnterCoasterCam(s);
+				EnterSeatCam(s);
 		}
 
-		public void EnterCoasterCam(Attraction attraction)
+		public void EnterSeatCam(Attraction attraction)
 		{
 			if (!active || UltimateFader.active)
 				return;
@@ -139,16 +139,16 @@ namespace UltimateCam
 				seat = 0;
 			Transform s = seats[seat];
 			if (s != null)
-				EnterCoasterCam(s);
+				EnterSeatCam(s);
 		}
 
-		private void cleanupCoasterCam()
+		private void cleanupSeatCam()
 		{
-			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
+			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveSeatCam));
 			seat = -1;
 		}
 
-		public void LeaveCoasterCam()
+		public void LeaveSeatCam()
 		{
 			if (!active || !riding || UltimateFader.active)
 				return;
@@ -182,7 +182,7 @@ namespace UltimateCam
 
 			Camera.main.GetComponent<UltimateFader>().fade(position, yaw);
 
-			cleanupCoasterCam();
+			cleanupSeatCam();
 		}
 
 		public void EnterHeadCam(Vector3 position)
@@ -234,7 +234,7 @@ namespace UltimateCam
 
 			if (riding)
 			{
-				cleanupCoasterCam();
+				cleanupSeatCam();
 				_riding = false;
 			}
 
