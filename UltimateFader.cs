@@ -7,9 +7,13 @@ namespace UltimateCam
 	{
 		private bool forward;
 		private int step = 0;
+		private Transform teleportToTransform = null;
+		private Vector3 teleportToPosition = Vector3.zero;
 		private Camera[] tmpCams = { null, null };
 		private bool switchTmpCams = false;
+		private bool teleportTmpCam = false;
 		private float alpha = 0.0f;
+		private float _yaw;
 		private bool _destroy;
 		private GameObject toDestroy = null;
 		private bool _disableUI;
@@ -18,6 +22,17 @@ namespace UltimateCam
 
 		internal void fade(Camera from, Camera to, bool destroy, bool disableUI)
 		{
+			if (teleportToTransform != null)
+			{
+				fade(null);
+				return;
+			}
+			if (teleportToPosition != Vector3.zero)
+			{
+				fade(Vector3.zero, 0.0f);
+				return;
+			}
+			
 			switch (step)
 			{
 				case 0:
@@ -43,9 +58,46 @@ namespace UltimateCam
 			step++;
 		}
 
-		internal void fade(GameObject cam, Vector3 to, bool movable)
+		internal void fade(Transform to)
 		{
-			//TODO
+			switch (step)
+			{
+				case 0:
+					teleportToTransform = to;
+					forward = UltimateFader.active = true;
+					break;
+				case 1:
+					forward = false;
+					teleportTmpCam = true;
+					break;
+				default:
+					step = 0;
+					UltimateFader.active = false;
+					teleportToTransform = null;
+					return;
+			}
+			step++;
+		}
+
+		internal void fade(Vector3 to, float yaw)
+		{
+			switch (step)
+			{
+				case 0:
+					teleportToPosition = to;
+					forward = UltimateFader.active = true;
+					break;
+				case 1:
+					forward = false;
+					teleportTmpCam = true;
+					break;
+				default:
+					step = 0;
+					UltimateFader.active = false;
+					teleportToPosition = Vector3.zero;
+					return;
+			}
+			step++;
 		}
 
 		public void OnGUI()
@@ -95,12 +147,32 @@ namespace UltimateCam
 				GameController.Instance.setUICanvasVisibility(UICanvas.UICanvasTag.GameUI, vis);
 				Cursor.lockState = vis ? CursorLockMode.None : CursorLockMode.Locked;
 				Cursor.visible = vis;
-				if(vis)
+				if (vis)
 					GameController.Instance.popGameInputLock();
 				else
 					GameController.Instance.pushGameInputLock();
 
 				switchTmpCams = false;
+			}
+			else if (teleportTmpCam)
+			{
+				if (teleportToTransform != null)
+				{
+					Camera.main.transform.parent = teleportToTransform;
+					Camera.main.transform.localPosition = new Vector3(0, 0.35f, 0.1f);
+					Camera.main.gameObject.GetComponent<UltimateMouse>().reset();
+				}
+				else
+				{
+					Camera.main.transform.parent = null;
+					Camera.main.transform.position = teleportToPosition;
+					UltimateMouse mouse = Camera.main.gameObject.GetComponent<UltimateMouse>();
+					mouse.yaw = _yaw;
+					mouse.pitch = 0.0f;
+					Camera.main.gameObject.GetComponent<PlayerController>().active = true;
+				}
+				teleportTmpCam = false;
+
 			}
 			else if (toDestroy != null)
 			{

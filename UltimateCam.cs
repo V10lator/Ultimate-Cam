@@ -117,9 +117,7 @@ namespace UltimateCam
 				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
 				_riding = true;
 			}
-			Camera.main.transform.parent = s.transform;
-			Camera.main.transform.localPosition = new Vector3(0, 0.35f, 0.1f);
-			Camera.main.gameObject.GetComponent<UltimateMouse>().reset();
+			Camera.main.GetComponent<UltimateFader>().fade(s.transform);
 		}
 
 		private void cleanupCoasterCam()
@@ -137,25 +135,21 @@ namespace UltimateCam
 
 			Vector3 position = ex.centerPosition;
 			position.y += UltimateMain.Instance.config.Height;
-			Camera.main.transform.parent = null;
-			Camera.main.transform.position = position;
 
 			// Path direction to yaw
-			position = ex.getPathDirection();
+			Vector3 dir = ex.getPathDirection();
 			float yaw;
-			if (position.x == 1.0f)
+			if (dir.x == 1.0f)
 				yaw = 90.0f;
-			else if (position.x == -1.0f)
+			else if (dir.x == -1.0f)
 				yaw = -90.0f;
-			else if (position.z == -1.0f)
+			else if (dir.z == -1.0f)
 				yaw = 180.0f;
 			else
 				yaw = 0.0f;
 
-			UltimateMouse mouse = Camera.main.gameObject.GetComponent<UltimateMouse>();
-			mouse.yaw = yaw;
-			mouse.pitch = 0.0f;
-			Camera.main.gameObject.GetComponent<PlayerController>().active = true;
+			Camera.main.GetComponent<UltimateFader>().fade(position, yaw);
+
 			cleanupCoasterCam();
 		}
 
