@@ -19,7 +19,7 @@ namespace UltimateCam
 		private float startX, startZ;
 		public static bool active { get { return Instance.mainCam != null; } }
 		private bool _riding = false;
-		public static bool riding { get { return Instance._riding; } }
+		public static bool riding { get { return Instance._riding; } internal set { Instance._riding = value; } }
 		private bool disableUI;
 		private int seat = -1;
 
@@ -106,10 +106,8 @@ namespace UltimateCam
 			Camera.main.gameObject.GetComponent<PlayerController>().enabled = false;
 
 			if (!riding)
-			{
 				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
-				_riding = true;
-			}
+			
 			Camera.main.GetComponent<UltimateFader>().fade(s);
 		}
 
@@ -148,7 +146,6 @@ namespace UltimateCam
 		{
 			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveCoasterCam));
 			seat = -1;
-			_riding = false;
 		}
 
 		public void LeaveCoasterCam()
@@ -236,7 +233,10 @@ namespace UltimateCam
 				return;
 
 			if (riding)
+			{
 				cleanupCoasterCam();
+				_riding = false;
+			}
 
 			Vector3 mod = Camera.main.gameObject.transform.position;
 			Vector3 position = mainCam.transform.position;
