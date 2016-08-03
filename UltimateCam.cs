@@ -131,7 +131,7 @@ namespace UltimateCam
 			if (!active || !following || UltimateFader.active)
 				return;
 
-			Camera.main.GetComponent<UltimateFader>().fade(Camera.main.transform.parent.position, Camera.main.transform.parent.eulerAngles.y, false);
+			Camera.main.GetComponent<UltimateFader>().fade(Camera.main.transform.parent.position, Camera.main.transform.parent.eulerAngles.y - 90.0f, false);
 
 			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveFollowerCam));
 		}
