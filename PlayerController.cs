@@ -34,10 +34,13 @@ namespace UltimateCam
 
 			// Detect tunnels
 			bool grounded;
-			controller.detectCollisions = true;
 			if (controller.isGrounded || underground)
 			{
-				Block block = GameController.Instance.park.blockData.getBlock(transform.position);
+				Vector3 feet = transform.position;
+				float height = UltimateMain.Instance.config.Height;
+				feet.y -= height;
+				Block block = GameController.Instance.park.blockData.getBlock(feet);
+				bool tunnelExit = false;
 				if (block != null && block is Path)
 				{
 					Path path = (Path)block;
@@ -45,28 +48,17 @@ namespace UltimateCam
 					{
 						if (!underground)
 						{
+							controller.detectCollisions = controller.enableOverlapRecovery = false;
 							underground = true;
-							UltimateMain.Instance.Log("Entering tunnel", UltimateMain.LogLevel.INFO);
 						}
-						float top = block.getTopSideY(transform.position) + UltimateMain.Instance.config.Height;
-						// Tunnel down
-						if (top < transform.position.y)
-							transform.position = new Vector3(transform.position.x, top, transform.position.z);
-						// We somehow felt into the ground (tunnel up?) - fixing...
-						else if (top > transform.position.y)
-						{
-							UltimateMain.Instance.Log("V10DBG: Fixig FTG", UltimateMain.LogLevel.INFO);
-							transform.position = new Vector3(transform.position.x, top, transform.position.z);
-						}
+						float top = block.getTopSideY(feet);
+						if (top < feet.y || top > feet.y) // Tunnel down / We somehow felt into the ground (tunnel up?) - fixing... TODO: This prevents jumping / jetpack
+							transform.position = new Vector3(feet.x, top + height, feet.z);
 						grounded = true;
 					}
 					else
 					{
-						if (underground)
-						{
-							UltimateMain.Instance.Log("V10DBG: Else 2 / End of tunnel", UltimateMain.LogLevel.INFO);
-							underground = false;
-						}
+						tunnelExit = underground;
 						grounded = true;
 					}
 				}
@@ -74,21 +66,25 @@ namespace UltimateCam
 				{
 					if (underground)
 					{
-						UltimateMain.Instance.Log("V10DBG: Else 3 / End of tunnel", UltimateMain.LogLevel.INFO);
-						underground = false;
+						UltimateMain.Instance.Log("Exit 1", UltimateMain.LogLevel.INFO);
+						tunnelExit = true;
+						if (!controller.isGrounded) // Corner case: Walked under the map TODO: The if is always false...
+						{
+							UltimateMain.Instance.Log("Walked under the map, fixing from height " + feet.y + " to height " + GameController.Instance.park.getHeightAt(feet), UltimateMain.LogLevel.INFO);
+							transform.position = new Vector3(feet.x, GameController.Instance.park.getHeightAt(feet) + height, feet.z);
+						}
 					}
 					grounded = true;
 				}
-			}
-			else
-			{
-				if (underground)
+
+				if (tunnelExit)
 				{
-					UltimateMain.Instance.Log("V10DBG: Else 4 / End of tunnel", UltimateMain.LogLevel.INFO);
+					controller.detectCollisions = controller.enableOverlapRecovery = true;
 					underground = false;
 				}
-				grounded = false;
 			}
+			else
+				grounded = false;
 
 			bool falling;
 			if (grounded || UltimateMain.Instance.config.Jetpack)
@@ -98,7 +94,7 @@ namespace UltimateCam
 				moveDirection *= speed * Time.deltaTime;
 
 				bool jump = Input.GetKey(UltimateMain.Instance.config.GetKey(UltimateSettings.JUMP_KEY_SETTING));
-				if (controller.isGrounded)
+				if (grounded)
 				{
 					upSpeed = jump ? 0.1f : 0.0f;
 					moveDirection.y = upSpeed * Time.deltaTime;
