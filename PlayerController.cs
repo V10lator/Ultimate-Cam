@@ -12,6 +12,8 @@ namespace UltimateCam
 		private Vector3 moveDirection = Vector3.zero;
 		private CharacterController controller;
 
+		private bool underground = false;
+
 		// Use this for initialization
 		void Start()
 		{
@@ -32,7 +34,8 @@ namespace UltimateCam
 
 			// Detect tunnels
 			bool grounded;
-			if (controller.isGrounded)
+			controller.detectCollisions = true;
+			if (controller.isGrounded || underground)
 			{
 				Block block = GameController.Instance.park.blockData.getBlock(transform.position);
 				if (block != null && block is Path)
@@ -40,32 +43,52 @@ namespace UltimateCam
 					Path path = (Path)block;
 					if (path.isUnderground())
 					{
+						if (!underground)
+						{
+							underground = true;
+							UltimateMain.Instance.Log("Entering tunnel", UltimateMain.LogLevel.INFO);
+						}
 						float top = block.getTopSideY(transform.position) + UltimateMain.Instance.config.Height;
-						UltimateMain.Instance.Log("V10DBG1: " + top + " vs. " + transform.position.y, UltimateMain.LogLevel.INFO);
 						// Tunnel down
 						if (top < transform.position.y)
-						{
-							UltimateMain.Instance.Log("V10DBG: " + top, UltimateMain.LogLevel.INFO);
 							transform.position = new Vector3(transform.position.x, top, transform.position.z);
-							grounded = true;
-						}
-						// We somehow fall into the ground - fix...
-						else if (transform.position.y - top < 0.05f)
+						// We somehow felt into the ground (tunnel up?) - fixing...
+						else if (top > transform.position.y)
 						{
+							UltimateMain.Instance.Log("V10DBG: Fixig FTG", UltimateMain.LogLevel.INFO);
 							transform.position = new Vector3(transform.position.x, top, transform.position.z);
-							grounded = true;
 						}
-						else
-							grounded = false;
+						grounded = true;
 					}
 					else
+					{
+						if (underground)
+						{
+							UltimateMain.Instance.Log("V10DBG: Else 2 / End of tunnel", UltimateMain.LogLevel.INFO);
+							underground = false;
+						}
 						grounded = true;
+					}
 				}
 				else
+				{
+					if (underground)
+					{
+						UltimateMain.Instance.Log("V10DBG: Else 3 / End of tunnel", UltimateMain.LogLevel.INFO);
+						underground = false;
+					}
 					grounded = true;
+				}
 			}
 			else
+			{
+				if (underground)
+				{
+					UltimateMain.Instance.Log("V10DBG: Else 4 / End of tunnel", UltimateMain.LogLevel.INFO);
+					underground = false;
+				}
 				grounded = false;
+			}
 
 			bool falling;
 			if (grounded || UltimateMain.Instance.config.Jetpack)
