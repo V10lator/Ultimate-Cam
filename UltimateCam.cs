@@ -120,6 +120,7 @@ namespace UltimateCam
 			
 			Camera.main.GetComponent<PlayerController>().enabled = false;
 			Camera.main.GetComponent<UltimateMouse>().enabled = false;
+			person.OnKilled += this.LeaveFollowerCamFast;
 
 			EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveFollowerCam));
 
@@ -128,10 +129,40 @@ namespace UltimateCam
 
 		public void LeaveFollowerCam()
 		{
-			if (!active || !following || UltimateFader.active)
+			LeaveFollowerCam(false);
+		}
+
+		public void LeaveFollowerCamFast()
+		{
+			LeaveFollowerCam(true);
+		}
+
+		internal void cleanupFollowerCam(Vector3 to, float yaw)
+		{
+			Camera.main.transform.GetComponentInParent<Person>().OnKilled -= this.LeaveFollowerCamFast;
+			Camera.main.transform.parent = null;
+			Camera.main.transform.position = to;
+			UltimateMouse mouse = Camera.main.GetComponent<UltimateMouse>();
+			mouse.yaw = yaw;
+			mouse.pitch = 0.0f;
+			Camera.main.GetComponent<PlayerController>().enabled = true;
+			Camera.main.GetComponent<UltimateMouse>().enabled = true;
+			Camera.main.GetComponent<UltimateCross>().enabled = true;
+			UltimateCam.following = false;
+		}
+
+		public void LeaveFollowerCam(bool fast)
+		{
+			if (!active || !following)
 				return;
 
-			Camera.main.GetComponent<UltimateFader>().fade(Camera.main.transform.parent.position, Camera.main.transform.parent.eulerAngles.y - 90.0f, false);
+			if (!fast)
+			{
+				if (!UltimateFader.active)
+					Camera.main.GetComponent<UltimateFader>().fade(Camera.main.transform.parent.position, Camera.main.transform.parent.eulerAngles.y - 90.0f, false);
+			}
+			else
+				cleanupFollowerCam(Camera.main.transform.parent.position, Camera.main.transform.parent.eulerAngles.y - 90.0f);
 
 			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveFollowerCam));
 		}

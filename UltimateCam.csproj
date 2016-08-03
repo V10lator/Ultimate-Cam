@@ -50,6 +50,7 @@
     <Compile Include="UltimateConfigScreen.cs" />
     <Compile Include="UltimateFader.cs" />
     <Compile Include="UltimateCross.cs" />
+    <Compile Include="UltimaleHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UltimateCross.png" />

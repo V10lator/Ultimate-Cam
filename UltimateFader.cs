@@ -180,21 +180,18 @@ namespace UltimateCam
 				}
 				else
 				{
-					Camera.main.transform.parent = null;
-					Camera.main.transform.position = teleportToPosition;
-					UltimateMouse mouse = Camera.main.GetComponent<UltimateMouse>();
-					mouse.yaw = _yaw;
-					mouse.pitch = 0.0f;
-					Camera.main.GetComponent<PlayerController>().enabled = true;
 					if (_sitting)
-						UltimateCam.sitting = false;
-					else
 					{
-						//Camera.main.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-						mouse.enabled = true;
-						Camera.main.GetComponent<UltimateCross>().enabled = true;
-						UltimateCam.following = false;
+						Camera.main.transform.parent = null;
+						Camera.main.transform.position = teleportToPosition;
+						UltimateMouse mouse = Camera.main.GetComponent<UltimateMouse>();
+						mouse.yaw = _yaw;
+						mouse.pitch = 0.0f;
+						Camera.main.GetComponent<PlayerController>().enabled = true;
+						UltimateCam.sitting = false;
 					}
+					else
+						UltimateCam.Instance.cleanupFollowerCam(teleportToPosition, _yaw);
 				}
 				teleportTmpCam = false;
 
