@@ -135,7 +135,7 @@ namespace UltimateCam
 			if (switchTmpCams)
 			{
 				tmpCams[0].enabled = false;
-				UltimateCross uc = tmpCams[0].gameObject.GetComponent<UltimateCross>();
+				UltimateCross uc = tmpCams[0].GetComponent<UltimateCross>();
 				if (uc != null)
 					uc.enabled = false;
 				CameraController cc = tmpCams[1].GetComponent<CameraController>();
@@ -143,7 +143,7 @@ namespace UltimateCam
 					cc.enabled = true;
 				tmpCams[1].enabled = true;
 				CullingGroupManager.Instance.setTargetCamera(tmpCams[1]);
-				uc = tmpCams[1].gameObject.GetComponent<UltimateCross>();
+				uc = tmpCams[1].GetComponent<UltimateCross>();
 				if (uc != null)
 					uc.enabled = true;
 
@@ -164,7 +164,7 @@ namespace UltimateCam
 				if (teleportToTransform != null)
 				{
 					Camera.main.transform.parent = teleportToTransform;
-					Camera.main.gameObject.GetComponent<UltimateMouse>().reset();
+					Camera.main.GetComponent<UltimateMouse>().reset();
 					if (_sitting)
 					{
 						Camera.main.transform.localPosition = new Vector3(0.0f, 0.35f, 0.1f);
@@ -182,10 +182,10 @@ namespace UltimateCam
 				{
 					Camera.main.transform.parent = null;
 					Camera.main.transform.position = teleportToPosition;
-					UltimateMouse mouse = Camera.main.gameObject.GetComponent<UltimateMouse>();
+					UltimateMouse mouse = Camera.main.GetComponent<UltimateMouse>();
 					mouse.yaw = _yaw;
 					mouse.pitch = 0.0f;
-					Camera.main.gameObject.GetComponent<PlayerController>().enabled = true;
+					Camera.main.GetComponent<PlayerController>().enabled = true;
 					if (_sitting)
 						UltimateCam.sitting = false;
 					else

@@ -118,8 +118,8 @@ namespace UltimateCam
 			if (!active || UltimateFader.active)
 				return;
 			
-			Camera.main.gameObject.GetComponent<PlayerController>().enabled = false;
-			Camera.main.gameObject.GetComponent<UltimateMouse>().enabled = false;
+			Camera.main.GetComponent<PlayerController>().enabled = false;
+			Camera.main.GetComponent<UltimateMouse>().enabled = false;
 
 			EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveFollowerCam));
 
@@ -138,7 +138,7 @@ namespace UltimateCam
 
 		private void EnterSeatCam(Transform s)
 		{
-			Camera.main.gameObject.GetComponent<PlayerController>().enabled = false;
+			Camera.main.GetComponent<PlayerController>().enabled = false;
 
 			if (!sitting)
 				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveSeatCam));
@@ -283,11 +283,11 @@ namespace UltimateCam
 			float modZ = mod.z - startZ;
 			position.x += modX;
 			position.z += modZ;
-			Camera.main.gameObject.GetComponent<UltimateMouse>().enabled = false;
-			Camera.main.gameObject.GetComponent<PlayerController>().enabled = false;
+			Camera.main.GetComponent<UltimateMouse>().enabled = false;
+			Camera.main.GetComponent<PlayerController>().enabled = false;
 			mainCam.transform.position = position;
 
-			Camera.main.gameObject.GetComponent<UltimateFader>().fade(Camera.main, mainCam, true, false);
+			Camera.main.GetComponent<UltimateFader>().fade(Camera.main, mainCam, true, false);
 			mainCam = null;
 
 			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveHeadCam));
