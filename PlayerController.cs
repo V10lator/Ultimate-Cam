@@ -19,7 +19,7 @@ namespace UltimateCam
 			gravity = UltimateMain.Instance.config.Gravity;
 
 			controller = GetComponent<CharacterController>();
-			controller.detectCollisions = true;
+			controller.detectCollisions = false;
 		}
 
 		// Update is called once per frame
@@ -30,8 +30,40 @@ namespace UltimateCam
 			else if(Input.GetKey(UltimateMain.Instance.config.GetKey(UltimateSettings.ROTATE_RIGHT_KEY_SETTING)))
 				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw += speed * 50.0f * Time.deltaTime;
 
+			// Detect tunnels
+			bool grounded = false;
+			if (controller.isGrounded)
+			{
+				Block block = GameController.Instance.park.blockData.getBlock(transform.position);
+				if (block != null && block is Path)
+				{
+					Path path = (Path)block;
+					if (path.isUnderground())
+					{
+						float top = block.getTopSideY(transform.position) + UltimateMain.Instance.config.Height;
+						UltimateMain.Instance.Log("V10DBG1: " + top + " vs. " + transform.position.y, UltimateMain.LogLevel.INFO);
+						// Tunnel down
+						if (top < transform.position.y)
+						{
+							UltimateMain.Instance.Log("V10DBG: " + top, UltimateMain.LogLevel.INFO);
+							transform.position = new Vector3(transform.position.x, top, transform.position.z);
+							grounded = true;
+						}
+						// We somehow fall into the ground - fix...
+						else if (transform.position.y - top < 0.05f)
+						{
+							transform.position = new Vector3(transform.position.x, top, transform.position.z);
+							grounded = true;
+						}
+					}
+					else grounded = true;
+				}
+				else
+					grounded = true;
+			}
+
 			bool falling;
-			if (controller.isGrounded || UltimateMain.Instance.config.Jetpack)
+			if (grounded || UltimateMain.Instance.config.Jetpack)
 			{
 				moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
 				moveDirection = transform.TransformDirection(moveDirection);
