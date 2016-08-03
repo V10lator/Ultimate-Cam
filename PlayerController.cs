@@ -19,7 +19,7 @@ namespace UltimateCam
 			gravity = UltimateMain.Instance.config.Gravity;
 
 			controller = GetComponent<CharacterController>();
-			controller.detectCollisions = false;
+			controller.detectCollisions = true;
 		}
 
 		// Update is called once per frame
