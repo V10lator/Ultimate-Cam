@@ -270,11 +270,12 @@ namespace UltimateCam
 			if (sitting)
 			{
 				cleanupSeatCam();
-				_sitting = false;
+				sitting = false;
 			}
 			else if (following)
 			{
-				//TODO
+				EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveFollowerCam));
+				following = false;
 			}
 
 			Vector3 mod = Camera.main.gameObject.transform.position;
