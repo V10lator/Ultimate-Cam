@@ -31,7 +31,7 @@ namespace UltimateCam
 				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw += speed * 50.0f * Time.deltaTime;
 
 			// Detect tunnels
-			bool grounded = false;
+			bool grounded;
 			if (controller.isGrounded)
 			{
 				Block block = GameController.Instance.park.blockData.getBlock(transform.position);
@@ -55,12 +55,17 @@ namespace UltimateCam
 							transform.position = new Vector3(transform.position.x, top, transform.position.z);
 							grounded = true;
 						}
+						else
+							grounded = false;
 					}
-					else grounded = true;
+					else
+						grounded = true;
 				}
 				else
 					grounded = true;
 			}
+			else
+				grounded = false;
 
 			bool falling;
 			if (grounded || UltimateMain.Instance.config.Jetpack)
