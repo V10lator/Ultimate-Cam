@@ -20,6 +20,9 @@ namespace UltimateCam
 		public static bool active { get { return Instance.mainCam != null; } }
 		private bool _sitting = false;
 		public static bool sitting { get { return Instance._sitting; } internal set { Instance._sitting = value; } }
+		private bool _following = false;
+		public static bool following { get { return Instance._following; } internal set { Instance._following = value; } }
+
 		private bool disableUI;
 		private int seat = -1;
 
@@ -52,7 +55,7 @@ namespace UltimateCam
 			}
 			else if(active)
 			{
-				if (Input.GetMouseButtonUp((int)UltimateMouse.MOUSEBUTTON.LEFT))
+				if (!following && Input.GetMouseButtonUp((int)UltimateMouse.MOUSEBUTTON.LEFT))
 				{
 					Utility.ObjectBelowMouseInfo result = Utility.getObjectBelowMouse();
 					SerializedMonoBehaviour smb = result.hitObject;
@@ -60,11 +63,18 @@ namespace UltimateCam
 					{
 						if (smb is Seating)
 							EnterSeatCam((Seats)typeof(Seating).GetField("seats", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(smb));
-						else
+						else if (smb is Person)
+							EnterFollowerCam((Person)smb);
 						{
 							Attraction attr = smb.GetComponentInParent<Attraction>();
 							if (attr != null)
 								EnterSeatCam(attr);
+							else
+							{
+								Person person = smb.GetComponentInParent<Person>();
+								if (person != null)
+									EnterFollowerCam(person);
+							}
 						}
 					}
 				}
@@ -72,6 +82,8 @@ namespace UltimateCam
 				{
 					if (sitting)
 						LeaveSeatCam();
+					else if (following)
+						LeaveFollowerCam();
 					else
 						LeaveHeadCam();
 				}
@@ -101,6 +113,29 @@ namespace UltimateCam
 				Camera.main.farClipPlane += 0.3f;
 		}
 
+		public void EnterFollowerCam(Person person)
+		{
+			if (!active || UltimateFader.active)
+				return;
+			
+			Camera.main.gameObject.GetComponent<PlayerController>().enabled = false;
+			Camera.main.gameObject.GetComponent<UltimateMouse>().enabled = false;
+
+			EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveFollowerCam));
+
+			Camera.main.GetComponent<UltimateFader>().fade(person.head, false);
+		}
+
+		public void LeaveFollowerCam()
+		{
+			if (!active || !following || UltimateFader.active)
+				return;
+
+			Camera.main.GetComponent<UltimateFader>().fade(Camera.main.transform.parent.position, Camera.main.transform.parent.eulerAngles.y, false);
+
+			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveFollowerCam));
+		}
+
 		private void EnterSeatCam(Transform s)
 		{
 			Camera.main.gameObject.GetComponent<PlayerController>().enabled = false;
@@ -108,7 +143,7 @@ namespace UltimateCam
 			if (!sitting)
 				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveSeatCam));
 			
-			Camera.main.GetComponent<UltimateFader>().fade(s);
+			Camera.main.GetComponent<UltimateFader>().fade(s, true);
 		}
 
 		public void EnterSeatCam(Seats seats)
@@ -180,7 +215,7 @@ namespace UltimateCam
 				yaw = Camera.main.transform.parent.eulerAngles.y;
 			}
 
-			Camera.main.GetComponent<UltimateFader>().fade(position, yaw);
+			Camera.main.GetComponent<UltimateFader>().fade(position, yaw, true);
 
 			cleanupSeatCam();
 		}
@@ -194,7 +229,7 @@ namespace UltimateCam
 			headCam.layer = LayerMasks.ID_DEFAULT;
 
 			Camera cam = headCam.AddComponent<Camera>();
-			cam.nearClipPlane = 0.025f; // 0.05
+			cam.nearClipPlane = 0.0275f; // 0.025
 			cam.farClipPlane = UltimateMain.Instance.config.ViewDistance;
 			cam.fieldOfView = UltimateMain.Instance.config.FoV;
 			cam.depthTextureMode = DepthTextureMode.DepthNormals;
@@ -236,6 +271,10 @@ namespace UltimateCam
 			{
 				cleanupSeatCam();
 				_sitting = false;
+			}
+			else if (following)
+			{
+				//TODO
 			}
 
 			Vector3 mod = Camera.main.gameObject.transform.position;

@@ -17,6 +17,7 @@ namespace UltimateCam
 		private bool _destroy;
 		private GameObject toDestroy = null;
 		private bool _disableUI;
+		private bool _sitting;
 
 		internal static bool active = false;
 
@@ -24,12 +25,12 @@ namespace UltimateCam
 		{
 			if (teleportToTransform != null)
 			{
-				fade(null);
+				fade(null, false);
 				return;
 			}
 			if (teleportToPosition != Vector3.zero)
 			{
-				fade(Vector3.zero, 0.0f);
+				fade(Vector3.zero, 0.0f, false);
 				return;
 			}
 			
@@ -58,12 +59,13 @@ namespace UltimateCam
 			step++;
 		}
 
-		internal void fade(Transform to)
+		internal void fade(Transform to, bool sitting)
 		{
 			switch (step)
 			{
 				case 0:
 					teleportToTransform = to;
+					_sitting = sitting;
 					forward = UltimateFader.active = true;
 					break;
 				case 1:
@@ -79,13 +81,14 @@ namespace UltimateCam
 			step++;
 		}
 
-		internal void fade(Vector3 to, float yaw)
+		internal void fade(Vector3 to, float yaw, bool sitting)
 		{
 			switch (step)
 			{
 				case 0:
 					teleportToPosition = to;
 					_yaw = yaw;
+					_sitting = sitting;
 					forward = UltimateFader.active = true;
 					break;
 				case 1:
@@ -161,9 +164,19 @@ namespace UltimateCam
 				if (teleportToTransform != null)
 				{
 					Camera.main.transform.parent = teleportToTransform;
-					Camera.main.transform.localPosition = new Vector3(0, 0.35f, 0.1f);
 					Camera.main.gameObject.GetComponent<UltimateMouse>().reset();
-					UltimateCam.sitting = true;
+					if (_sitting)
+					{
+						Camera.main.transform.localPosition = new Vector3(0.0f, 0.35f, 0.1f);
+						UltimateCam.sitting = true;
+					}
+					else
+					{
+						Camera.main.transform.localPosition = new Vector3(-0.1f, -0.1f, 0.0f);
+						Camera.main.transform.localRotation = Quaternion.Euler(90.0f, 0.0f, 90.0f);
+						Camera.main.GetComponent<UltimateCross>().enabled = false;
+						UltimateCam.following = true;
+					}
 				}
 				else
 				{
@@ -173,7 +186,15 @@ namespace UltimateCam
 					mouse.yaw = _yaw;
 					mouse.pitch = 0.0f;
 					Camera.main.gameObject.GetComponent<PlayerController>().enabled = true;
-					UltimateCam.sitting = false;
+					if (_sitting)
+						UltimateCam.sitting = false;
+					else
+					{
+						//Camera.main.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+						mouse.enabled = true;
+						Camera.main.GetComponent<UltimateCross>().enabled = true;
+						UltimateCam.following = false;
+					}
 				}
 				teleportTmpCam = false;
 
