@@ -34,56 +34,61 @@ namespace UltimateCam.Internal
 
 			// Detect tunnels
 			bool grounded;
-			if (controller.isGrounded || underground)
+			if (config.TunnelMode)
 			{
-				Vector3 feet = transform.position;
-				float height = UltimateMain.Instance.config.Height;
-				feet.y -= height;
-				Park park = GameController.Instance.park;
-				Block block = park.blockData.getBlock(feet);
-				bool texit = false;
-				if (block != null && block is Path)
+				if (controller.isGrounded || underground)
 				{
-					float top = block.getTopSideY(feet);
-					if (top < park.getHeightAt(feet))
+					Vector3 feet = transform.position;
+					float height = UltimateMain.Instance.config.Height;
+					feet.y -= height;
+					Park park = GameController.Instance.park;
+					Block block = park.blockData.getBlock(feet);
+					bool texit = false;
+					if (block != null && block is Path)
 					{
-						if (!underground)
+						float top = block.getTopSideY(feet);
+						if (top < park.getHeightAt(feet))
 						{
-							controller.detectCollisions = controller.enableOverlapRecovery = false;
-							underground = true;
-						}
+							if (!underground)
+							{
+								controller.detectCollisions = controller.enableOverlapRecovery = false;
+								underground = true;
+							}
 
-						if (top < feet.y || top > feet.y) // Tunnel down || We somehow felt into the ground (tunnel up?) - fixing... TODO: This prevents jumping / jetpack
-						{
-							transform.position = new Vector3(feet.x, top + height, feet.z);
-							grounded = true;
+							if (top < feet.y || top > feet.y) // Tunnel down || We somehow felt into the ground (tunnel up?) - fixing... TODO: This prevents jumping / jetpack
+							{
+								transform.position = new Vector3(feet.x, top + height, feet.z);
+								grounded = true;
+							}
+							else // All fine
+								grounded = true;
 						}
-						else // All fine
-							grounded = true;
+						else
+						{
+							texit = true;
+							grounded = controller.isGrounded;
+						}
 					}
 					else
 					{
-						texit = true;
-						grounded = controller.isGrounded;
+						if (block == null && controller.isGrounded) // Corner case: Walked under the map
+							transform.position = new Vector3(feet.x, park.getHeightAt(feet) + height, feet.z);
+						if (underground)
+							texit = true;
+						grounded = true;
+					}
+
+					if (texit && underground)
+					{
+						controller.detectCollisions = controller.enableOverlapRecovery = true;
+						underground = false;
 					}
 				}
 				else
-				{
-					if (block == null && controller.isGrounded) // Corner case: Walked under the map
-						transform.position = new Vector3(feet.x, park.getHeightAt(feet) + height, feet.z);
-					if (underground)
-						texit = true;
-					grounded = true;
-				}
-
-				if (texit && underground)
-				{
-					controller.detectCollisions = controller.enableOverlapRecovery = true;
-					underground = false;
-				}
+					grounded = false;
 			}
 			else
-				grounded = false;
+				grounded = controller.isGrounded;
 
 			bool falling;
 			bool jetpack;

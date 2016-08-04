@@ -9,7 +9,7 @@ namespace UltimateCam.API
 {
 	public class UltimateSettings
 	{
-		private const int CONFIG_VERSION = 5;
+		private const int CONFIG_VERSION = 6;
 
 		private Dictionary<string, object> settingsValueDictionary = new Dictionary<string, object>();
 
@@ -49,6 +49,8 @@ namespace UltimateCam.API
 		internal const bool DEFAULT_EXPERIMENTAL = false;
 		internal const string MORE_COLS_SETTING = "More collisions";
 		internal const bool DEFAULT_MORE_COLS = false;
+		internal const string TUNNEL_SETTING = "Tunnel mode";
+		internal const bool DEFAULT_TUNNEL = false;
 
 		private string _file = null;
 		private string file
@@ -128,13 +130,25 @@ namespace UltimateCam.API
 			}
 		}
 
+		public bool Jetpack
+		{
+			get
+			{
+				return bool.Parse(settingsValueDictionary[JETPACK_SETTING].ToString());
+			}
+			set
+			{
+				SetSetting(JETPACK_SETTING, value);
+			}
+		}
+
 		public bool Experimental {
 			get {
 				return bool.Parse (settingsValueDictionary [EXPERIMENTAL_SETTING].ToString ());
 			}
 			set {
 				if(value == false)
-					MoreCols = false;
+					MoreCols = TunnelMode = false;
 				SetSetting (EXPERIMENTAL_SETTING, value);
 			}
 		}
@@ -151,15 +165,15 @@ namespace UltimateCam.API
 			}
 		}
 
-		public bool Jetpack
+		public bool TunnelMode
 		{
 			get
 			{
-				return bool.Parse(settingsValueDictionary[JETPACK_SETTING].ToString());
+				return bool.Parse(settingsValueDictionary[TUNNEL_SETTING].ToString());
 			}
 			set
 			{
-				SetSetting(JETPACK_SETTING, value);
+				SetSetting(TUNNEL_SETTING, value);
 			}
 		}
 
@@ -287,9 +301,10 @@ namespace UltimateCam.API
 
 			validateBoolSetting (HDR_SETTING, DEFAULT_HDR);
 			validateBoolSetting (CROSSHAIR_SETTING, DEFAULT_CROSSHAIR);
+			validateBoolSetting (JETPACK_SETTING, DEFAULT_JETPACK);
 			validateBoolSetting (EXPERIMENTAL_SETTING, DEFAULT_EXPERIMENTAL);
-			validateBoolSetting(MORE_COLS_SETTING, DEFAULT_MORE_COLS);
-			validateBoolSetting(JETPACK_SETTING, DEFAULT_JETPACK);
+			validateBoolSetting (MORE_COLS_SETTING, DEFAULT_MORE_COLS);
+			validateBoolSetting (TUNNEL_SETTING, DEFAULT_TUNNEL);
 		}
 
 		private void validateKeySetting(string setting)
