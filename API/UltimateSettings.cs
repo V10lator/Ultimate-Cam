@@ -7,15 +7,17 @@ using UnityEngine;
 
 namespace UltimateCam.API
 {
-	internal class UltimateSettings
+	public class UltimateSettings
 	{
 		private const int CONFIG_VERSION = 5;
 
 		private Dictionary<string, object> settingsValueDictionary = new Dictionary<string, object>();
-		internal const string TOGGLE_KEY_SETTING = "Toggle key";
-		internal const string JUMP_KEY_SETTING = "Jump key";
-		internal const string ROTATE_LEFT_KEY_SETTING = "Rotate left";
-		internal const string ROTATE_RIGHT_KEY_SETTING = "Rotate right";
+
+		public const string TOGGLE_KEY_SETTING = "Toggle key";
+		public const string JUMP_KEY_SETTING = "Jump key";
+		public const string ROTATE_LEFT_KEY_SETTING = "Rotate left";
+		public const string ROTATE_RIGHT_KEY_SETTING = "Rotate right";
+
 		internal const string HEIGHT_SETTING = "Player height";
 		internal const float MIN_HEIGHT = 0.3f;
 		internal const float MAX_HEIGHT = 2.0f;
@@ -60,7 +62,7 @@ namespace UltimateCam.API
 
 		private bool needSave = false;
 
-		internal float Height {
+		public float Height {
 			get {
 				return float.Parse (settingsValueDictionary[HEIGHT_SETTING].ToString ());
 			}
@@ -69,7 +71,7 @@ namespace UltimateCam.API
 			}
 		}
 
-		internal float FoV {
+		public float FoV {
 			get {
 				return float.Parse (settingsValueDictionary[FOV_SETTING].ToString ());
 			}
@@ -78,7 +80,7 @@ namespace UltimateCam.API
 			}
 		}
 
-		internal float ViewDistance {
+		public float ViewDistance {
 			get {
 				return float.Parse (settingsValueDictionary[VD_SETTING].ToString ());
 			}
@@ -87,7 +89,7 @@ namespace UltimateCam.API
 			}
 		}
 
-		internal bool HDR {
+		public bool HDR {
 			get {
 				return bool.Parse (settingsValueDictionary [HDR_SETTING].ToString ());
 			}
@@ -96,7 +98,7 @@ namespace UltimateCam.API
 			}
 		}
 
-		internal bool Crosshair
+		public bool Crosshair
 		{
 			get
 			{
@@ -108,7 +110,7 @@ namespace UltimateCam.API
 			}
 		}
 
-		internal float WalkingSpeed {
+		public float WalkingSpeed {
 			get {
 				return float.Parse (settingsValueDictionary[SPEED_SETTING].ToString ());
 			}
@@ -117,7 +119,7 @@ namespace UltimateCam.API
 			}
 		}
 
-		internal float Gravity {
+		public float Gravity {
 			get {
 				return float.Parse (settingsValueDictionary[GRAVITY_SETTING].ToString ());
 			}
@@ -126,7 +128,7 @@ namespace UltimateCam.API
 			}
 		}
 
-		internal bool Experimental {
+		public bool Experimental {
 			get {
 				return bool.Parse (settingsValueDictionary [EXPERIMENTAL_SETTING].ToString ());
 			}
@@ -137,7 +139,7 @@ namespace UltimateCam.API
 			}
 		}
 
-		internal bool MoreCols
+		public bool MoreCols
 		{
 			get
 			{
@@ -149,7 +151,7 @@ namespace UltimateCam.API
 			}
 		}
 
-		internal bool Jetpack
+		public bool Jetpack
 		{
 			get
 			{
@@ -214,7 +216,7 @@ namespace UltimateCam.API
 			_file = null;
 		}
 
-		internal void WriteSettingsFile()
+		public void WriteSettingsFile()
 		{
 			if (!needSave)
 				return;
@@ -336,7 +338,7 @@ namespace UltimateCam.API
 			}
 		}
 
-		internal KeyCode GetKey(string key)
+		public KeyCode GetKey(string key)
 		{
 			object ok;
 			KeyCode ret = KeyCode.None;
