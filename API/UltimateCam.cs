@@ -8,44 +8,38 @@ namespace UltimateCam.API
 {
 	public class UltimateCam : MonoBehaviour
 	{
-		private static UltimateCam _Instance = null;
 		public static UltimateCam Instance
 		{
-			get
-			{
-				return _Instance;
-			}
+			get;
+			private set;
 		}
 		private Camera mainCam = null;
 		private float startX, startZ;
-		public static bool active { get { return Instance.mainCam != null; } }
-		private bool _sitting = false;
-		public static bool sitting { get { return Instance._sitting; } internal set { Instance._sitting = value; } }
-		private bool _following = false;
-		public static bool following { get { return Instance._following; } internal set { Instance._following = value; } }
+		public static bool active {get { return Instance.mainCam != null; } }
+		public static bool sitting {
+			get;
+			internal set;
+		}
+		public static bool following {
+			get;
+			internal set;
+		}
 
 		private bool disableUI;
 		private int seat = -1;
 
 		internal UltimateMouse mouse;
 
-		private UltimateSettings _config;
 		public UltimateSettings config
 		{
-			get
-			{
-				return _config;
-			}
-			private set
-			{
-				_config = value;
-			}
+			get;
+			private set;
 		}
 
 		void Awake()
 		{
 			config = UltimateMain.Instance.config;
-			_Instance = this;
+			Instance = this;
 			DontDestroyOnLoad(gameObject);
 		}
 
@@ -355,7 +349,7 @@ namespace UltimateCam.API
 		{
 			LeaveHeadCam();
 			config = null;
-			_Instance = null;
+			Instance = null;
 		}
 	}
 }
