@@ -131,7 +131,7 @@ namespace UltimateCam
 			}
 			set {
 				if(value == false)
-					MoreCols = Jetpack = false;
+					MoreCols = false;
 				SetSetting (EXPERIMENTAL_SETTING, value);
 			}
 		}
