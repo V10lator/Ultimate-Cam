@@ -66,13 +66,9 @@ namespace UltimateCam.Internal
 				{
 					if (underground)
 					{
-						UltimateMain.Instance.Log("Exit 1", UltimateMain.LogLevel.INFO);
 						tunnelExit = true;
-						if (!controller.isGrounded) // Corner case: Walked under the map TODO: The if is always false...
-						{
-							UltimateMain.Instance.Log("Walked under the map, fixing from height " + feet.y + " to height " + GameController.Instance.park.getHeightAt(feet), UltimateMain.LogLevel.INFO);
+						if (block == null && controller.isGrounded) // Corner case: Walked under the map
 							transform.position = new Vector3(feet.x, GameController.Instance.park.getHeightAt(feet) + height, feet.z);
-						}
 					}
 					grounded = true;
 				}
