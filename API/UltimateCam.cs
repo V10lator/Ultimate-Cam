@@ -132,6 +132,12 @@ namespace UltimateCam.API
 		{
 			if (!active || UltimateFader.active)
 				return;
+
+			if (sitting)
+			{
+				cleanupSeatCam();
+				sitting = false;
+			}
 			
 			Camera.main.GetComponent<PlayerController>().enabled = false;
 			Camera.main.GetComponent<UltimateMouse>().enabled = false;
