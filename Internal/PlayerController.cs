@@ -83,6 +83,7 @@ namespace UltimateCam.Internal
 				grounded = false;
 
 			bool falling;
+			bool jetpack;
 			if (grounded || config.Jetpack)
 			{
 				moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
@@ -94,7 +95,7 @@ namespace UltimateCam.Internal
 				{
 					upSpeed = jump ? 0.1f : 0.0f;
 					moveDirection.y = upSpeed * Time.deltaTime;
-					falling = false;
+					falling = jetpack = false;
 				}
 				else // config.Jetpack
 				{
@@ -106,13 +107,21 @@ namespace UltimateCam.Internal
 					}
 					else
 						falling = true;
+					jetpack = true;
 				}
 			}
 			else
+			{
 				falling = true;
+				jetpack = false;
+			}
 
 			if (falling)
+			{
 				upSpeed -= config.Gravity * Time.deltaTime;
+				if (!jetpack)
+					moveDirection *= 0.999f;
+			}
 
 			moveDirection.y = upSpeed;
 
