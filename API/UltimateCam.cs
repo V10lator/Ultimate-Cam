@@ -27,7 +27,18 @@ namespace UltimateCam.API
 		private bool disableUI;
 		private int seat = -1;
 
-		private UltimateSettings config;
+		private UltimateSettings _config;
+		public UltimateSettings config
+		{
+			get
+			{
+				return _config;
+			}
+			private set
+			{
+				_config = value;
+			}
+		}
 
 		void Awake()
 		{
