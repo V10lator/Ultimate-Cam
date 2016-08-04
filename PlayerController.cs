@@ -21,7 +21,7 @@ namespace UltimateCam
 			gravity = UltimateMain.Instance.config.Gravity;
 
 			controller = GetComponent<CharacterController>();
-			controller.detectCollisions = true;
+			controller.detectCollisions = controller.enableOverlapRecovery = true;
 		}
 
 		// Update is called once per frame
