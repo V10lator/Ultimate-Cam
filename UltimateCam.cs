@@ -26,8 +26,11 @@ namespace UltimateCam
 		private bool disableUI;
 		private int seat = -1;
 
+		private UltimateSettings config;
+
 		void Awake()
 		{
+			config = UltimateMain.Instance.config;
 			_Instance = this;
 			DontDestroyOnLoad(gameObject);
 		}
@@ -38,7 +41,7 @@ namespace UltimateCam
 			if (gc.isLoadingGame || gc.isQuittingGame || OptionsMenu.instance != null || UIWindowsController.Instance.getWindows().Count > 0)
 				return;
 
-			if (Input.GetKeyUp(UltimateMain.Instance.config.GetKey(UltimateSettings.TOGGLE_KEY_SETTING)))
+			if (Input.GetKeyUp(config.GetKey(UltimateSettings.TOGGLE_KEY_SETTING)))
 			{
 				if (!active)
 				{
@@ -46,7 +49,7 @@ namespace UltimateCam
 					if (mi.hitSomething)
 					{
 						Vector3 vec = mi.hitPosition;
-						vec.Set(vec.x, vec.y + UltimateMain.Instance.config.Height, vec.z);
+						vec.Set(vec.x, vec.y + config.Height, vec.z);
 						EnterHeadCam(vec);
 					}
 				}
@@ -107,9 +110,9 @@ namespace UltimateCam
 		{
 			float fps = 1.0f / Time.deltaTime;
 
-			if (fps < 27 && Camera.main.farClipPlane > UltimateMain.Instance.config.ViewDistance / 1.25f)
+			if (fps < 27 && Camera.main.farClipPlane > config.ViewDistance / 1.25f)
 				Camera.main.farClipPlane -= 0.3f;
-			else if (fps > 28 && Camera.main.farClipPlane < UltimateMain.Instance.config.ViewDistance)
+			else if (fps > 28 && Camera.main.farClipPlane < config.ViewDistance)
 				Camera.main.farClipPlane += 0.3f;
 		}
 
@@ -227,7 +230,7 @@ namespace UltimateCam
 				Exit ex = attr.getRandomExit();
 
 				position = ex.centerPosition;
-				position.y += UltimateMain.Instance.config.Height;
+				position.y += config.Height;
 
 				// Path direction to yaw
 				Vector3 dir = ex.getPathDirection();
@@ -261,22 +264,22 @@ namespace UltimateCam
 
 			Camera cam = headCam.AddComponent<Camera>();
 			cam.nearClipPlane = 0.0275f; // 0.025
-			cam.farClipPlane = UltimateMain.Instance.config.ViewDistance;
-			cam.fieldOfView = UltimateMain.Instance.config.FoV;
+			cam.farClipPlane = config.ViewDistance;
+			cam.fieldOfView = config.FoV;
 			cam.depthTextureMode = DepthTextureMode.DepthNormals;
-			cam.hdr = UltimateMain.Instance.config.HDR;
+			cam.hdr = config.HDR;
 			cam.orthographic = false;
 			headCam.AddComponent<AudioListener>();
 			headCam.AddComponent<UltimateMouse>();
 			headCam.AddComponent<PlayerController>();
 			UltimateFader fader = headCam.AddComponent<UltimateFader>();
-			if (UltimateMain.Instance.config.Crosshair)
+			if (config.Crosshair)
 				headCam.AddComponent<UltimateCross>().enabled = false;
 
 			CharacterController cc = headCam.AddComponent<CharacterController>();
 			cc.radius = 0.1f;
-			cc.height = UltimateMain.Instance.config.Height; //UltimateMain.Instance.height;
-			float h = UltimateMain.Instance.config.Height / 2.0f;
+			cc.height = config.Height;
+			float h = cc.height / 2.0f;
 			cc.center = new Vector3(0.0f, -h, 0.0f);
 			cc.slopeLimit = 60.0f;
 			cc.stepOffset = h;
@@ -328,6 +331,7 @@ namespace UltimateCam
 		void OnDestroy()
 		{
 			LeaveHeadCam();
+			config = null;
 			_Instance = null;
 		}
 	}
