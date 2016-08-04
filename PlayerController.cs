@@ -4,9 +4,6 @@ namespace UltimateCam
 {
 	internal class PlayerController : MonoBehaviour
 	{
-		private float speed; // = 7.0f;
-		private float gravity; // = 20.0f;
-
 		private float upSpeed = 0.0f;
 
 		private Vector3 moveDirection = Vector3.zero;
@@ -17,8 +14,6 @@ namespace UltimateCam
 		void Start()
 		{
 			config = UltimateMain.Instance.config;
-			speed = config.WalkingSpeed;
-			gravity = config.Gravity;
 
 			controller = GetComponent<CharacterController>();
 			controller.detectCollisions = controller.enableOverlapRecovery = true;
@@ -27,10 +22,12 @@ namespace UltimateCam
 		// Update is called once per frame
 		void Update()
 		{
+			float speed = config.WalkingSpeed * 50.0f * Time.deltaTime;
 			if (Input.GetKey(config.GetKey(UltimateSettings.ROTATE_LEFT_KEY_SETTING)))
-				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw -= speed * 50.0f * Time.deltaTime;
+				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw -= speed;
 			else if(Input.GetKey(config.GetKey(UltimateSettings.ROTATE_RIGHT_KEY_SETTING)))
-				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw += speed * 50.0f * Time.deltaTime;
+				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw += speed;
+			speed = config.WalkingSpeed;
 
 			bool falling;
 			if (controller.isGrounded || config.Jetpack)
@@ -62,7 +59,7 @@ namespace UltimateCam
 				falling = true;
 
 			if (falling)
-				upSpeed -= gravity * Time.deltaTime;
+				upSpeed -= config.Gravity * Time.deltaTime;
 
 			moveDirection.y = upSpeed;
 
@@ -151,7 +148,6 @@ namespace UltimateCam
 		// Set everything to 0 / null so it can be garbage collected
 		void OnDestroy()
 		{
-			speed = gravity = 0.0f;
 			moveDirection = Vector3.zero;
 			config = null;
 			controller = null;
