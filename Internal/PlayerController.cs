@@ -11,7 +11,8 @@ namespace UltimateCam.Internal
 		private UltimateSettings config;
 		private CharacterController controller;
 
-		private bool underground = false;
+		private bool tunnelGate = false;
+		private bool inTunnel = false;
 
 		// Use this for initialization
 		void Start()
@@ -34,15 +35,18 @@ namespace UltimateCam.Internal
 
 			// Detect tunnels
 			bool grounded;
+			Vector3 feet = transform.position;
+			float height = 0.0f;
+			Park park = null;
+			Block block = null;
 			if (config.TunnelMode)
 			{
-				if (controller.isGrounded || underground)
+				if (controller.isGrounded || tunnelGate)
 				{
-					Vector3 feet = transform.position;
-					float height = UltimateMain.Instance.config.Height;
+					height = UltimateMain.Instance.config.Height;
 					feet.y -= height;
-					Park park = GameController.Instance.park;
-					Block block = park.blockData.getBlock(feet);
+					park = GameController.Instance.park;
+					block = park.blockData.getBlock(feet);
 					bool texit = false;
 					if (block != null && block is Path)
 					{
@@ -50,10 +54,10 @@ namespace UltimateCam.Internal
 						float th = park.getHeightAt(feet);
 						if (top < th && top + 0.95f >= th)
 						{
-							if (!underground)
+							if (!tunnelGate)
 							{
 								controller.detectCollisions = controller.enableOverlapRecovery = false;
-								underground = true;
+								tunnelGate = true;
 							}
 
 							if (top < feet.y || top > feet.y) // Tunnel down || We somehow felt into the ground (tunnel up?) - fixing... TODO: This prevents jumping / jetpack
@@ -72,17 +76,16 @@ namespace UltimateCam.Internal
 					}
 					else
 					{
-						if (block == null && controller.isGrounded) // Corner case: Walked under the map
-							transform.position = new Vector3(feet.x, park.getHeightAt(feet) + height, feet.z);
-						if (underground)
+						if (tunnelGate)
 							texit = true;
 						grounded = true;
 					}
 
-					if (texit && underground)
+					if (texit && tunnelGate)
 					{
 						controller.detectCollisions = controller.enableOverlapRecovery = true;
-						underground = false;
+						inTunnel = !inTunnel;
+						tunnelGate = false;
 					}
 				}
 				else
@@ -90,6 +93,13 @@ namespace UltimateCam.Internal
 			}
 			else
 				grounded = controller.isGrounded;
+
+			if (config.TunnelMode && block == null && controller.isGrounded && (tunnelGate || inTunnel)) // Corner case: Walked under the map
+			{
+				transform.position = new Vector3(feet.x, park.getHeightAt(feet) + height, feet.z);
+				controller.detectCollisions = controller.enableOverlapRecovery = true;
+				tunnelGate = inTunnel = false;
+			}
 
 			bool falling;
 			bool jetpack;
