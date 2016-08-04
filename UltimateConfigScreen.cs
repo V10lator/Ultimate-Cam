@@ -127,6 +127,13 @@ namespace UltimateCam
 			config.Crosshair = GUILayout.Toggle(config.Crosshair, "", toggleWidth);
 			GUILayout.EndHorizontal();
 
+			// Jetpack?
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(UltimateSettings.JETPACK_SETTING + "?", minWidth);
+			GUILayout.FlexibleSpace();
+			config.Jetpack = GUILayout.Toggle(config.Jetpack, "", toggleWidth);
+			GUILayout.EndHorizontal();
+
 			// Experimental?
 			GUILayout.BeginHorizontal();
 			GUILayout.Label(UltimateSettings.EXPERIMENTAL_SETTING + "?", minWidth);
@@ -141,13 +148,6 @@ namespace UltimateCam
 				GUILayout.Label(UltimateSettings.MORE_COLS_SETTING + "?", minWidth);
 				GUILayout.FlexibleSpace();
 				config.MoreCols = GUILayout.Toggle(config.MoreCols, "", toggleWidth);
-				GUILayout.EndHorizontal();
-
-				// Jetpack?
-				GUILayout.BeginHorizontal();
-				GUILayout.Label(UltimateSettings.JETPACK_SETTING + "?", minWidth);
-				GUILayout.FlexibleSpace();
-				config.Jetpack = GUILayout.Toggle(config.Jetpack, "", toggleWidth);
 				GUILayout.EndHorizontal();
 			}
 		}

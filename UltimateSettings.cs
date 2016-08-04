@@ -39,13 +39,13 @@ namespace UltimateCam
 		internal const float MIN_GRAVITY = 0.005f;
 		internal const float MAX_GRAVITY = 3.0f; // 30 * 0.1
 		internal const float DEFAULT_GRAVITY = 0.25f;
+		internal const string JETPACK_SETTING = "Jetpack mode";
+		internal const bool DEFAULT_JETPACK = false;
 
 		internal const string EXPERIMENTAL_SETTING = "Experimental";
 		internal const bool DEFAULT_EXPERIMENTAL = false;
 		internal const string MORE_COLS_SETTING = "More collisions";
 		internal const bool DEFAULT_MORE_COLS = false;
-		internal const string JETPACK_SETTING = "Jetpack mode";
-		internal const bool DEFAULT_JETPACK = false;
 
 		private string _file = null;
 		private string file
