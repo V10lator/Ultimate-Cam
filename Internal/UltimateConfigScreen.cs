@@ -150,6 +150,13 @@ namespace UltimateCam.Internal
 				GUILayout.FlexibleSpace();
 				config.MoreCols = GUILayout.Toggle(config.MoreCols, "", toggleWidth);
 				GUILayout.EndHorizontal();
+
+				// Tunnel mode?
+				GUILayout.BeginHorizontal();
+				GUILayout.Label(UltimateSettings.TUNNEL_SETTING + "?", minWidth);
+				GUILayout.FlexibleSpace();
+				config.TunnelMode = GUILayout.Toggle(config.TunnelMode, "", toggleWidth);
+				GUILayout.EndHorizontal();
 			}
 		}
 

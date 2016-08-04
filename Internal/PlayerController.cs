@@ -11,6 +11,8 @@ namespace UltimateCam.Internal
 		private UltimateSettings config;
 		private CharacterController controller;
 
+		private bool underground = false;
+
 		// Use this for initialization
 		void Start()
 		{
@@ -30,16 +32,74 @@ namespace UltimateCam.Internal
 				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw += speed;
 			speed = config.WalkingSpeed;
 
+			// Detect tunnels
+			bool grounded;
+			if (config.TunnelMode)
+			{
+				if (controller.isGrounded || underground)
+				{
+					Vector3 feet = transform.position;
+					float height = UltimateMain.Instance.config.Height;
+					feet.y -= height;
+					Park park = GameController.Instance.park;
+					Block block = park.blockData.getBlock(feet);
+					bool texit = false;
+					if (block != null && block is Path)
+					{
+						float top = block.getTopSideY(feet);
+						if (top < park.getHeightAt(feet))
+						{
+							if (!underground)
+							{
+								controller.detectCollisions = controller.enableOverlapRecovery = false;
+								underground = true;
+							}
+
+							if (top < feet.y || top > feet.y) // Tunnel down || We somehow felt into the ground (tunnel up?) - fixing... TODO: This prevents jumping / jetpack
+							{
+								transform.position = new Vector3(feet.x, top + height, feet.z);
+								grounded = true;
+							}
+							else // All fine
+								grounded = true;
+						}
+						else
+						{
+							texit = true;
+							grounded = controller.isGrounded;
+						}
+					}
+					else
+					{
+						if (block == null && controller.isGrounded) // Corner case: Walked under the map
+							transform.position = new Vector3(feet.x, park.getHeightAt(feet) + height, feet.z);
+						if (underground)
+							texit = true;
+						grounded = true;
+					}
+
+					if (texit && underground)
+					{
+						controller.detectCollisions = controller.enableOverlapRecovery = true;
+						underground = false;
+					}
+				}
+				else
+					grounded = false;
+			}
+			else
+				grounded = controller.isGrounded;
+
 			bool falling;
 			bool jetpack;
-			if (controller.isGrounded || config.Jetpack)
+			if (grounded || config.Jetpack)
 			{
 				moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
 				moveDirection = transform.TransformDirection(moveDirection);
 				moveDirection *= speed * Time.deltaTime;
 
 				bool jump = Input.GetKey(config.GetKey(UltimateSettings.JUMP_KEY_SETTING));
-				if (controller.isGrounded)
+				if (grounded)
 				{
 					upSpeed = jump ? 0.1f : 0.0f;
 					moveDirection.y = upSpeed * Time.deltaTime;
