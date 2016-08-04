@@ -153,6 +153,7 @@ namespace UltimateCam
 		{
 			speed = gravity = 0.0f;
 			moveDirection = Vector3.zero;
+			config = null;
 			controller = null;
 		}
 	}
