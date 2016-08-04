@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
 
-namespace UltimateCam
+namespace UltimateCam.Internal
 {
 	public class UltimateCross : MonoBehaviour
 	{
@@ -9,7 +9,7 @@ namespace UltimateCam
 
 		public UltimateCross()
 		{
-			Stream cs = UltimateMain.Instance.getAssembly().GetManifestResourceStream("UltimateCam.UltimateCross.png");
+			Stream cs = UltimateMain.Instance.getAssembly().GetManifestResourceStream("UltimateCam.Internal.UltimateCross.png");
 			if (cs == null)
 			{
 				UltimateMain.Instance.Log("Can't load crosshair from assembly!", UltimateMain.LogLevel.ERROR);
