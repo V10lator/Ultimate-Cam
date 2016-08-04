@@ -47,7 +47,8 @@ namespace UltimateCam.Internal
 					if (block != null && block is Path)
 					{
 						float top = block.getTopSideY(feet);
-						if (top < park.getHeightAt(feet))
+						float th = park.getHeightAt(feet);
+						if (top < th && top + 0.95f >= th)
 						{
 							if (!underground)
 							{
