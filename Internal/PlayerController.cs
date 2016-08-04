@@ -39,41 +39,44 @@ namespace UltimateCam.Internal
 				Vector3 feet = transform.position;
 				float height = UltimateMain.Instance.config.Height;
 				feet.y -= height;
-				Block block = GameController.Instance.park.blockData.getBlock(feet);
-				bool tunnelExit = false;
+				Park park = GameController.Instance.park;
+				Block block = park.blockData.getBlock(feet);
+				bool texit = false;
 				if (block != null && block is Path)
 				{
-					Path path = (Path)block;
-					if (path.isUnderground())
+					float top = block.getTopSideY(feet);
+					if (top < park.getHeightAt(feet))
 					{
 						if (!underground)
 						{
 							controller.detectCollisions = controller.enableOverlapRecovery = false;
 							underground = true;
 						}
-						float top = block.getTopSideY(feet);
-						if (top < feet.y || top > feet.y) // Tunnel down / We somehow felt into the ground (tunnel up?) - fixing... TODO: This prevents jumping / jetpack
+
+						if (top < feet.y || top > feet.y) // Tunnel down || We somehow felt into the ground (tunnel up?) - fixing... TODO: This prevents jumping / jetpack
+						{
 							transform.position = new Vector3(feet.x, top + height, feet.z);
-						grounded = true;
+							grounded = true;
+						}
+						else // All fine
+							grounded = true;
 					}
 					else
 					{
-						tunnelExit = underground;
-						grounded = true;
+						texit = true;
+						grounded = controller.isGrounded;
 					}
 				}
 				else
 				{
+					if (block == null && controller.isGrounded) // Corner case: Walked under the map
+						transform.position = new Vector3(feet.x, park.getHeightAt(feet) + height, feet.z);
 					if (underground)
-					{
-						tunnelExit = true;
-						if (block == null && controller.isGrounded) // Corner case: Walked under the map
-							transform.position = new Vector3(feet.x, GameController.Instance.park.getHeightAt(feet) + height, feet.z);
-					}
+						texit = true;
 					grounded = true;
 				}
 
-				if (tunnelExit)
+				if (texit && underground)
 				{
 					controller.detectCollisions = controller.enableOverlapRecovery = true;
 					underground = false;
