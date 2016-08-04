@@ -10,13 +10,15 @@ namespace UltimateCam
 		private float upSpeed = 0.0f;
 
 		private Vector3 moveDirection = Vector3.zero;
+		private UltimateSettings config;
 		private CharacterController controller;
 
 		// Use this for initialization
 		void Start()
 		{
-			speed = UltimateMain.Instance.config.WalkingSpeed;
-			gravity = UltimateMain.Instance.config.Gravity;
+			config = UltimateMain.Instance.config;
+			speed = config.WalkingSpeed;
+			gravity = config.Gravity;
 
 			controller = GetComponent<CharacterController>();
 			controller.detectCollisions = true;
@@ -25,26 +27,26 @@ namespace UltimateCam
 		// Update is called once per frame
 		void Update()
 		{
-			if (Input.GetKey(UltimateMain.Instance.config.GetKey(UltimateSettings.ROTATE_LEFT_KEY_SETTING)))
+			if (Input.GetKey(config.GetKey(UltimateSettings.ROTATE_LEFT_KEY_SETTING)))
 				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw -= speed * 50.0f * Time.deltaTime;
-			else if(Input.GetKey(UltimateMain.Instance.config.GetKey(UltimateSettings.ROTATE_RIGHT_KEY_SETTING)))
+			else if(Input.GetKey(config.GetKey(UltimateSettings.ROTATE_RIGHT_KEY_SETTING)))
 				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw += speed * 50.0f * Time.deltaTime;
 
 			bool falling;
-			if (controller.isGrounded || UltimateMain.Instance.config.Jetpack)
+			if (controller.isGrounded || config.Jetpack)
 			{
 				moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
 				moveDirection = transform.TransformDirection(moveDirection);
 				moveDirection *= speed * Time.deltaTime;
 
-				bool jump = Input.GetKey(UltimateMain.Instance.config.GetKey(UltimateSettings.JUMP_KEY_SETTING));
+				bool jump = Input.GetKey(config.GetKey(UltimateSettings.JUMP_KEY_SETTING));
 				if (controller.isGrounded)
 				{
 					upSpeed = jump ? 0.1f : 0.0f;
 					moveDirection.y = upSpeed * Time.deltaTime;
 					falling = false;
 				}
-				else // UltimateMain.Instance.config.Jetpack
+				else // config.Jetpack
 				{
 					if (jump)
 					{
@@ -65,7 +67,7 @@ namespace UltimateCam
 			moveDirection.y = upSpeed;
 
 			//EXPERIMENTAL: More collissions...
-			if (UltimateMain.Instance.config.MoreCols) {
+			if (config.MoreCols) {
 				Utility.ObjectBelowMouseInfo result = default(Utility.ObjectBelowMouseInfo);
 				Ray ray = Camera.main.ScreenPointToRay (moveDirection);
 				result.hitDistance = float.MaxValue;
