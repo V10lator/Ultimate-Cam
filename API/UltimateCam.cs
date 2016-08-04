@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using Parkitect.UI;
+using UltimateCam.Internal;
 using UnityEngine;
 
-namespace UltimateCam
+namespace UltimateCam.API
 {
 	public class UltimateCam : MonoBehaviour
 	{

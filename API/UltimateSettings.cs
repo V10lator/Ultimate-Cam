@@ -2,9 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UltimateCam.Internal;
 using UnityEngine;
 
-namespace UltimateCam
+namespace UltimateCam.API
 {
 	internal class UltimateSettings
 	{

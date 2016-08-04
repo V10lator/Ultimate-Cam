@@ -1,6 +1,7 @@
+using UltimateCam.API;
 using UnityEngine;
 
-namespace UltimateCam
+namespace UltimateCam.Internal
 {
 	internal class PlayerController : MonoBehaviour
 	{

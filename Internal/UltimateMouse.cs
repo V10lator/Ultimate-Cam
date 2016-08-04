@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UltimateCam
+namespace UltimateCam.Internal
 {
 	internal class UltimateMouse : MonoBehaviour
 	{
@@ -74,7 +74,7 @@ namespace UltimateCam
 			_pitch = limit(pitch, _yRad);
 
 			Vector3 euler;
-			if (UltimateCam.sitting)
+			if (API.UltimateCam.sitting)
 			{
 				// Limit horizontal head movement
 				_yaw = limit(yaw, _xRad);

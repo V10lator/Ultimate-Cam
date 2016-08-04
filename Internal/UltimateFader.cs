@@ -1,7 +1,7 @@
 ﻿using Parkitect.UI;
 using UnityEngine;
 
-namespace UltimateCam
+namespace UltimateCam.Internal
 {
 	public class UltimateFader : MonoBehaviour
 	{
@@ -168,14 +168,14 @@ namespace UltimateCam
 					if (_sitting)
 					{
 						Camera.main.transform.localPosition = new Vector3(0.0f, 0.35f, 0.1f);
-						UltimateCam.sitting = true;
+						API.UltimateCam.sitting = true;
 					}
 					else
 					{
 						Camera.main.transform.localPosition = new Vector3(-0.1f, -0.1f, 0.0f);
 						Camera.main.transform.localRotation = Quaternion.Euler(90.0f, 0.0f, 90.0f);
 						Camera.main.GetComponent<UltimateCross>().enabled = false;
-						UltimateCam.following = true;
+						API.UltimateCam.following = true;
 					}
 				}
 				else
@@ -188,10 +188,10 @@ namespace UltimateCam
 						mouse.yaw = _yaw;
 						mouse.pitch = 0.0f;
 						Camera.main.GetComponent<PlayerController>().enabled = true;
-						UltimateCam.sitting = false;
+						API.UltimateCam.sitting = false;
 					}
 					else
-						UltimateCam.Instance.cleanupFollowerCam(teleportToPosition, _yaw);
+						API.UltimateCam.Instance.cleanupFollowerCam(teleportToPosition, _yaw);
 				}
 				teleportTmpCam = false;
 

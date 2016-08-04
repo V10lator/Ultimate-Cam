@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Reflection;
+using UltimateCam.API;
 using UnityEngine;
 
-namespace UltimateCam
+namespace UltimateCam.Internal
 {
 	public class UltimateMain : IMod, IModSettings
 	{
@@ -26,7 +27,7 @@ namespace UltimateCam
 			}
 			Instance = this;
 			go = new GameObject();
-			go.AddComponent<UltimateCam>();
+			go.AddComponent<API.UltimateCam>();
 			this.Log ("Enabled!", UltimateMain.LogLevel.INFO);
 		}
 
@@ -47,7 +48,7 @@ namespace UltimateCam
 
 		internal Assembly getAssembly()
 		{
-			return @Assembly.GetAssembly (typeof(UltimateCam));
+			return @Assembly.GetAssembly (typeof(API.UltimateCam));
 		}
 
 		private void cacheVersion()
