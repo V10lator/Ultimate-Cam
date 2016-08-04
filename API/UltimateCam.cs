@@ -27,6 +27,8 @@ namespace UltimateCam.API
 		private bool disableUI;
 		private int seat = -1;
 
+		internal UltimateMouse mouse;
+
 		private UltimateSettings _config;
 		public UltimateSettings config
 		{
@@ -139,8 +141,8 @@ namespace UltimateCam.API
 				sitting = false;
 			}
 			
-			Camera.main.GetComponent<PlayerController>().enabled = false;
-			Camera.main.GetComponent<UltimateMouse>().enabled = false;
+			Camera.main.GetComponentInParent<PlayerController>().enabled = false;
+			mouse.enabled = false;
 			person.OnKilled += this.LeaveFollowerCamFast;
 
 			EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveFollowerCam));
@@ -161,13 +163,12 @@ namespace UltimateCam.API
 		internal void cleanupFollowerCam(Vector3 to, float yaw)
 		{
 			Camera.main.transform.GetComponentInParent<Person>().OnKilled -= this.LeaveFollowerCamFast;
-			Camera.main.transform.parent = null;
-			Camera.main.transform.position = to;
-			UltimateMouse mouse = Camera.main.GetComponent<UltimateMouse>();
+			Camera.main.transform.parent.parent = null;
+			Camera.main.transform.parent.position = to;
 			mouse.yaw = yaw;
 			mouse.pitch = 0.0f;
-			Camera.main.GetComponent<PlayerController>().enabled = true;
-			Camera.main.GetComponent<UltimateMouse>().enabled = true;
+			Camera.main.GetComponentInParent<PlayerController>().enabled = true;
+			mouse.enabled = true;
 			Camera.main.GetComponent<UltimateCross>().enabled = true;
 			UltimateCam.following = false;
 		}
@@ -180,17 +181,17 @@ namespace UltimateCam.API
 			if (!fast)
 			{
 				if (!UltimateFader.active)
-					Camera.main.GetComponent<UltimateFader>().fade(Camera.main.transform.parent.position, Camera.main.transform.parent.eulerAngles.y - 90.0f, false);
+					Camera.main.GetComponent<UltimateFader>().fade(Camera.main.transform.parent.parent.position, Camera.main.transform.parent.parent.eulerAngles.y - 90.0f, false);
 			}
 			else
-				cleanupFollowerCam(Camera.main.transform.parent.position, Camera.main.transform.parent.eulerAngles.y - 90.0f);
+				cleanupFollowerCam(Camera.main.transform.parent.parent.position, Camera.main.transform.parent.parent.eulerAngles.y - 90.0f);
 
 			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveFollowerCam));
 		}
 
 		private void EnterSeatCam(Transform s)
 		{
-			Camera.main.GetComponent<PlayerController>().enabled = false;
+			Camera.main.GetComponentInParent<PlayerController>().enabled = false;
 
 			if (!sitting)
 				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveSeatCam));
@@ -242,7 +243,7 @@ namespace UltimateCam.API
 
 			Vector3 position;
 			float yaw;
-			Attraction attr = Camera.main.transform.parent.GetComponentInParent<Attraction>();
+			Attraction attr = Camera.main.transform.parent.parent.GetComponentInParent<Attraction>();
 			if (attr != null)
 			{
 				Exit ex = attr.getRandomExit();
@@ -263,8 +264,8 @@ namespace UltimateCam.API
 			}
 			else
 			{
-				position = Camera.main.transform.parent.position;
-				yaw = Camera.main.transform.parent.eulerAngles.y;
+				position = Camera.main.transform.parent.parent.position;
+				yaw = Camera.main.transform.parent.parent.eulerAngles.y;
 			}
 
 			Camera.main.GetComponent<UltimateFader>().fade(position, yaw, true);
@@ -280,19 +281,23 @@ namespace UltimateCam.API
 			GameObject headCam = new GameObject();
 			headCam.layer = LayerMasks.ID_DEFAULT;
 
-			Camera cam = headCam.AddComponent<Camera>();
+			GameObject head = new GameObject();
+			head.transform.SetParent(headCam.transform);
+
+			Camera cam = head.AddComponent<Camera>();
 			cam.nearClipPlane = 0.0275f; // 0.025
 			cam.farClipPlane = config.ViewDistance;
 			cam.fieldOfView = config.FoV;
 			cam.depthTextureMode = DepthTextureMode.DepthNormals;
 			cam.hdr = config.HDR;
 			cam.orthographic = false;
-			headCam.AddComponent<AudioListener>();
-			headCam.AddComponent<UltimateMouse>();
-			headCam.AddComponent<PlayerController>();
-			UltimateFader fader = headCam.AddComponent<UltimateFader>();
+			head.AddComponent<AudioListener>();
+			mouse = head.AddComponent<UltimateMouse>();
+
+			mouse.controller = headCam.AddComponent<PlayerController>();
+			UltimateFader fader = head.AddComponent<UltimateFader>();
 			if (config.Crosshair)
-				headCam.AddComponent<UltimateCross>().enabled = false;
+				head.AddComponent<UltimateCross>().enabled = false;
 
 			CharacterController cc = headCam.AddComponent<CharacterController>();
 			cc.radius = 0.1f;
@@ -336,8 +341,8 @@ namespace UltimateCam.API
 			float modZ = mod.z - startZ;
 			position.x += modX;
 			position.z += modZ;
-			Camera.main.GetComponent<UltimateMouse>().enabled = false;
-			Camera.main.GetComponent<PlayerController>().enabled = false;
+			mouse.enabled = false;
+			Camera.main.GetComponentInParent<PlayerController>().enabled = false;
 			mainCam.transform.position = position;
 
 			Camera.main.GetComponent<UltimateFader>().fade(Camera.main, mainCam, true, false);

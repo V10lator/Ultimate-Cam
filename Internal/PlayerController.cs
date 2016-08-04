@@ -10,6 +10,7 @@ namespace UltimateCam.Internal
 		private Vector3 moveDirection = Vector3.zero;
 		private UltimateSettings config;
 		private CharacterController controller;
+		private UltimateMouse mouse;
 
 		private bool tunnelGate = false;
 		private bool inTunnel = false;
@@ -18,6 +19,7 @@ namespace UltimateCam.Internal
 		void Start()
 		{
 			config = UltimateMain.Instance.config;
+			mouse = API.UltimateCam.Instance.mouse;
 
 			controller = GetComponent<CharacterController>();
 			controller.detectCollisions = controller.enableOverlapRecovery = true;
@@ -28,9 +30,9 @@ namespace UltimateCam.Internal
 		{
 			float speed = config.WalkingSpeed * 50.0f * Time.deltaTime;
 			if (Input.GetKey(config.GetKey(UltimateSettings.ROTATE_LEFT_KEY_SETTING)))
-				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw -= speed;
+				mouse.yaw -= speed;
 			else if(Input.GetKey(config.GetKey(UltimateSettings.ROTATE_RIGHT_KEY_SETTING)))
-				Camera.main.gameObject.GetComponent<UltimateMouse>().yaw += speed;
+				mouse.yaw += speed;
 			speed = config.WalkingSpeed;
 
 			// Detect tunnels
@@ -188,7 +190,6 @@ namespace UltimateCam.Internal
 					Vector3 hit = result.hitPosition;
 
 					// Some magic...
-					UltimateMouse mouse = gameObject.GetComponent<UltimateMouse>();
 					if (mouse.yaw > 90.0f && mouse.yaw < 270.0f)
 					{
 						float tmp = hit.z;

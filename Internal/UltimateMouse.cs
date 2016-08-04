@@ -18,6 +18,8 @@ namespace UltimateCam.Internal
 		private float _yaw = 0.0f;
 		private float _pitch = 0.0f;
 
+		internal PlayerController controller;
+
 		internal float pitch
 		{
 			get
@@ -73,22 +75,14 @@ namespace UltimateCam.Internal
 			// Limit vertical head movement
 			_pitch = limit(pitch, _yRad);
 
-			Vector3 euler;
-			if (API.UltimateCam.sitting)
-			{
-				// Limit horizontal head movement
-				_yaw = limit(yaw, _xRad);
-				
-				euler = transform.parent.eulerAngles;
-				euler = new Vector3(keepInCircle(euler.x + pitch), keepInCircle(euler.y + yaw), euler.z);
-			}
-			else
-			{
-				_yaw = keepInCircle(yaw);
-				euler = new Vector3(pitch, yaw, 0.0f);
-			}
+			Vector3[] eulers = { Vector3.zero, Vector3.zero };
+			_yaw = API.UltimateCam.sitting ? limit(yaw, _xRad) : keepInCircle(yaw); // Limit horizontal head movement
+
+			eulers[0] = new Vector3(pitch, 0.0f, 0.0f);
+			eulers[1] = new Vector3(0.0f, yaw, 0.0f);
 			
-			transform.eulerAngles = euler;
+			transform.localEulerAngles = eulers[0];
+			controller.gameObject.transform.localEulerAngles = eulers[1];
 		}
 	}
 }

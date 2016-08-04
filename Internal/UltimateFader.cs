@@ -18,8 +18,15 @@ namespace UltimateCam.Internal
 		private GameObject toDestroy = null;
 		private bool _disableUI;
 		private bool _sitting;
+		private UltimateMouse mouse;
+		private readonly Quaternion ZeroQuat = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 
 		internal static bool active = false;
+
+		void Awake()
+		{
+			mouse = API.UltimateCam.Instance.mouse;
+		}
 
 		internal void fade(Camera from, Camera to, bool destroy, bool disableUI)
 		{
@@ -163,16 +170,17 @@ namespace UltimateCam.Internal
 			{
 				if (teleportToTransform != null)
 				{
-					Camera.main.transform.parent = teleportToTransform;
-					Camera.main.GetComponent<UltimateMouse>().reset();
+					Camera.main.transform.parent.parent = teleportToTransform;
+					mouse.reset();
+					Camera.main.transform.parent.localRotation = ZeroQuat;
 					if (_sitting)
 					{
-						Camera.main.transform.localPosition = new Vector3(0.0f, 0.35f, 0.1f);
+						Camera.main.transform.parent.localPosition = new Vector3(0.0f, 0.35f, 0.1f);
 						API.UltimateCam.sitting = true;
 					}
 					else
 					{
-						Camera.main.transform.localPosition = new Vector3(-0.1f, -0.1f, 0.0f);
+						Camera.main.transform.parent.localPosition = new Vector3(-0.1f, -0.1f, 0.0f);
 						Camera.main.transform.localRotation = Quaternion.Euler(90.0f, 0.0f, 90.0f);
 						Camera.main.GetComponent<UltimateCross>().enabled = false;
 						API.UltimateCam.following = true;
@@ -180,14 +188,14 @@ namespace UltimateCam.Internal
 				}
 				else
 				{
+					Camera.main.transform.parent.localPosition = Vector3.zero;
 					if (_sitting)
 					{
-						Camera.main.transform.parent = null;
-						Camera.main.transform.position = teleportToPosition;
-						UltimateMouse mouse = Camera.main.GetComponent<UltimateMouse>();
+						Camera.main.transform.parent.parent = null;
+						Camera.main.transform.parent.position = teleportToPosition;
 						mouse.yaw = _yaw;
 						mouse.pitch = 0.0f;
-						Camera.main.GetComponent<PlayerController>().enabled = true;
+						Camera.main.GetComponentInParent<PlayerController>().enabled = true;
 						API.UltimateCam.sitting = false;
 					}
 					else
