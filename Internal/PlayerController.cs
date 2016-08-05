@@ -194,10 +194,10 @@ namespace UltimateCam.Internal
 
 					// Right / Left
 					if ((moveDirection.x > 0.0f && hit.x >= pos.x) || (moveDirection.x < 0.0f && hit.x <= pos.x))
-						moveDirection.x = -moveDirection.x * 1.5f;
+						moveDirection.x = -moveDirection.x;
 					// Forward / Backward
 					if ((moveDirection.z > 0.0f && hit.z >= pos.z) || (moveDirection.z < 0.0f && hit.z <= pos.z))
-						moveDirection.z = -moveDirection.z * 1.5f;
+						moveDirection.z = -moveDirection.z;
 				}
 
 			}
