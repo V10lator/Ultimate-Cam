@@ -55,12 +55,15 @@ namespace UltimateCam.Internal
 					switchTmpCams = true;
 					break;
 				default:
-					step = 0;
-					UltimateFader.active = false;
-					alpha = 0.0f;
-					if (_destroy)
-						toDestroy = tmpCams[0].gameObject;
-					tmpCams[0] = tmpCams[1] = null;
+					if (!switchTmpCams)
+					{
+						step = 0;
+						UltimateFader.active = false;
+						alpha = 0.0f;
+						if (_destroy)
+							toDestroy = tmpCams[0].gameObject;
+						tmpCams[0] = tmpCams[1] = null;
+					}
 					return;
 			}
 			step++;
@@ -80,9 +83,12 @@ namespace UltimateCam.Internal
 					teleportTmpCam = true;
 					break;
 				default:
-					step = 0;
-					UltimateFader.active = false;
-					teleportToTransform = null;
+					if (!teleportTmpCam)
+					{
+						step = 0;
+						UltimateFader.active = false;
+						teleportToTransform = null;
+					}
 					return;
 			}
 			step++;
@@ -103,9 +109,12 @@ namespace UltimateCam.Internal
 					teleportTmpCam = true;
 					break;
 				default:
-					step = 0;
-					UltimateFader.active = false;
-					teleportToPosition = Vector3.zero;
+					if (!teleportTmpCam)
+					{
+						step = 0;
+						UltimateFader.active = false;
+						teleportToPosition = Vector3.zero;
+					}
 					return;
 			}
 			step++;
