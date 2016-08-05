@@ -44,6 +44,7 @@ namespace UltimateCam.Internal
 			cam.depthTextureMode = DepthTextureMode.DepthNormals;
 			cam.hdr = config.HDR;
 			cam.orthographic = false;
+			cam.transform.localPosition = new Vector3(0.0f, 0.1f, 0.0f); //TODO: Ugly hack
 			hgo.AddComponent<AudioListener>();
 
 			_Instance = tgo.AddComponent<UltimateController>();

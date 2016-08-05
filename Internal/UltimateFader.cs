@@ -203,7 +203,7 @@ namespace UltimateCam.Internal
 				}
 				else
 				{
-					Camera.main.transform.parent.localPosition = Vector3.zero;
+					Camera.main.transform.parent.localPosition = new Vector3(0.0f, 0.1f, 0.0f); //TODO: Ugly hack
 					if (_sitting)
 					{
 						Camera.main.transform.parent.parent = null;
