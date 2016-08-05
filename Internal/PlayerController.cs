@@ -184,7 +184,8 @@ namespace UltimateCam.Internal
 
 				if (result.hitObject != null && result.hitDistance < 0.2f &&
 					(moveDirection.x != 0.0f || moveDirection.z != 0.0f) &&
-				    !(result.hitObject is Path && ((Path)result.hitObject).isUnderground()))
+				    !(result.hitObject is Path && ((Path)result.hitObject).isUnderground()) &&
+				    !(result.hitObject is Person))
 				{
 					Vector3 pos = transform.position;
 					Vector3 hit = result.hitPosition;
