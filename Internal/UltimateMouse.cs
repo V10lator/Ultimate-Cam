@@ -18,7 +18,12 @@ namespace UltimateCam.Internal
 		private float _yaw = 0.0f;
 		private float _pitch = 0.0f;
 
-		internal PlayerController controller;
+		private UltimateController controller;
+
+		void Start()
+		{
+			controller = UltimateController.Instance(Vector3.zero);
+		}
 
 		internal float pitch
 		{

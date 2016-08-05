@@ -50,6 +50,7 @@
     <Compile Include="Internal\UltimateMain.cs" />
     <Compile Include="Internal\UltimateMouse.cs" />
     <Compile Include="API\UltimateSettings.cs" />
+    <Compile Include="Internal\UltimateController.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Internal\UltimateCross.png" />

@@ -25,7 +25,7 @@ namespace UltimateCam.Internal
 
 		void Awake()
 		{
-			mouse = API.UltimateCam.Instance.mouse;
+			mouse = UltimateController.Instance(Vector3.zero).getMouse();
 		}
 
 		internal void fade(Camera from, Camera to, bool destroy, bool disableUI)
@@ -61,7 +61,7 @@ namespace UltimateCam.Internal
 						active = false;
 						alpha = 0.0f;
 						if (_destroy)
-							toDestroy = tmpCams[0].gameObject;
+							toDestroy = tmpCams[0].gameObject.transform.parent.gameObject;
 						tmpCams[0] = tmpCams[1] = null;
 					}
 					return;
@@ -154,9 +154,15 @@ namespace UltimateCam.Internal
 				UltimateCross uc = tmpCams[0].GetComponent<UltimateCross>();
 				if (uc != null)
 					uc.enabled = false;
+				UltimateController c = tmpCams[0].GetComponentInParent<UltimateController>();
+				if (c != null)
+					c.enabled = false;
 				CameraController cc = tmpCams[1].GetComponent<CameraController>();
 				if (cc != null)
 					cc.enabled = true;
+				c = tmpCams[1].GetComponentInParent<UltimateController>();
+				if (c != null)
+					c.enabled = true;
 				tmpCams[1].enabled = true;
 				CullingGroupManager.Instance.setTargetCamera(tmpCams[1]);
 				uc = tmpCams[1].GetComponent<UltimateCross>();
@@ -204,7 +210,7 @@ namespace UltimateCam.Internal
 						Camera.main.transform.parent.position = teleportToPosition;
 						mouse.yaw = _yaw;
 						mouse.pitch = 0.0f;
-						Camera.main.GetComponentInParent<PlayerController>().enabled = true;
+						Camera.main.GetComponentInParent<UltimateController>().enabled = true;
 						API.UltimateCam.sitting = false;
 					}
 					else

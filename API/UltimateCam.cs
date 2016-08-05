@@ -13,9 +13,9 @@ namespace UltimateCam.API
 			get;
 			private set;
 		}
-		private Camera mainCam = null;
+		internal UltimateController controller = null;
 		private float startX, startZ;
-		public static bool active {get { return Instance.mainCam != null; } }
+		public static bool active {get { return Instance.controller != null; } }
 		public static bool sitting {
 			get;
 			internal set;
@@ -27,8 +27,6 @@ namespace UltimateCam.API
 
 		private bool disableUI;
 		private int seat = -1;
-
-		internal UltimateMouse mouse;
 
 		public UltimateSettings config
 		{
@@ -135,8 +133,8 @@ namespace UltimateCam.API
 				sitting = false;
 			}
 			
-			Camera.main.GetComponentInParent<PlayerController>().enabled = false;
-			mouse.enabled = false;
+			Camera.main.GetComponentInParent<UltimateController>().enabled = false;
+			controller.getMouse().enabled = false;
 			person.OnKilled += this.LeaveFollowerCamFast;
 
 			EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveFollowerCam));
@@ -159,9 +157,10 @@ namespace UltimateCam.API
 			Camera.main.transform.GetComponentInParent<Person>().OnKilled -= this.LeaveFollowerCamFast;
 			Camera.main.transform.parent.parent = null;
 			Camera.main.transform.parent.position = to;
+			UltimateMouse mouse = controller.getMouse();
 			mouse.yaw = yaw;
 			mouse.pitch = 0.0f;
-			Camera.main.GetComponentInParent<PlayerController>().enabled = true;
+			Camera.main.GetComponentInParent<UltimateController>().enabled = true;
 			mouse.enabled = true;
 			Camera.main.GetComponent<UltimateCross>().enabled = true;
 			following = false;
@@ -185,7 +184,7 @@ namespace UltimateCam.API
 
 		private void EnterSeatCam(Transform s)
 		{
-			Camera.main.GetComponentInParent<PlayerController>().enabled = false;
+			Camera.main.GetComponentInParent<UltimateController>().enabled = false;
 
 			if (!sitting)
 				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveSeatCam));
@@ -272,44 +271,11 @@ namespace UltimateCam.API
 		{
 			if (active || UltimateFader.active)
 				return;
-			
-			GameObject headCam = new GameObject();
-			headCam.layer = LayerMasks.ID_DEFAULT;
 
-			GameObject head = new GameObject();
-			head.transform.SetParent(headCam.transform);
-
-			Camera cam = head.AddComponent<Camera>();
-			cam.nearClipPlane = 0.0275f; // 0.025
-			cam.farClipPlane = config.ViewDistance;
-			cam.fieldOfView = config.FoV;
-			cam.depthTextureMode = DepthTextureMode.DepthNormals;
-			cam.hdr = config.HDR;
-			cam.orthographic = false;
-			head.AddComponent<AudioListener>();
-			mouse = head.AddComponent<UltimateMouse>();
-
-			mouse.controller = headCam.AddComponent<PlayerController>();
-			UltimateFader fader = head.AddComponent<UltimateFader>();
-			if (config.Crosshair)
-				head.AddComponent<UltimateCross>().enabled = false;
-
-			CharacterController cc = headCam.AddComponent<CharacterController>();
-			cc.radius = 0.1f;
-			cc.height = config.Height;
-			float h = cc.height / 2.0f;
-			cc.center = new Vector3(0.0f, -h, 0.0f);
-			cc.slopeLimit = 60.0f;
-			cc.stepOffset = h;
-
-			startX = position.x;
-			startZ = position.z;
-			headCam.transform.position = position;
-
-			mainCam = Camera.main;
-			cam.tag = "MainCamera";
-			cam.enabled = mainCam.GetComponent<CameraController>().enabled = false;
-			fader.fade(mainCam, cam, false, true);
+			Camera mainCam = Camera.main;
+			controller = UltimateController.Instance(position);
+			mainCam.GetComponent<CameraController>().enabled = false;
+			controller.getFader().fade(mainCam, controller.getUltimateCam(), false, true);
 
 			EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveHeadCam));
 		}
@@ -329,19 +295,11 @@ namespace UltimateCam.API
 				EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveFollowerCam));
 				following = false;
 			}
+			Camera.main.GetComponentInParent<UltimateController>().enabled = false;
+			controller.getMouse().enabled = false;
+			UltimateController.Instance(Vector3.zero).parkitectFollowUltimate();
 
-			Vector3 mod = Camera.main.gameObject.transform.position;
-			Vector3 position = mainCam.transform.position;
-			float modX = mod.x - startX;
-			float modZ = mod.z - startZ;
-			position.x += modX;
-			position.z += modZ;
-			mouse.enabled = false;
-			Camera.main.GetComponentInParent<PlayerController>().enabled = false;
-			mainCam.transform.position = position;
-
-			Camera.main.GetComponent<UltimateFader>().fade(Camera.main, mainCam, true, false);
-			mainCam = null;
+			Camera.main.GetComponent<UltimateFader>().fade(Camera.main, controller.getParkitectCam(), true, false);
 
 			EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveHeadCam));
 		}

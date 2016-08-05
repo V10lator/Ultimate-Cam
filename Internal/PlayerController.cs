@@ -9,7 +9,7 @@ namespace UltimateCam.Internal
 
 		private Vector3 moveDirection = Vector3.zero;
 		private UltimateSettings config;
-		private CharacterController controller;
+		private UltimateController controller;
 		private UltimateMouse mouse;
 
 		private bool tunnelGate = false;
@@ -18,10 +18,8 @@ namespace UltimateCam.Internal
 		void Start()
 		{
 			config = UltimateMain.Instance.config;
-			mouse = API.UltimateCam.Instance.mouse;
-
-			controller = GetComponent<CharacterController>();
-			controller.detectCollisions = controller.enableOverlapRecovery = true;
+			controller = UltimateController.Instance(Vector3.zero);
+			mouse = controller.getMouse();
 		}
 
 		// Update is called once per frame
@@ -54,7 +52,6 @@ namespace UltimateCam.Internal
 						{
 							if (!tunnelGate)
 							{
-								controller.detectCollisions = controller.enableOverlapRecovery = false;
 								tunnelGate = true;
 							}
 
@@ -81,7 +78,6 @@ namespace UltimateCam.Internal
 
 					if (texit && tunnelGate)
 					{
-						controller.detectCollisions = controller.enableOverlapRecovery = true;
 						tunnelGate = false;
 					}
 				}
@@ -203,7 +199,7 @@ namespace UltimateCam.Internal
 
 			}
 
-			controller.Move(moveDirection);
+			transform.position = new Vector3(transform.position.x + moveDirection.x, transform.position.y + moveDirection.y, transform.position.z + moveDirection.z);
 		}
 
 		// Set everything to 0 / null so it can be garbage collected
