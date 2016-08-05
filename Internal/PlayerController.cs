@@ -183,9 +183,10 @@ namespace UltimateCam.Internal
 				}
 
 				if (result.hitObject != null && result.hitDistance < 0.2f &&
-					(moveDirection.x != 0.0f || moveDirection.z != 0.0f))
+					(moveDirection.x != 0.0f || moveDirection.z != 0.0f) &&
+				    !(result.hitObject is Path && ((Path)result.hitObject).isUnderground()))
 				{
-					Vector3 pos = this.transform.position;
+					Vector3 pos = transform.position;
 					Vector3 hit = result.hitPosition;
 
 					//UltimateMain.Instance.Log("rx: " + moveDirection.x + " / hpx: " + hit.x + " / posx: " + pos.x, UltimateMain.LogLevel.INFO);
