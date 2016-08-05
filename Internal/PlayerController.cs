@@ -146,7 +146,7 @@ namespace UltimateCam.Internal
 			//EXPERIMENTAL: More collissions...
 			if (!tunnelGate && config.MoreCols) {
 				Utility.ObjectBelowMouseInfo result = default(Utility.ObjectBelowMouseInfo);
-				Ray ray = Camera.main.ScreenPointToRay (moveDirection);
+				Ray ray = new Ray(transform.position, moveDirection);
 				result.hitDistance = float.MaxValue;
 				result.hitObject = null;
 				GameObject sl = Collisions.Instance.checkSelectables (ray, out result.hitDistance);
