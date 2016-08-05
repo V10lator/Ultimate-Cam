@@ -188,8 +188,8 @@ namespace UltimateCam.Internal
 					Vector3 pos = this.transform.position;
 					Vector3 hit = result.hitPosition;
 
-					UltimateMain.Instance.Log("rx: " + moveDirection.x + " / hpx: " + hit.x + " / posx: " + pos.x, UltimateMain.LogLevel.INFO);
-					UltimateMain.Instance.Log("rz: " + moveDirection.z + " / hpz: " + hit.z + " / posz: " + pos.z, UltimateMain.LogLevel.INFO);
+					//UltimateMain.Instance.Log("rx: " + moveDirection.x + " / hpx: " + hit.x + " / posx: " + pos.x, UltimateMain.LogLevel.INFO);
+					//UltimateMain.Instance.Log("rz: " + moveDirection.z + " / hpz: " + hit.z + " / posz: " + pos.z, UltimateMain.LogLevel.INFO);
 
 					// Right / Left
 					if ((moveDirection.x > 0.0f && hit.x >= pos.x) || (moveDirection.x < 0.0f && hit.x <= pos.x))
