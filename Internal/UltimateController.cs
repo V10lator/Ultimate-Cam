@@ -8,7 +8,6 @@ namespace UltimateCam.Internal
 	{
 		private UltimateSettings config;
 		private GameObject go;
-		private CapsuleCollider collider;
 		private GameObject head;
 		private Camera parkitectCam;
 		internal UltimateMouse mouse
@@ -44,7 +43,7 @@ namespace UltimateCam.Internal
 			cam.depthTextureMode = DepthTextureMode.DepthNormals;
 			cam.hdr = config.HDR;
 			cam.orthographic = false;
-			cam.transform.localPosition = new Vector3(0.0f, 0.1f, 0.0f); //TODO: Ugly hack
+			cam.transform.localPosition = new Vector3(0.0f, config.Height * 0.2f, 0.0f); //TODO: Ugly hack
 			hgo.AddComponent<AudioListener>();
 
 			_Instance = tgo.AddComponent<UltimateController>();
@@ -58,16 +57,6 @@ namespace UltimateCam.Internal
 			if (config.Crosshair)
 				hgo.AddComponent<UltimateCross>().enabled = false;
 
-			_Instance.collider = tgo.AddComponent<CapsuleCollider>();
-			_Instance.collider.direction = 0;
-			_Instance.collider.isTrigger = true;
-			_Instance.collider.radius = 0.5f;
-			_Instance.collider.height = config.Height;
-			float h = _Instance.collider.height / 2.0f;
-			_Instance.collider.center = new Vector3(0.0f, -h, 0.0f);
-			//cc.slopeLimit = 60.0f;
-			//cc.stepOffset = h;
-
 			_Instance.start[0] = position.x;
 			_Instance.start[1] = position.z;
 			tgo.transform.position = position;
@@ -78,54 +67,6 @@ namespace UltimateCam.Internal
 
 			return _Instance;
 		}
-
-		/*void OnTriggerEnter(Collider coll)
-		{
-			Person p = collider.GetComponent<Person>();
-			if (p == null)
-			{
-				
-				Path pa = collider.GetComponentInChildren<Path>();
-				if (pa == null)
-				{
-					UltimateMain.Instance.Log("None peep or path collision! (" + coll.gameObject.name + " / " + coll.gameObject.tag + ")", UltimateMain.LogLevel.INFO);
-					for (int i = 0; i < collider.transform.childCount; i++)
-						UltimateMain.Instance.Log(collider.transform.GetChild(i).name, UltimateMain.LogLevel.INFO);
-					return;
-				}
-				Vector3 pos = transform.position;
-				float top = pa.getTopSideY(pos) + (config.Height / 2.0f);
-				if (top > pos.y)
-				{
-					pos.y = top;
-					transform.position = pos;
-					UltimateMain.Instance.Log("OnTriggeEnter: Fixed Y!", UltimateMain.LogLevel.INFO);
-				}
-				return;
-			}
-			//PersonBehaviour oldB = p.currentBehaviour;
-			//GoToLocationBehaviour b = p.getBehaviour<GoToLocationBehaviour>();
-
-			Vector3 direction = p.currentPosition - transform.position;
-			direction /= direction.magnitude;
-			direction = Quaternion.Euler(180.0f, 0.0f, 0.0f) * direction;
-			direction.x += p.currentPosition.x;
-			direction.y = p.currentPosition.y;
-			direction.z += p.currentPosition.z;
-
-			Park park = GameController.Instance.park;
-			Block block = park.blockData.getBlock(direction);
-			direction.y = block == null ? park.getHeightAt(direction) : block.getTopSideY(direction);
-
-			p.instantlyChangeBehaviour<RoamingBehaviour>();
-			p.setPosition(direction);
-
-			//b.targetPosition = direction;
-			//p.changeBehaviour(b);
-			//b.addOnReachedLocationHandler(new GoToLocationBehaviour.OnReachedLocationHandler(p.changeBehaviour());
-			//b.addOnCantReachLocationHandler(new GoToLocationBehaviour.OnCantReachLocationHandler(p.on));
-			//UltimateMain.Instance.Log("Contact: " + lastPosition.x + " / " + lastPosition.y + " / " + lastPosition.z + " // " + pos.x + " / " + pos.y + " / " + pos.z, UltimateMain.LogLevel.INFO);
-		}*/
 
 		void OnDestroy()
 		{
