@@ -144,7 +144,7 @@ namespace UltimateCam.Internal
 			moveDirection.y = upSpeed;
 
 			//EXPERIMENTAL: More collissions...
-			if (config.MoreCols) {
+			if (!tunnelGate && config.MoreCols) {
 				Utility.ObjectBelowMouseInfo result = default(Utility.ObjectBelowMouseInfo);
 				Ray ray = Camera.main.ScreenPointToRay (moveDirection);
 				result.hitDistance = float.MaxValue;

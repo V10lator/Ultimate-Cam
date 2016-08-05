@@ -46,7 +46,7 @@ namespace UltimateCam.API
 		void Update()
 		{
 			GameController gc = GameController.Instance;
-			if (gc.isLoadingGame || gc.isQuittingGame || OptionsMenu.instance != null || UIWindowsController.Instance.getWindows().Count > 0)
+			if (gc == null || !gc.enabled || gc.isLoadingGame || gc.isQuittingGame || OptionsMenu.instance != null || UIWindowsController.Instance.getWindows().Count > 0)
 				return;
 
 			if (Input.GetKeyUp(config.GetKey(UltimateSettings.TOGGLE_KEY_SETTING)))
