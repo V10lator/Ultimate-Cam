@@ -147,7 +147,7 @@ namespace UltimateCam.Internal
 			if (!tunnelGate && config.MoreCols) {
 				Utility.ObjectBelowMouseInfo result = default(Utility.ObjectBelowMouseInfo);
 				Ray ray = new Ray(transform.position, moveDirection);
-				result.hitDistance = float.MaxValue;
+				result.hitDistance = 0.5f;
 				result.hitObject = null;
 				GameObject sl = Collisions.Instance.checkSelectables (ray, out result.hitDistance);
 				if (sl != null) {
@@ -157,7 +157,7 @@ namespace UltimateCam.Internal
 						result.hitPosition = ray.GetPoint (result.hitDistance);
 						result.hitLayerMask = 1 << component.gameObject.layer;
 					} else
-						result.hitDistance = float.MaxValue;
+						result.hitDistance = 0.5f;
 				}
 				MouseCollider.HitInfo[] array = MouseCollisions.Instance.raycastAll(ray, result.hitDistance);
 				for (int i = 0; i < array.Length; i++) {
