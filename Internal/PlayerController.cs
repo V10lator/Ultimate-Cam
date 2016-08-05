@@ -91,15 +91,18 @@ namespace UltimateCam.Internal
 			else
 				grounded = controller.isGrounded;
 
-			if (!grounded && block == null && th > feet.y) // Corner case: Walked under the map
+			bool jetpack = config.Jetpack;
+			if (!grounded && !jetpack && block == null && th > feet.y) // Corner case: Walked under the map
 			{
-				transform.position = new Vector3(feet.x, th + height, feet.z);
-				controller.detectCollisions = controller.enableOverlapRecovery = true;
+				moveDirection = transform.position;
+				moveDirection.y += 0.1f * Time.deltaTime;
+				transform.position = moveDirection;
+				moveDirection = Vector3.zero;
+				return;
 			}
 
 			bool falling;
-			bool jetpack;
-			if (grounded || config.Jetpack)
+			if (grounded || jetpack)
 			{
 				moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
 				moveDirection = transform.TransformDirection(moveDirection);
