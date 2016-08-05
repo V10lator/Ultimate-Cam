@@ -259,6 +259,7 @@ namespace UltimateCam.API
 			else
 			{
 				position = Camera.main.transform.parent.parent.position;
+				position.y += config.Height;
 				yaw = Camera.main.transform.parent.parent.eulerAngles.y;
 			}
 
