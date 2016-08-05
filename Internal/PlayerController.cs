@@ -182,43 +182,23 @@ namespace UltimateCam.Internal
 					}
 				}
 
-				if (result.hitObject != null && result.hitDistance < 0.2f) {
+				if (result.hitObject != null && result.hitDistance < 0.2f &&
+					(moveDirection.x != 0.0f || moveDirection.z != 0.0f))
+				{
 					Vector3 pos = this.transform.position;
 					Vector3 hit = result.hitPosition;
 
-					// Some magic...
-					if (mouse.yaw > 90.0f && mouse.yaw < 270.0f)
-					{
-						float tmp = hit.z;
-						hit.z = pos.z;
-						pos.z = tmp;
-					}
-					if (mouse.yaw > 180.0f)
-					{
-						float tmp = hit.x;
-						hit.x = pos.x;
-						pos.x = tmp;
-					}
-
-					// More magic... TODO: 1.0 doesn't seem to do anything...
-					if (moveDirection.y < 0.0f)
-						hit.x += 1.0f;
-					if (moveDirection.x < 0.0f)
-						hit.z += 1.0f;
-
-					/* TODO: Left here for debugging later
-					UltimateMain.Instance.Log("Pitch: " + mouse.pitch + " / Yaw: " + mouse.yaw, UltimateMain.LogLevel.INFO);
 					UltimateMain.Instance.Log("rx: " + moveDirection.x + " / hpx: " + hit.x + " / posx: " + pos.x, UltimateMain.LogLevel.INFO);
 					UltimateMain.Instance.Log("rz: " + moveDirection.z + " / hpz: " + hit.z + " / posz: " + pos.z, UltimateMain.LogLevel.INFO);
-					*/
 
 					// Right / Left
-					if (hit.x >= pos.x)
+					if ((moveDirection.x > 0.0f && hit.x >= pos.x) || (moveDirection.x < 0.0f && hit.x <= pos.x))
 						moveDirection.x = -moveDirection.x * 1.5f;
 					// Forward / Backward
-					if (hit.z >= pos.z)
+					if ((moveDirection.z > 0.0f && hit.z >= pos.z) || (moveDirection.z < 0.0f && hit.z <= pos.z))
 						moveDirection.z = -moveDirection.z * 1.5f;
 				}
+
 			}
 
 			controller.Move(moveDirection);
