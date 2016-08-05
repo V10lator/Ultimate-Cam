@@ -164,7 +164,7 @@ namespace UltimateCam.API
 			Camera.main.GetComponentInParent<PlayerController>().enabled = true;
 			mouse.enabled = true;
 			Camera.main.GetComponent<UltimateCross>().enabled = true;
-			UltimateCam.following = false;
+			following = false;
 		}
 
 		public void LeaveFollowerCam(bool fast)

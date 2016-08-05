@@ -48,7 +48,7 @@ namespace UltimateCam.Internal
 					tmpCams[1] = to;
 					_destroy = destroy;
 					_disableUI = disableUI;
-					forward = UltimateFader.active = true;
+					forward = active = true;
 					break;
 				case 1:
 					forward = false;
@@ -58,7 +58,7 @@ namespace UltimateCam.Internal
 					if (!switchTmpCams)
 					{
 						step = 0;
-						UltimateFader.active = false;
+						active = false;
 						alpha = 0.0f;
 						if (_destroy)
 							toDestroy = tmpCams[0].gameObject;
@@ -76,7 +76,7 @@ namespace UltimateCam.Internal
 				case 0:
 					teleportToTransform = to;
 					_sitting = sitting;
-					forward = UltimateFader.active = true;
+					forward = active = true;
 					break;
 				case 1:
 					forward = false;
@@ -86,7 +86,7 @@ namespace UltimateCam.Internal
 					if (!teleportTmpCam)
 					{
 						step = 0;
-						UltimateFader.active = false;
+						active = false;
 						teleportToTransform = null;
 					}
 					return;
@@ -102,7 +102,7 @@ namespace UltimateCam.Internal
 					teleportToPosition = to;
 					_yaw = yaw;
 					_sitting = sitting;
-					forward = UltimateFader.active = true;
+					forward = active = true;
 					break;
 				case 1:
 					forward = false;
@@ -112,7 +112,7 @@ namespace UltimateCam.Internal
 					if (!teleportTmpCam)
 					{
 						step = 0;
-						UltimateFader.active = false;
+						active = false;
 						teleportToPosition = Vector3.zero;
 					}
 					return;
@@ -122,7 +122,7 @@ namespace UltimateCam.Internal
 
 		public void OnGUI()
 		{
-			if (!UltimateFader.active)
+			if (!active)
 				return;
 
 			alpha += (forward ? 2.4f : -2.4f) * Time.deltaTime;

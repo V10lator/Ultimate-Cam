@@ -37,7 +37,7 @@ namespace UltimateCam.Internal
 			// Detect tunnels
 			bool grounded;
 			Vector3 feet = transform.position;
-			float height = UltimateMain.Instance.config.Height;
+			float height = config.Height;
 			feet.y -= height;
 			Park park = GameController.Instance.park;
 			float th = park.getHeightAt(feet);
