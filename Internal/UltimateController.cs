@@ -22,6 +22,11 @@ namespace UltimateCam.Internal
 		private bool jetpack;
 
 		private static UltimateController _Instance = null;
+		internal static UltimateController Instance()
+		{
+			return _Instance;
+		}
+
 		internal static UltimateController Instance(Vector3 position)
 		{
 			if (_Instance != null)
@@ -266,20 +271,7 @@ namespace UltimateCam.Internal
 			if (result.hitObject != null)
 			{
 				if (result.hitObject is Person)
-				{
-					Person p = (Person)result.hitObject;
-					Vector3 direction = p.currentPosition - transform.position;
-					direction /= direction.magnitude;
-					direction = Quaternion.Euler(180.0f, 0.0f, 0.0f) * direction;
-					direction.x += p.currentPosition.x;
-					direction.y = p.currentPosition.y;
-					direction.z += p.currentPosition.z;
-					block = park.blockData.getBlock(direction);
-					direction.y = block == null ? park.getHeightAt(direction) : block.getTopSideY(direction);
-
-					p.instantlyChangeBehaviour<RoamingBehaviour>();
-					p.setPosition(direction);
-				}
+					((Person)result.hitObject).instantlyChangeBehaviour<VomitBehaviour>();
 				else if (/*!(result.hitObject is Path) &&*/ result.hitDistance <= md && !(result.hitObject is Person))
 				{
 					Vector3 hit = result.hitPosition;
