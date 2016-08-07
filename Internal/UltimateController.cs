@@ -19,7 +19,7 @@ namespace UltimateCam.Internal
 
 		private float upSpeed = 0.0f;
 		private Vector3 moveDirection = Vector3.zero;
-		private bool onGround = true;
+		private bool onGround = false;
 		private bool jetpack;
 
 		private static UltimateController _Instance = null;
@@ -65,6 +65,7 @@ namespace UltimateCam.Internal
 
 			_Instance.start[0] = position.x;
 			_Instance.start[1] = position.z;
+			position.y += 0.2f;
 			tgo.transform.position = position;
 
 			cam.tag = "MainCamera";
@@ -236,70 +237,47 @@ namespace UltimateCam.Internal
 				//UltimateMain.Instance.Log("rz: " + moveDirection.z + " / hpz: " + hit.z + " / posz: " + pos.z, UltimateMain.LogLevel.INFO);
 
 				// Right / Left
-				bool positionChanged = false;
 				if ((moveDirection.x > 0.0f && result.hitPosition.x >= to.x) || (moveDirection.x < 0.0f && result.hitPosition.x <= to.x))
-				{
 					result.hitPosition.x = to.x = transform.position.x;
-					positionChanged = true;
-				}
 				// Forward / Backward
 				if ((moveDirection.z > 0.0f && result.hitPosition.z >= to.z) || (moveDirection.z < 0.0f && result.hitPosition.z <= to.z))
-				{
 					result.hitPosition.z = to.z = transform.position.z;
-					positionChanged = true;
-				}
-
-				if (positionChanged)
-					smb = (SerializedMonoBehaviour)park.blockData.getBlock(to);
 			}
 
-			bool ignore = false;
 			float top;
 			block = park.blockData.getBlock(to);
+			bool found = false;
 			if (block == null)
 			{
 				//TODO: Raycast down
 				md = 0.5f;
-				result = rayFromTo(transform.position, Vector3.down * md, md);
+				Vector3 np = to;
+				np.y += md;
+				md *= 2.0f;
+				result = rayFromTo(np, Vector3.down * md, md);
 				if (result.hitObject != null && result.hitDistance <= md)
 				{
 					smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
 					if (smb is Block)
+					{
 						block = (Block)smb;
+						to.y = block.getTopSideY(to);
+						found = true;
+					}
 				}
 			}
-			top = block == null ? park.getHeightAt(to) : block.getTopSideY(result.hitPosition);
-			/*
-			if (result.hitObject == null || result.hitDistance > md)
-			{
-				top = park.getHeightAt(to);
-				UltimateMain.Instance.Log("No collision!", UltimateMain.LogLevel.INFO);
-			}
-			else if (smb is Block)
-			{
-				top = ((Block)smb).getTopSideY(to);
-				UltimateMain.Instance.Log("Collision with: " + result.hitObject.GetComponent<SerializedMonoBehaviour>().GetType(), UltimateMain.LogLevel.INFO);
-			}
+
+			top = block == null ? park.getHeightAt(to) : found ? to.y : block.getTopSideY(to);
+			if (to.y > top)
+				onGround = false;
 			else
 			{
-				ignore = true;
-				top = 0.0f;
-				UltimateMain.Instance.Log("Collision with unknwon: " + result.hitObject.GetComponent<SerializedMonoBehaviour>().GetType(), UltimateMain.LogLevel.INFO);
+				if (to.y < top)
+					to.y = top;
+				onGround = true;
 			}
 
-			if (!ignore)
-			{*/
-				if (to.y > top)
-					onGround = false;
-				else
-				{
-					if (to.y < top)
-						to.y = top;
-					onGround = true;
-				}
-			//}
-
-			to.y += height + 0.001f;
+			to.y += height;
 			transform.position = to;
 		}
 	}
