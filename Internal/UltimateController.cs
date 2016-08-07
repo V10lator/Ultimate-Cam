@@ -201,51 +201,27 @@ namespace UltimateCam.Internal
 				to = new Vector3(feet.x + moveDirection.x, feet.y + moveDirection.y, feet.z + moveDirection.z);
 			}
 			Park park = GameController.Instance.park;
-			SerializedMonoBehaviour smb = null;
-			Block block;
-			if (result.hitObject != null && result.hitDistance <= md)
-			{
-				smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
-				if (smb is Car)
-				{
-					Vector3 dir = to - result.hitPosition / md;
-					to.x -= dir.x;
-					to.y -= dir.y;
-					to.z -= dir.z;
-
-					block = park.blockData.getBlock(to);
-				}
-				else
-					block = null;
-
-				if (block == null && smb is Person)
-				{
-					block = park.blockData.getBlock(((Person)smb).currentPosition);
-
-				}
-
-				//TODO
-				//to.y = block == null ? park.getHeightAt(to) : block.getTopSideY(to);
-				//result.hitObject = (SerializedMonoBehaviour)block;
-				//result.hitPosition = p;
-			}
 
 			//UltimateMain.Instance.Log("obj: " + (result.hitObject != null ? result.hitObject.GetType().ToString() : "NULL") + " Distance: " + result.hitDistance + " / " + md, UltimateMain.LogLevel.INFO);
-			if (result.hitObject != null && result.hitDistance <= md && !(smb is Path))
+			if (result.hitObject != null && result.hitDistance <= md)
 			{
-				//UltimateMain.Instance.Log("rx: " + moveDirection.x + " / hpx: " + hit.x + " / posx: " + pos.x, UltimateMain.LogLevel.INFO);
-				//UltimateMain.Instance.Log("rz: " + moveDirection.z + " / hpz: " + hit.z + " / posz: " + pos.z, UltimateMain.LogLevel.INFO);
+				SerializedMonoBehaviour smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
+				if (!(smb is Path) || !((Path)smb).isUnderground())
+				{
+					//UltimateMain.Instance.Log("rx: " + moveDirection.x + " / hpx: " + hit.x + " / posx: " + pos.x, UltimateMain.LogLevel.INFO);
+					//UltimateMain.Instance.Log("rz: " + moveDirection.z + " / hpz: " + hit.z + " / posz: " + pos.z, UltimateMain.LogLevel.INFO);
 
-				// Right / Left
-				if ((moveDirection.x > 0.0f && result.hitPosition.x >= to.x) || (moveDirection.x < 0.0f && result.hitPosition.x <= to.x))
-					result.hitPosition.x = to.x = transform.position.x;
-				// Forward / Backward
-				if ((moveDirection.z > 0.0f && result.hitPosition.z >= to.z) || (moveDirection.z < 0.0f && result.hitPosition.z <= to.z))
-					result.hitPosition.z = to.z = transform.position.z;
+					// Right / Left
+					if ((moveDirection.x > 0.0f && result.hitPosition.x >= to.x) || (moveDirection.x < 0.0f && result.hitPosition.x <= to.x))
+						result.hitPosition.x = to.x = transform.position.x;
+					// Forward / Backward
+					if ((moveDirection.z > 0.0f && result.hitPosition.z >= to.z) || (moveDirection.z < 0.0f && result.hitPosition.z <= to.z))
+						result.hitPosition.z = to.z = transform.position.z;
+				}
 			}
 
 			float top;
-			block = park.blockData.getBlock(to);
+			Block block = park.blockData.getBlock(to);
 			bool found = false;
 			if (block == null)
 			{
@@ -257,7 +233,7 @@ namespace UltimateCam.Internal
 				result = rayFromTo(np, Vector3.down * md, md);
 				if (result.hitObject != null && result.hitDistance <= md)
 				{
-					smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
+					SerializedMonoBehaviour smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
 					if (smb is Block)
 					{
 						block = (Block)smb;
