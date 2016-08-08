@@ -220,12 +220,10 @@ namespace UltimateCam.Internal
 				}
 			}
 
-			float top;
 			Block block = park.blockData.getBlock(to);
-			bool found = false;
-			if (block == null)
+			float top = block == null ? float.MinValue : block is Path ? block.getTopSideY(to) : result.hitPosition.y;
+			if (top == float.MinValue)
 			{
-				//TODO: Raycast down
 				md = 0.5f;
 				Vector3 np = to;
 				np.y += md;
@@ -235,21 +233,19 @@ namespace UltimateCam.Internal
 				{
 					SerializedMonoBehaviour smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
 					UltimateMain.Instance.Log("Collision with: " + smb.GetType(), UltimateMain.LogLevel.INFO);
-					if (smb is Block)
+					if (smb is Path)
 					{
 						block = (Block)smb;
-						to.y = block.getTopSideY(to);
-						found = true;
+						top = block.getTopSideY(to);
 					}
-					else if (smb is BuildableObject) // TODO
-					{
-						to.y = result.hitPosition.y;
-						found = true;
-					}
+					else // TODO
+						top = result.hitPosition.y;
 				}
 			}
 
-			top = block == null ? found ? to.y : park.getHeightAt(to) : found ? to.y : block.getTopSideY(to);
+			if(top == float.MinValue)
+				top = park.getHeightAt(to);
+			
 			if (to.y > top)
 				onGround = false;
 			else
@@ -258,7 +254,6 @@ namespace UltimateCam.Internal
 					to.y = top;
 				onGround = true;
 			}
-
 			to.y += height;
 			transform.position = to;
 		}
