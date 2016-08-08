@@ -254,7 +254,11 @@ namespace UltimateCam.Internal
 						onGround = true;
 					}
 					else
-						return;
+					{
+						to.x = feet.x;
+						to.z = feet.z;
+						moveDirection.x = moveDirection.z = 0.0f;
+					}
 				}
 				else
 					onGround = true;
