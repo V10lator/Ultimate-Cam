@@ -97,9 +97,6 @@ namespace UltimateCam.Internal
 			return head.GetComponent<UltimateFader>();
 		}
 
-		//DUMMY:
-		internal readonly bool isGrounded = true;
-
 		internal void parkitectFollowUltimate()
 		{
 			Camera main = getParkitectCam();
