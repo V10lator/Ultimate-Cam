@@ -221,7 +221,7 @@ namespace UltimateCam.Internal
 			}
 
 			Block block = park.blockData.getBlock(to);
-			float top = block == null ? float.MinValue : block is Path ? block.getTopSideY(to) : result.hitPosition.y;
+			float top = block == null ? float.MinValue : block is Path || block is AttractionPlatform ? block.getTopSideY(to) : result.hitPosition.y;
 			if (top == float.MinValue)
 			{
 				md = 0.5f;
@@ -232,8 +232,7 @@ namespace UltimateCam.Internal
 				if (result.hitObject != null && result.hitDistance <= md)
 				{
 					SerializedMonoBehaviour smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
-					UltimateMain.Instance.Log("Collision with: " + smb.GetType(), UltimateMain.LogLevel.INFO);
-					if (smb is Path)
+					if (smb is Path || smb is AttractionPlatform)
 					{
 						block = (Block)smb;
 						top = block.getTopSideY(to);
@@ -243,7 +242,7 @@ namespace UltimateCam.Internal
 				}
 			}
 
-			if(top == float.MinValue)
+			if (top == float.MinValue)
 				top = park.getHeightAt(to);
 			
 			if (to.y > top)
