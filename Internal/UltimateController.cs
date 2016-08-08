@@ -157,7 +157,7 @@ namespace UltimateCam.Internal
 			else if (Input.GetKey(config.GetKey(UltimateSettings.ROTATE_RIGHT_KEY_SETTING)))
 				mouse.yaw += speed;
 
-			if (!onGround && transform.position.y < 0.0f)
+			if (!jetpack && !onGround && transform.position.y < 0.0f)
 			{
 				Vector3 pos = transform.position;
 				pos.y = LandPatch.maxTerrainHeight;
