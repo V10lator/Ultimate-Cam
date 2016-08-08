@@ -194,12 +194,9 @@ namespace UltimateCam.Internal
 			MouseCollider.HitInfo result = rayFromTo(transform.position, moveDirection, md);
 
 			float height = config.Height;
-			Vector3 to;
-			{
-				Vector3 feet = transform.position;
-				feet.y -= height;
-				to = new Vector3(feet.x + moveDirection.x, feet.y + moveDirection.y, feet.z + moveDirection.z);
-			}
+			Vector3 feet = transform.position;
+			feet.y -= height;
+			Vector3 to = new Vector3(feet.x + moveDirection.x, feet.y + moveDirection.y, feet.z + moveDirection.z);
 			Park park = GameController.Instance.park;
 
 			//UltimateMain.Instance.Log("obj: " + (result.hitObject != null ? result.hitObject.GetType().ToString() : "NULL") + " Distance: " + result.hitDistance + " / " + md, UltimateMain.LogLevel.INFO);
@@ -213,10 +210,10 @@ namespace UltimateCam.Internal
 
 					// Right / Left
 					if ((moveDirection.x > 0.0f && result.hitPosition.x >= to.x) || (moveDirection.x < 0.0f && result.hitPosition.x <= to.x))
-						result.hitPosition.x = to.x = transform.position.x;
+						result.hitPosition.x = to.x = feet.x;
 					// Forward / Backward
 					if ((moveDirection.z > 0.0f && result.hitPosition.z >= to.z) || (moveDirection.z < 0.0f && result.hitPosition.z <= to.z))
-						result.hitPosition.z = to.z = transform.position.z;
+						result.hitPosition.z = to.z = feet.z;
 				}
 			}
 
@@ -250,8 +247,17 @@ namespace UltimateCam.Internal
 			else
 			{
 				if (to.y < top)
-					to.y = top;
-				onGround = true;
+				{
+					if (top - to.y <= height / 2.0f)
+					{
+						to.y = top;
+						onGround = true;
+					}
+					else
+						return;
+				}
+				else
+					onGround = true;
 			}
 			to.y += height;
 			transform.position = to;
