@@ -234,16 +234,22 @@ namespace UltimateCam.Internal
 				if (result.hitObject != null && result.hitDistance <= md)
 				{
 					SerializedMonoBehaviour smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
+					UltimateMain.Instance.Log("Collision with: " + smb.GetType(), UltimateMain.LogLevel.INFO);
 					if (smb is Block)
 					{
 						block = (Block)smb;
 						to.y = block.getTopSideY(to);
 						found = true;
 					}
+					else if (smb is BuildableObject) // TODO
+					{
+						to.y = result.hitPosition.y;
+						found = true;
+					}
 				}
 			}
 
-			top = block == null ? park.getHeightAt(to) : found ? to.y : block.getTopSideY(to);
+			top = block == null ? found ? to.y : park.getHeightAt(to) : found ? to.y : block.getTopSideY(to);
 			if (to.y > top)
 				onGround = false;
 			else
