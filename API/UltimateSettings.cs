@@ -9,7 +9,7 @@ namespace UltimateCam.API
 {
 	public class UltimateSettings
 	{
-		private const int CONFIG_VERSION = 6;
+		private const int CONFIG_VERSION = 7;
 
 		private Dictionary<string, object> settingsValueDictionary = new Dictionary<string, object>();
 
@@ -44,13 +44,6 @@ namespace UltimateCam.API
 		internal const float DEFAULT_GRAVITY = 0.25f;
 		internal const string JETPACK_SETTING = "Jetpack mode";
 		internal const bool DEFAULT_JETPACK = false;
-
-		internal const string EXPERIMENTAL_SETTING = "Experimental";
-		internal const bool DEFAULT_EXPERIMENTAL = false;
-		internal const string MORE_COLS_SETTING = "More collisions";
-		internal const bool DEFAULT_MORE_COLS = false;
-		internal const string TUNNEL_SETTING = "Tunnel mode";
-		internal const bool DEFAULT_TUNNEL = false;
 
 		private string _file = null;
 		private string file
@@ -142,41 +135,6 @@ namespace UltimateCam.API
 			}
 		}
 
-		public bool Experimental {
-			get {
-				return bool.Parse (settingsValueDictionary [EXPERIMENTAL_SETTING].ToString ());
-			}
-			set {
-				if(value == false)
-					MoreCols = TunnelMode = false;
-				SetSetting (EXPERIMENTAL_SETTING, value);
-			}
-		}
-
-		public bool MoreCols
-		{
-			get
-			{
-				return bool.Parse(settingsValueDictionary[MORE_COLS_SETTING].ToString());
-			}
-			set
-			{
-				SetSetting(MORE_COLS_SETTING, value);
-			}
-		}
-
-		public bool TunnelMode
-		{
-			get
-			{
-				return bool.Parse(settingsValueDictionary[TUNNEL_SETTING].ToString());
-			}
-			set
-			{
-				SetSetting(TUNNEL_SETTING, value);
-			}
-		}
-
 		internal UltimateSettings()
 		{
 			if (!File.Exists (file)) {
@@ -264,21 +222,12 @@ namespace UltimateCam.API
 							settingsValueDictionary[SPEED_SETTING] = DEFAULT_SPEED;
 						if (settingsValueDictionary.ContainsKey(GRAVITY_SETTING))
 							settingsValueDictionary[GRAVITY_SETTING] = DEFAULT_GRAVITY;
-
-						UltimateMain.Instance.Log("Updating experimental settings!", UltimateMain.LogLevel.WARNING);
-						if (settingsValueDictionary.TryGetValue(EXPERIMENTAL_SETTING, out obj))
-						{
-							bool b = false;
-							try
-							{
-								b = bool.Parse(obj.ToString());
-							}
-							catch (Exception)
-							{
-							}
-							settingsValueDictionary.Add(MORE_COLS_SETTING, b);
-						}
 					}
+
+					// Experimental settings where removed from version 7.
+					settingsValueDictionary.Remove("Experimental");
+					settingsValueDictionary.Remove("More collisions");
+					settingsValueDictionary.Remove("Tunnel mode");
 
 					needSave = true;
 				} else if (v > CONFIG_VERSION) {
@@ -302,9 +251,6 @@ namespace UltimateCam.API
 			validateBoolSetting (HDR_SETTING, DEFAULT_HDR);
 			validateBoolSetting (CROSSHAIR_SETTING, DEFAULT_CROSSHAIR);
 			validateBoolSetting (JETPACK_SETTING, DEFAULT_JETPACK);
-			validateBoolSetting (EXPERIMENTAL_SETTING, DEFAULT_EXPERIMENTAL);
-			validateBoolSetting (MORE_COLS_SETTING, DEFAULT_MORE_COLS);
-			validateBoolSetting (TUNNEL_SETTING, DEFAULT_TUNNEL);
 		}
 
 		private void validateKeySetting(string setting)
