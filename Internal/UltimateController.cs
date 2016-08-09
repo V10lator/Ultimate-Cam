@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UltimateCam.API;
 using UnityEngine;
 
@@ -115,21 +116,116 @@ namespace UltimateCam.Internal
 			return head.GetComponent<UltimateMouse>();
 		}
 
-		private MouseCollider.HitInfo rayFromTo(Vector3 from, Vector3 direction, float md, bool down)
+		private ArrayList imps = new ArrayList();
+		private class UltimateRay
 		{
-			int c = down ? 1 : 3;
+			internal readonly Color color;
+			internal readonly Vector3 start;
+			internal readonly Vector3 end;
+
+			internal UltimateRay(Color c, Vector3 s, Vector3 e)
+			{
+				color = c;
+				start = s;
+				end = e;
+			}
+		}
+
+		public void OnGUI()
+		{
+			UltimateRay ray;
+			Vector3[][] p = new Vector3[2][];
+			p[0] = new Vector3[2];
+			p[1] = new Vector3[2];
+			GUI.depth = -998;
+			Rect pos;
+			GUIStyle font = new GUIStyle();
+			font.fontSize = 12;
+			font.stretchHeight = font.stretchWidth = true;
+			bool hasEnd;
+			float[] y = new float[2];
+			float ground = transform.position.y - config.Height;
+
+			for (int i = 0; i < imps.Count; i++)
+			{
+				ray = (UltimateRay)imps[i];
+				GUI.color = ray.color;
+
+				y[0] = ray.start.y;
+				p[0][0] = ray.start;
+				p[0][0].y = ground;
+				p[0][1] = Camera.main.WorldToScreenPoint(p[0][0]);
+				hasEnd = ray.end != Vector3.one;
+				if (hasEnd)
+				{
+					y[1] = ray.end.y;
+					p[1][0] = ray.end;
+					p[1][0].y = ground;
+					p[1][1] = Camera.main.WorldToScreenPoint(p[1][0]);
+				}
+
+				pos = new Rect(p[0][1].x + 4.0f, Screen.height - p[0][1].y - 2.5f, 4.0f, 4.0f);
+				GUI.Label(pos, y[0] + " / " + (hasEnd ? y[1].ToString() : "No hit"), font);
+
+				int c = hasEnd ? 2 : 1;
+				for (int j = 0; j < c; j++)
+				{
+					pos = new Rect(p[j][1].x - 2.5f, Screen.height - p[j][1].y - 2.5f, 4.0f, 4.0f);
+					GUI.DrawTexture(pos, Texture2D.whiteTexture, ScaleMode.StretchToFill);
+				}
+			}
+		}
+
+		private MouseCollider.HitInfo rayFromTo(Vector3 from, Vector3 direction, float md, bool down, bool ignoreTerrain)
+		{
+
+			float steps;
+			if (down)
+				steps = 16.0f;
+			else
+				steps = 4.0f;
+			float stepsize = width / steps;
+
+			int c = (int)steps + 1;
 			MouseCollider.HitInfo[] result = new MouseCollider.HitInfo[c];
 			Ray ray;
 			MouseCollider.HitInfo[] array;
 			Vector3 tFrom;
+
+			Quaternion offset;
+			{
+				double _yaw = 0;
+				// Set yaw
+				if (moveDirection.x != 0.0f)
+				{
+					// Set yaw start value based on dx
+					_yaw = moveDirection.x < 0.0f ? 1.5 : 0.5;
+					_yaw *= Math.PI;
+					_yaw -= Math.Atan(moveDirection.z / moveDirection.x);
+				}
+				else if (moveDirection.z < 0)
+					_yaw = Math.PI;
+				float yaw = (float)(_yaw * 180.0d / Math.PI);
+				offset = Quaternion.Euler(0.0f, yaw, 0.0f);
+			}
+
+			float rss;
+			Park park = GameController.Instance.park;
+			float terrain;
+
 			for (int i = 0; i < c; i++)
 			{
 				tFrom = from;
-				if (i == 1)
-					tFrom.z -= width / 2.0f;
-				else if (i == 2)
-					tFrom.z += width / 2.0f;
-				
+				rss = stepsize * (i - (steps / 2.0f));
+				if (rss != 0.0f)
+				{
+					if (down)
+						tFrom.z += rss;
+					else
+						tFrom.x += rss;
+					tFrom = (offset * (tFrom - from)) + from;
+				}
+
 				ray = new Ray(tFrom, direction);
 				result[i].hitDistance = md;
 				result[i].hitObject = null;
@@ -138,7 +234,7 @@ namespace UltimateCam.Internal
 				array = MouseCollisions.Instance.raycastAll(ray, md);
 				for (int j = 0; j < array.Length; j++)
 				{
-					if (array[j].hitDistance < md)
+					if (array[j].hitDistance <= md)
 					{
 						SerializedMonoBehaviour componentInParent = array[j].hitObject.GetComponentInParent<SerializedMonoBehaviour>();
 						if (componentInParent != null)
@@ -156,13 +252,51 @@ namespace UltimateCam.Internal
 							result[i].hitSomething = false;
 					}
 				}
+
+				if (!ignoreTerrain && !result[i].hitSomething)
+				{
+					if (down)
+					{
+						terrain = park.getHeightAt(tFrom);
+						if (terrain < tFrom.y)
+						{
+							result[i].hitDistance = tFrom.y - terrain;
+							if (result[i].hitDistance <= md)
+							{
+								result[i].hitSomething = true;
+								result[i].hitObject = null;
+								result[i].hitPosition = new Vector3(tFrom.x, terrain, tFrom.z);
+							}
+						}
+					}
+				}
+
+				Color co;
+				Vector3 hitP;
+				if (result[i].hitSomething)
+				{
+					co = down ? Color.blue : Color.yellow;
+					hitP = result[i].hitPosition;
+				}
+				else
+				{
+					co = down ? Color.cyan : Color.green;
+					hitP = Vector3.one;
+				}
+				imps.Add(new UltimateRay(co, tFrom, hitP));
 			}
 
 			int s = 0;
-			if(!down)
-				for (int i = 1; i < c; i++)
-					if (result[i].hitSomething && result[i].hitDistance < result[s].hitDistance)
-						s = i;
+			steps = md;
+			for (int i = 1; i < c; i++)
+			{
+				if (result[i].hitSomething && result[i].hitDistance < steps)
+				{
+					s = i;
+					steps = result[i].hitDistance;
+				}
+			}
+
 			return result[s];
 		}
 
@@ -216,25 +350,71 @@ namespace UltimateCam.Internal
 			if (moveDirection == Vector3.zero)
 				return;
 
+			imps.Clear();
+
 			float height = config.Height;
 			Vector3 feet = transform.position;
-			float stepHeight = height / 2.0f;
-			feet.y -= stepHeight;
 			Vector3 to = new Vector3(feet.x + moveDirection.x, feet.y + moveDirection.y, feet.z + moveDirection.z);
+
+			MouseCollider.HitInfo result = rayFromTo(feet, moveDirection, moveDirection.magnitude + (width / 2.0f), false, true);
+			bool underground;
 			Park park = GameController.Instance.park;
-			MouseCollider.HitInfo result = rayFromTo(to, Vector3.down * height, height, true);
-			to.y -= stepHeight;
+			if (result.hitSomething)
+			{
+				SerializedMonoBehaviour smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
+				underground = smb is Path && ((Path)smb).isUnderground();
+				bool ignore;
+				if (underground)
+				{
+					Block block = park.blockData.getBlock(feet);
+					ignore = block != null && block is Path && !block.isUnderground();
+				}
+				else
+					ignore = false;
+
+				if (!ignore)
+				{
+					//UltimateMain.Instance.Log("rx: " + moveDirection.x + " / hpx: " + hit.x + " / posx: " + pos.x, UltimateMain.LogLevel.INFO);
+					//UltimateMain.Instance.Log("rz: " + moveDirection.z + " / hpz: " + hit.z + " / posz: " + pos.z, UltimateMain.LogLevel.INFO);
+
+					// Right / Left
+					if ((moveDirection.x > 0.0f && result.hitPosition.x >= to.x) || (moveDirection.x < 0.0f && result.hitPosition.x <= to.x))
+					{
+						to.x = feet.x;
+						moveDirection.x = 0.0f;
+					}
+					// Forward / Backward
+					if ((moveDirection.z > 0.0f && result.hitPosition.z >= to.z) || (moveDirection.z < 0.0f && result.hitPosition.z <= to.z))
+					{
+						to.z = feet.z;
+						moveDirection.z = 0.0f;
+					}
+				}
+			}
+			else
+				underground = false;
+
+			to.y += 0.001f;
+			result = rayFromTo(to, Vector3.down, height * 2.0f, true, underground);
+			to.y -= 0.001f;
+			to.y -= height;
+			feet.y -= height;
 			float top;
 
 			if (result.hitSomething)
 			{
-				SerializedMonoBehaviour smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
-				if (smb is Path || smb is AttractionPlatform)
+				if (result.hitObject != null)
 				{
-					Block block = (Block)smb;
-					top = block.getTopSideY(to);
+					SerializedMonoBehaviour smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
+					if (smb is Path || smb is AttractionPlatform)
+					{
+						Block block = (Block)smb;
+						top = block.getTopSideY(to);
+					}
+					else // TODO
+						top = result.hitPosition.y;
 				}
-				else // TODO
+				else
 					top = result.hitPosition.y;
 			}
 			else
@@ -246,9 +426,10 @@ namespace UltimateCam.Internal
 			{
 				if (to.y < top)
 				{
-					if (top - to.y <= height / 2.0f)
+					if (top - to.y <= height)
 					{
-						to.y = feet.y = top;
+						UltimateMain.Instance.Log("Stepping up!", UltimateMain.LogLevel.INFO);
+						to.y = top;
 						moveDirection.y = 0.0f;
 						onGround = true;
 					}
@@ -261,27 +442,6 @@ namespace UltimateCam.Internal
 				}
 				else
 					onGround = true;
-			}
-
-			//UltimateMain.Instance.Log("obj: " + (result.hitObject != null ? result.hitObject.GetType().ToString() : "NULL") + " Distance: " + result.hitDistance + " / " + md, UltimateMain.LogLevel.INFO);
-			result = rayFromTo(feet, moveDirection, moveDirection.magnitude, false);
-			if (result.hitSomething)
-			{
-				SerializedMonoBehaviour smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
-				if (!(smb is Path) || !((Path)smb).isUnderground())
-				{
-					//UltimateMain.Instance.Log("rx: " + moveDirection.x + " / hpx: " + hit.x + " / posx: " + pos.x, UltimateMain.LogLevel.INFO);
-					//UltimateMain.Instance.Log("rz: " + moveDirection.z + " / hpz: " + hit.z + " / posz: " + pos.z, UltimateMain.LogLevel.INFO);
-
-					// Right / Left
-					UltimateMain.Instance.Log("X: " + moveDirection.x + " / " + result.hitPosition.x + " / " + to.x, UltimateMain.LogLevel.INFO);
-					if ((moveDirection.x > 0.0f && result.hitPosition.x >= to.x) || (moveDirection.x < 0.0f && result.hitPosition.x <= to.x))
-						to.x = feet.x;
-					// Forward / Backward
-					UltimateMain.Instance.Log("Z: " + moveDirection.z + " / " + result.hitPosition.z + " / " + to.z, UltimateMain.LogLevel.INFO);
-					if ((moveDirection.z > 0.0f && result.hitPosition.z >= to.z) || (moveDirection.z < 0.0f && result.hitPosition.z <= to.z))
-						to.z = feet.z;
-				}
 			}
 
 			to.y += height;
