@@ -317,7 +317,17 @@ namespace UltimateCam.Internal
 				return;
 			}
 
-			if (onGround || jetpack)
+			Park park = GameController.Instance.park;
+			bool canMoveInAir;
+			if (!jetpack)
+			{
+				LandPatch terrain = park.getTerrain(transform.position);
+				canMoveInAir = terrain.hasWater() && transform.position.y <= terrain.WaterHeight;
+			}
+			else
+				canMoveInAir = true;
+
+			if (onGround || canMoveInAir)
 			{
 				speed = config.WalkingSpeed;
 
@@ -358,7 +368,6 @@ namespace UltimateCam.Internal
 
 			MouseCollider.HitInfo result = rayFromTo(feet, moveDirection, moveDirection.magnitude + (width / 2.0f), false, true);
 			bool underground;
-			Park park = GameController.Instance.park;
 			if (result.hitSomething)
 			{
 				SerializedMonoBehaviour smb = result.hitObject.GetComponent<SerializedMonoBehaviour>();
