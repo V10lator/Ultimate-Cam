@@ -387,16 +387,37 @@ namespace UltimateCam.Internal
 					//UltimateMain.Instance.Log("rz: " + moveDirection.z + " / hpz: " + hit.z + " / posz: " + pos.z, UltimateMain.LogLevel.INFO);
 
 					// Right / Left
+					bool changed = false;
 					if ((moveDirection.x > 0.0f && result.hitPosition.x >= to.x) || (moveDirection.x < 0.0f && result.hitPosition.x <= to.x))
 					{
 						to.x = feet.x;
 						moveDirection.x = 0.0f;
+						changed = true;
 					}
 					// Forward / Backward
 					if ((moveDirection.z > 0.0f && result.hitPosition.z >= to.z) || (moveDirection.z < 0.0f && result.hitPosition.z <= to.z))
 					{
 						to.z = feet.z;
 						moveDirection.z = 0.0f;
+						changed = true;
+					}
+
+					if (changed)
+					{
+						result = rayFromTo(feet, moveDirection, moveDirection.magnitude + (width / 2.0f), false, true);
+						if (result.hitSomething)
+						{
+							if ((moveDirection.x > 0.0f && result.hitPosition.x >= to.x) || (moveDirection.x < 0.0f && result.hitPosition.x <= to.x))
+							{
+								to.x = feet.x;
+								moveDirection.x = 0.0f;
+							}
+							else if ((moveDirection.z > 0.0f && result.hitPosition.z >= to.z) || (moveDirection.z < 0.0f && result.hitPosition.z <= to.z))
+							{
+								to.z = feet.z;
+								moveDirection.z = 0.0f;
+							}
+						}
 					}
 				}
 			}
