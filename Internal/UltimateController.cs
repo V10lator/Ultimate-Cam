@@ -7,9 +7,9 @@ namespace UltimateCam.Internal
 {
 	public class UltimateController : MonoBehaviour
 	{
+		private const string bodyName = "UltimateCam Body";
+		private const string headName = "UltimateCam Head";
 		private UltimateSettings config;
-		private GameObject go;
-		private GameObject head;
 		private Camera parkitectCam;
 		internal UltimateMouse mouse
 		{
@@ -20,8 +20,7 @@ namespace UltimateCam.Internal
 
 		private float upSpeed = 0.0f;
 		private Vector3 moveDirection = Vector3.zero;
-		private bool onGround = false;
-		private bool jetpack;
+		internal bool onGround = false;
 		private readonly float width = 0.4f;
 
 		private static UltimateController _Instance = null;
@@ -36,9 +35,11 @@ namespace UltimateCam.Internal
 				return _Instance;
 
 			GameObject tgo = new GameObject();
+			tgo.name = bodyName;
 			tgo.layer = LayerMasks.ID_DEFAULT;
 
 			GameObject hgo = new GameObject();
+			hgo.name = headName;
 			hgo.transform.SetParent(tgo.transform);
 
 			UltimateSettings config = API.UltimateCam.Instance.config;
@@ -55,8 +56,6 @@ namespace UltimateCam.Internal
 			hgo.AddComponent<AudioListener>();
 
 			_Instance = tgo.AddComponent<UltimateController>();
-			_Instance.go = tgo;
-			_Instance.head = hgo;
 			_Instance.parkitectCam = Camera.main;
 			_Instance.config = config;
 			_Instance.mouse = hgo.AddComponent<UltimateMouse>();
@@ -72,21 +71,23 @@ namespace UltimateCam.Internal
 
 			cam.tag = "MainCamera";
 
-			_Instance.jetpack = config.Jetpack;
-
 			return _Instance;
 		}
 
 		void OnDestroy()
 		{
-			Destroy(head);
-			Destroy(go);
+			Destroy(gameObject);
 			_Instance = null;
+		}
+
+		private GameObject getHead()
+		{
+			return transform.FindChild(headName).gameObject;
 		}
 
 		internal Camera getUltimateCam()
 		{
-			return head.GetComponent<Camera>();
+			return getHead().GetComponent<Camera>();
 		}
 
 		internal Camera getParkitectCam()
@@ -96,13 +97,13 @@ namespace UltimateCam.Internal
 
 		internal UltimateFader getFader()
 		{
-			return head.GetComponent<UltimateFader>();
+			return getHead().GetComponent<UltimateFader>();
 		}
 
 		internal void parkitectFollowUltimate()
 		{
 			Camera main = getParkitectCam();
-			Vector3 mod = getUltimateCam().gameObject.transform.position;
+			Vector3 mod = getUltimateCam().transform.position;
 			Vector3 position = main.transform.position;
 			float modX = mod.x - start[0];
 			float modZ = mod.z - start[1];
@@ -113,7 +114,7 @@ namespace UltimateCam.Internal
 
 		internal UltimateMouse getMouse()
 		{
-			return head.GetComponent<UltimateMouse>();
+			return getHead().GetComponent<UltimateMouse>();
 		}
 
 		private ArrayList imps = new ArrayList();
@@ -308,7 +309,7 @@ namespace UltimateCam.Internal
 			else if (Input.GetKey(config.GetKey(UltimateSettings.ROTATE_RIGHT_KEY_SETTING)))
 				mouse.yaw += speed;
 
-			if (!jetpack && !onGround && transform.position.y < 0.0f)
+			if (!config.Jetpack && !onGround && transform.position.y < 0.0f)
 			{
 				Vector3 pos = transform.position;
 				pos.y = LandPatch.maxTerrainHeight;
@@ -319,7 +320,7 @@ namespace UltimateCam.Internal
 
 			Park park = GameController.Instance.park;
 			bool canMoveInAir;
-			if (!jetpack)
+			if (!config.Jetpack)
 			{
 				LandPatch terrain = park.getTerrain(transform.position);
 				canMoveInAir = terrain.hasWater() && transform.position.y <= terrain.WaterHeight;
@@ -458,7 +459,6 @@ namespace UltimateCam.Internal
 				{
 					if (top - to.y <= height)
 					{
-						UltimateMain.Instance.Log("Stepping up!", UltimateMain.LogLevel.INFO);
 						to.y = top;
 						moveDirection.y = 0.0f;
 						onGround = true;

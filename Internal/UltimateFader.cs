@@ -25,7 +25,7 @@ namespace UltimateCam.Internal
 
 		void Awake()
 		{
-			mouse = UltimateController.Instance(Vector3.zero).getMouse();
+			mouse = UltimateController.Instance().getMouse();
 		}
 
 		internal void fade(Camera from, Camera to, bool destroy, bool disableUI)
@@ -207,10 +207,13 @@ namespace UltimateCam.Internal
 					if (_sitting)
 					{
 						Camera.main.transform.parent.parent = null;
+						teleportToPosition.y += 0.2f;
 						Camera.main.transform.parent.position = teleportToPosition;
 						mouse.yaw = _yaw;
 						mouse.pitch = 0.0f;
-						Camera.main.GetComponentInParent<UltimateController>().enabled = true;
+						UltimateController c = UltimateController.Instance();
+						c.onGround = false;
+						c.enabled = true;
 						API.UltimateCam.sitting = false;
 					}
 					else

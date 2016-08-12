@@ -18,13 +18,6 @@ namespace UltimateCam.Internal
 		private float _yaw = 0.0f;
 		private float _pitch = 0.0f;
 
-		private UltimateController controller;
-
-		void Start()
-		{
-			controller = UltimateController.Instance(Vector3.zero);
-		}
-
 		internal float pitch
 		{
 			get
@@ -87,7 +80,7 @@ namespace UltimateCam.Internal
 			eulers[1] = new Vector3(0.0f, yaw, 0.0f);
 			
 			transform.localEulerAngles = eulers[0];
-			controller.gameObject.transform.localEulerAngles = eulers[1];
+			UltimateController.Instance().transform.localEulerAngles = eulers[1];
 		}
 	}
 }

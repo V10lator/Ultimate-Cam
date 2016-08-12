@@ -14,7 +14,6 @@ namespace UltimateCam.API
 			private set;
 		}
 		internal UltimateController controller = null;
-		private float startX, startZ;
 		public static bool active {get { return Instance.controller != null; } }
 		public static bool sitting {
 			get;
@@ -133,7 +132,7 @@ namespace UltimateCam.API
 				sitting = false;
 			}
 			
-			Camera.main.GetComponentInParent<UltimateController>().enabled = false;
+			controller.enabled = false;
 			controller.getMouse().enabled = false;
 			person.OnKilled += this.LeaveFollowerCamFast;
 
@@ -156,11 +155,13 @@ namespace UltimateCam.API
 		{
 			Camera.main.transform.GetComponentInParent<Person>().OnKilled -= this.LeaveFollowerCamFast;
 			Camera.main.transform.parent.parent = null;
+			to.y += 0.2f;
 			Camera.main.transform.parent.position = to;
 			UltimateMouse mouse = controller.getMouse();
 			mouse.yaw = yaw;
 			mouse.pitch = 0.0f;
-			Camera.main.GetComponentInParent<UltimateController>().enabled = true;
+			controller.onGround = false;
+			controller.enabled = true;
 			mouse.enabled = true;
 			Camera.main.GetComponent<UltimateCross>().enabled = true;
 			following = false;
@@ -184,7 +185,7 @@ namespace UltimateCam.API
 
 		private void EnterSeatCam(Transform s)
 		{
-			Camera.main.GetComponentInParent<UltimateController>().enabled = false;
+			controller.enabled = false;
 
 			if (!sitting)
 				EscapeHierarchy.Instance.push(new EscapeHierarchy.OnEscapeHandler(this.LeaveSeatCam));
@@ -295,9 +296,8 @@ namespace UltimateCam.API
 				EscapeHierarchy.Instance.remove(new EscapeHierarchy.OnEscapeHandler(this.LeaveFollowerCam));
 				following = false;
 			}
-			Camera.main.GetComponentInParent<UltimateController>().enabled = false;
-			controller.getMouse().enabled = false;
-			UltimateController.Instance(Vector3.zero).parkitectFollowUltimate();
+			controller.enabled = controller.getMouse().enabled = false;
+			controller.parkitectFollowUltimate();
 
 			Camera.main.GetComponent<UltimateFader>().fade(Camera.main, controller.getParkitectCam(), true, false);
 
