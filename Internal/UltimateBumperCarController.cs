@@ -149,8 +149,15 @@ namespace UltimateCam.Internal
 
 		internal static void tryEnterBumperCar(Attraction attraction, Transform seat)
 		{
-			if (!(attraction is BumperCars.CustomFlatRide.BumperCars.BumperCars))
+			try
+			{
+				if (!(attraction is BumperCars.CustomFlatRide.BumperCars.BumperCars))
+					return;
+			}
+			catch (Exception) // BumperCars not installed
+			{
 				return;
+			}
 
 			if (controller != null)
 				Destroy(controller);
