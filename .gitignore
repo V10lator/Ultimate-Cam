@@ -2,9 +2,10 @@
 *~
 
 # Build stuff
-bin
-obj
-libs
+[Bb]in/
+[Oo]bj/
+[Ll]ibs/
+ParkitectNexus@Dodgems.dll
 
 # Internal stuff
 todo.txt

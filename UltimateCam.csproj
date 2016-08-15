@@ -39,6 +39,9 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>libs\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="ParkitectNexus@Dodgems">
+      <HintPath>ParkitectNexus%40Dodgems.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -50,6 +53,7 @@
     <Compile Include="Internal\UltimateMouse.cs" />
     <Compile Include="API\UltimateSettings.cs" />
     <Compile Include="Internal\UltimateController.cs" />
+    <Compile Include="Internal\UltimateBumperCarController.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Internal\UltimateCross.png" />

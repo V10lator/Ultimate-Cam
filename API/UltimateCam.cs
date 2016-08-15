@@ -221,7 +221,10 @@ namespace UltimateCam.API
 				seat = 0;
 			Transform s = seats[seat];
 			if (s != null)
+			{
+				UltimateBumperCarController.tryEnterBumperCar(attraction, s);
 				EnterSeatCam(s);
+			}
 		}
 
 		private void cleanupSeatCam()
