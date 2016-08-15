@@ -13,13 +13,12 @@ namespace UltimateCam.Internal
 		private float _oldHeading;
 		private BumperCars.CustomFlatRide.BumperCars.BumperCars _bumperCars = null;
 		private static UltimateBumperCarController controller = null;
-		private BumperCarAi ai;
 		private static GameObject seat;
 		private PeepDummy dummy;
 
 		void Start()
 		{
-			ai = GetComponent<BumperCarAi>();
+			BumperCarAi ai = GetComponent<BumperCarAi>();
 			if (ai == null)
 			{
 				UltimateMain.Instance.Log("BumperCarAi not found!", UltimateMain.LogLevel.INFO);
@@ -58,7 +57,7 @@ namespace UltimateCam.Internal
 			Vector3 pos = _rigidbody.position;
 			Quaternion rot = _rigidbody.rotation;
 			Destroy(_rigidbody);
-			ai = gameObject.AddComponent<BumperCarAi>();
+			BumperCarAi ai = gameObject.AddComponent<BumperCarAi>();
 			ai.BumperCars = _bumperCars; //TODO
 			_rigidbody = (Rigidbody)typeof(BumperCarAi).GetField("_rigidbody", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(ai);
 			_rigidbody.position = pos;
@@ -70,8 +69,8 @@ namespace UltimateCam.Internal
 
 		void FixedUpdate()
 		{
-			BumperCarAi ki = gameObject.GetComponent<BumperCarAi>();
-			UltimateMain.Instance.Log("KI " + (ki == null ? "still death!" : "alive?!?"), UltimateMain.LogLevel.INFO);
+			BumperCarAi ai = gameObject.GetComponent<BumperCarAi>();
+			UltimateMain.Instance.Log("AI " + (ai == null ? "still death!" : "alive?!?"), UltimateMain.LogLevel.INFO);
 		}/*
 			_rigidbody.AddForce(Vector3.up * 10.0f);
 			//UltimateMain.Instance.Log("Car tick.", UltimateMain.LogLevel.INFO);
