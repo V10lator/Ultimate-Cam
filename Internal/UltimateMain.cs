@@ -64,7 +64,18 @@ namespace UltimateCam.Internal
 				_version += "-dev" + vs [2] + "." + vs [3];
 		}
 
-		public string Name { get { return getAssembly().GetName ().Name; } }
+		private string _Name = null;
+		public string Name {
+			get
+			{
+				string ret = getAssembly().GetName ().Name;
+				return ret.StartsWith("build-") ? _Name : ret;
+			}
+			set
+			{
+				_Name = value;
+			}
+		}
 		public int MajorVersion {
 			get {
 				cacheVersion ();
