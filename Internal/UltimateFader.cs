@@ -190,7 +190,7 @@ namespace UltimateCam.Internal
 					Camera.main.transform.parent.localRotation = ZeroQuat;
 					if (_sitting)
 					{
-						Camera.main.transform.parent.localPosition = new Vector3(0.0f, 0.35f, 0.1f);
+						Camera.main.transform.parent.localPosition = new Vector3(0.0f, 0.27f, 0.1f);
 						API.UltimateCam.sitting = true;
 					}
 					else
