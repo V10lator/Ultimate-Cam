@@ -222,7 +222,7 @@ namespace UltimateCam.API
 			Transform s = seats[seat];
 			if (s != null)
 			{
-				UltimateBumperCarController.tryEnterBumperCar(attraction, s);
+				//UltimateBumperCarController.tryEnterBumperCar(attraction, s);
 				EnterSeatCam(s);
 			}
 		}
