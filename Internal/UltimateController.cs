@@ -117,7 +117,7 @@ namespace UltimateCam.Internal
 			return getHead().GetComponent<UltimateMouse>();
 		}
 
-		private ArrayList imps = new ArrayList();
+		/*private ArrayList imps = new ArrayList();
 		private class UltimateRay
 		{
 			internal readonly Color color;
@@ -175,7 +175,7 @@ namespace UltimateCam.Internal
 					GUI.DrawTexture(pos, Texture2D.whiteTexture, ScaleMode.StretchToFill);
 				}
 			}
-		}
+		}*/
 
 		private MouseCollider.HitInfo rayFromTo(Vector3 from, Vector3 direction, float md, bool down, bool ignoreTerrain)
 		{
@@ -271,7 +271,7 @@ namespace UltimateCam.Internal
 						}
 					}
 				}
-
+				/*
 				Color co;
 				Vector3 hitP;
 				if (result[i].hitSomething)
@@ -284,7 +284,7 @@ namespace UltimateCam.Internal
 					co = down ? Color.cyan : Color.green;
 					hitP = Vector3.one;
 				}
-				imps.Add(new UltimateRay(co, tFrom, hitP));
+				imps.Add(new UltimateRay(co, tFrom, hitP));*/
 			}
 
 			int s = 0;
@@ -361,7 +361,7 @@ namespace UltimateCam.Internal
 			if (moveDirection == Vector3.zero)
 				return;
 
-			imps.Clear();
+			//imps.Clear();
 
 			float height = config.Height;
 			Vector3 feet = transform.position;
